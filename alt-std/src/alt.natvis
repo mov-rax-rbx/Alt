@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <!-- Vector type -->
+  <Type Name="Alt::Vector&lt;*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)(m_pMemoryEnd - m_pMemoryBegin)" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)(m_pCapacityEnd - m_pMemoryBegin)" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_pMemoryBegin</Item>
+      <ArrayItems>
+        <Size>GetSize()</Size>
+        <ValuePointer>m_pMemoryBegin</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- Static Vector type -->
+  <Type Name="Alt::StaticVector&lt;*,*,*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)m_Storage.m_Size" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)$T2" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">($T1*)m_Storage.m_Memory[0].m_Storage.m_Memory</Item>
+      <ArrayItems>
+        <Size>GetSize()</Size>
+        <ValuePointer>($T1*)m_Storage.m_Memory[0].m_Storage.m_Memory</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- Static Vector type -->
+  <Type Name="Alt::StaticVector&lt;*,0,*&gt;">
+    <Intrinsic Name="GetSize" Expression="0" />
+    <DisplayString>{{ empty }}</DisplayString>
+    <Expand>
+    </Expand>
+  </Type>
+
+  <!-- Array type -->
+  <Type Name="Alt::StaticVector&lt;*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)$T2" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[ptr]" ExcludeView="simple">($T1*)m_Storage.m_Memory.m_Storage.m_Memory</Item>
+      <ArrayItems>
+        <Size>GetSize()</Size>
+        <ValuePointer>($T1*)m_Storage.m_Memory.m_Storage.m_Memory</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- Queue type -->
+  <Type Name="Alt::Queue&lt;*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)(m_Size)" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)(m_pMemoryEnd - m_pMemoryBegin)" />
+    <Intrinsic Name="GetBottomCapacity" Expression="(size_t)(m_pMemoryEnd - m_pQueueBegin)" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_pQueueBegin</Item>
+      <Item Name="[start idx]" ExcludeView="simple">(size_t)(m_pMemoryEnd - m_pQueueBegin)</Item>
+      <IndexListItems>
+        <Size>GetSize()</Size>
+        <ValueNode>$i &lt; GetBottomCapacity() ? m_pQueueBegin[$i] : m_pMemoryBegin[$i - GetBottomCapacity()]</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+  <!-- Static Queue type -->
+  <Type Name="Alt::StaticQueue&lt;*,*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)m_Storage.m_Size" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)$T2" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">($T1*)m_Storage.m_Memory[0].m_Storage.m_Memory</Item>
+      <Item Name="[start idx]" ExcludeView="simple">m_Storage.m_Offset</Item>
+      <IndexListItems>
+        <Size>GetSize()</Size>
+        <ValueNode>($T1*)m_Storage.m_Memory[(m_Storage.m_Offset + $i) % GetCapacity()].m_Storage.m_Memory</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+  <!-- String type -->
+  <Type Name="Alt::StringUTF8&lt;*&gt;">
+    <Intrinsic Name="GetSizeBytes" Expression="(size_t)(m_pMemoryNullTerm - m_pMemoryBegin)" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)(m_pCapacityEnd - m_pMemoryBegin)" />
+    <DisplayString>{{ sizeInBytes={GetSizeBytes()} - {m_pMemoryBegin, [GetSizeBytes()]na} }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[size]" ExcludeView="simple">GetSizeBytes()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_pMemoryBegin, [GetSizeBytes()]na</Item>
+      <ArrayItems>
+        <Size>GetSizeBytes()</Size>
+        <ValuePointer>m_pMemoryBegin</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- Static String type -->
+  <Type Name="Alt::StaticStringUTF8&lt;*,*&gt;">
+    <Intrinsic Name="GetSizeBytes" Expression="(size_t)m_Size" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)$T1" />
+    <DisplayString>{{ sizeInBytes={GetSizeBytes()} - {m_Memory, [GetSizeBytes()]na} }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[size]" ExcludeView="simple">GetSizeBytes()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_Memory, [GetSizeBytes()]na</Item>
+      <ArrayItems>
+        <Size>GetSizeBytes()</Size>
+        <ValuePointer>m_Memory</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- String type -->
+  <Type Name="Alt::StringUTF16&lt;*&gt;">
+    <Intrinsic Name="GetSizeU16" Expression="(size_t)(m_pMemoryNullTerm - m_pMemoryBegin)" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)(m_pCapacityEnd - m_pMemoryBegin)" />
+    <DisplayString>{{ sizeU16={GetSizeU16()} - {m_pMemoryBegin, [GetSizeU16()]na} }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[size]" ExcludeView="simple">GetSizeU16()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_pMemoryBegin, [GetSizeU16()]na</Item>
+      <ArrayItems>
+        <Size>GetSizeU16()</Size>
+        <ValuePointer>m_pMemoryBegin</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- Slice type -->
+  <Type Name="Alt::Slice&lt;*,*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)(m_pEnd - m_pBegin)" />
+    <Intrinsic Name="GetSizeBytes" Expression="(size_t)(m_pEnd - m_pBegin) * sizeof($T1)" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[sizeInBytes]" ExcludeView="simple">GetSizeBytes()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_pBegin, [GetSize()]na</Item>
+      <ArrayItems>
+        <Size>GetSize()</Size>
+        <ValuePointer>m_pBegin</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- MaybeUninit type -->
+  <Type Name="Alt::MaybeUninit&lt;*&gt;">
+    <DisplayString>{{ uninit? }}</DisplayString>
+    <Expand>
+      <Item Name="[ptr]" ExcludeView="simple">($T1*)m_Storage.m_Memory</Item>
+    </Expand>
+  </Type>
+
+  <!-- BitSet type -->
+  <Type Name="Alt::BitSetT&lt;*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)m_SizeBits" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)(m_Words.GetCapacity() * DIGITS)" />
+    <Intrinsic Name="GetSizeWords" Expression="(size_t)m_Words.GetSize()" />
+    <Intrinsic Name="GetCapacityWords" Expression="(size_t)m_Words.GetCapacity()" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[sizeInWords]" ExcludeView="simple">GetSizeWords()</Item>
+      <Item Name="[capacityInWords]" ExcludeView="simple">GetCapacityWords()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_Words.m_pMemoryBegin</Item>
+      <IndexListItems>
+        <Size>GetSize()</Size>
+        <ValueNode>(m_Words[$i >> BITS_TO_WORDID_RIGHT_SHIFT] >> ($i &amp; BITS_TO_BITIDX_IN_WORD_MASK)) &amp; 1</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+  <!-- StaticBitSet type -->
+  <Type Name="Alt::StaticBitSet&lt;*,*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)$T1" />
+    <Intrinsic Name="GetSizeWords" Expression="(size_t)SIZE" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[sizeInWords]" ExcludeView="simple">GetSizeWords()</Item>
+      <Item Name="[ptr]" ExcludeView="simple">m_Words</Item>
+      <IndexListItems>
+        <Size>GetSize()</Size>
+        <ValueNode>(m_Words[$i >> BITS_TO_WORDID_RIGHT_SHIFT] >> ($i &amp; BITS_TO_BITIDX_IN_WORD_MASK)) &amp; 1</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+  <!-- BoundedMPMC type -->
+  <Type Name="Alt::BoundedMPMC&lt;*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)(m_PushPos - m_PopPos)" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)(m_CapacityMask + 1)" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[pop idx]" ExcludeView="simple">m_PopPos</Item>
+      <Item Name="[push idx]" ExcludeView="simple">m_PushPos</Item>
+      <IndexListItems>
+        <Size>GetSize()</Size>
+        <ValueNode>($T1*)m_pCells[((m_PopPos &amp; m_CapacityMask) + $i) &amp; m_CapacityMask].m_Data.m_Storage.m_Memory</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+  <!--Static Queue type--> 
+  <Type Name="Alt::StaticBoundedMPMC&lt;*,*&gt;">
+    <Intrinsic Name="GetSize" Expression="(size_t)(m_PushPos - m_PopPos)" />
+    <Intrinsic Name="GetCapacity" Expression="(size_t)(m_CapacityMask + 1)" />
+    <DisplayString>{{ size={GetSize()} }}</DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">GetSize()</Item>
+      <Item Name="[capacity]" ExcludeView="simple">GetCapacity()</Item>
+      <Item Name="[pop idx]" ExcludeView="simple">m_PopPos</Item>
+      <Item Name="[push idx]" ExcludeView="simple">m_PushPos</Item>
+      <IndexListItems>
+        <Size>GetSize()</Size>
+        <ValueNode>($T1*)m_Cells[((m_PopPos &amp; m_CapacityMask) + $i) &amp; m_CapacityMask].m_Data.m_Storage.m_Memory</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+  <!-- UniquePtr type -->
+  <Type Name="Alt::UniquePtr&lt;*&gt;">
+    <DisplayString Condition="m_Ptr.ptr == 0">nullptr</DisplayString>
+    <DisplayString Condition="m_Ptr.ptr != 0">{*m_Ptr.ptr}</DisplayString>
+    <Expand>
+      <Item Name="[ptr]" ExcludeView="simple">m_Ptr.ptr</Item>
+    </Expand>
+  </Type>
+
+  <!-- RcPtr type -->
+  <Type Name="Alt::RcPtr&lt;*&gt;">
+    <Expand>
+      <Item Name="[StrongRef]" ExcludeView="simple">m_Ptr.m_StrongRef</Item>
+    </Expand>
+  </Type>
+
+  <!-- RcWeakPtr type -->
+  <Type Name="Alt::RcWeakPtr&lt;*&gt;">
+    <Expand>
+      <Item Name="[StrongRef]" ExcludeView="simple">m_Ptr.m_StrongRef</Item>
+    </Expand>
+  </Type>
+
+  <!-- RcConcPtr type -->
+  <Type Name="Alt::RcConcPtr&lt;*&gt;">
+    <Expand>
+      <Item Name="[StrongRef]" ExcludeView="simple">m_Ptr.m_StrongRef</Item>
+    </Expand>
+  </Type>
+
+  <!-- RcConcWeakPtr type -->
+  <Type Name="Alt::RcConcWeakPtr&lt;*&gt;">
+    <Expand>
+      <Item Name="[StrongRef]" ExcludeView="simple">m_Ptr.m_StrongRef</Item>
+    </Expand>
+  </Type>
+
+  <!-- Optional type -->
+  <Type Name="Alt::Optional&lt;*&gt;">
+    <Expand>
+      <ExpandedItem>m_Storage</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <!-- Optional Internal type -->
+  <Type Name="Alt::_OptionalDetails::OptionalStorageCore&lt;*,*&gt;">
+    <Expand>
+      <Item Name="[ok]" Condition="$T2 == Alt::_OptionalDetails::OptionalLayoutTrait::Value" ExcludeView="simple">*($T1*)m_Val.m_Storage.m_Memory</Item>
+      <Item Name="[isOk]" Condition="$T2 == Alt::_OptionalDetails::OptionalLayoutTrait::Value" ExcludeView="simple">m_IsVal</Item>
+    </Expand>
+  </Type>
+
+  <!-- Optional Internal type -->
+  <Type Name="Alt::_OptionalDetails::OptionalStorageCore&lt;*,*&gt;">
+    <Expand>
+      <Item Name="[pOk]" Condition="$T2 == Alt::_OptionalDetails::OptionalLayoutTrait::Ptr" ExcludeView="simple">*($T1*)m_PtrVal.m_Storage.m_Memory</Item>
+      <Item Name="[isOk]" Condition="$T2 == Alt::_OptionalDetails::OptionalLayoutTrait::Ptr" ExcludeView="simple">*($T1*)m_PtrVal.m_Storage.m_Memory != 0</Item>
+    </Expand>
+  </Type>
+
+  <!-- Result type -->
+  <Type Name="Alt::Result&lt;*,*&gt;">
+    <Expand>
+      <ExpandedItem>m_Storage</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <!-- Result Internal type -->
+  <Type Name="Alt::_ResultDetails::ResultStorageCore&lt;*,*,*&gt;">
+    <Expand>
+      <Item Name="[ok]" Condition="$T3 == Alt::_ResultDetails::ResultLayoutTrait::Value" ExcludeView="simple">*($T1*)m_Val.m_Storage.m_Memory</Item>
+      <Item Name="[err]" Condition="$T3 == Alt::_ResultDetails::ResultLayoutTrait::Value" ExcludeView="simple">*($T2*)m_Val.m_Storage.m_Memory</Item>
+      <Item Name="[isOk]" Condition="$T3 == Alt::_ResultDetails::ResultLayoutTrait::Value" ExcludeView="simple">m_IsOk</Item>
+    </Expand>
+  </Type>
+
+  <!-- Result Internal type -->
+  <Type Name="Alt::_ResultDetails::ResultStorageCore&lt;*,Alt::Unit_t,*&gt;">
+    <Expand>
+      <Item Name="[pOk]" Condition="$T2 == Alt::_ResultDetails::ResultLayoutTrait::Ptr" ExcludeView="simple">*($T1*)m_OkPtrVal.m_Storage.m_Memory</Item>
+      <Item Name="[isOk]" Condition="$T2 == Alt::_ResultDetails::ResultLayoutTrait::Ptr" ExcludeView="simple">*($T1*)m_OkPtrVal.m_Storage.m_Memory != 0</Item>
+    </Expand>
+  </Type>
+
+  <!-- Result Internal type -->
+  <Type Name="Alt::_ResultDetails::ResultStorageCore&lt;Alt::Unit_t,*,*&gt;">
+    <Expand>
+      <Item Name="[pErr]" Condition="$T2 == Alt::_ResultDetails::ResultLayoutTrait::Ptr" ExcludeView="simple">*($T1*)m_ErrPtrVal.m_Storage.m_Memory</Item>
+      <Item Name="[isOk]" Condition="$T2 == Alt::_ResultDetails::ResultLayoutTrait::Ptr" ExcludeView="simple">*($T1*)m_ErrPtrVal.m_Storage.m_Memory == 0</Item>
+    </Expand>
+  </Type>
+
+  <!-- Union type -->
+  <Type Name="Alt::Union&lt;*&gt;">
+    <Expand>
+      <Item Name="[typeIdx]" ExcludeView="simple">(size_t)m_Storage.m_TypeIdx</Item>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>

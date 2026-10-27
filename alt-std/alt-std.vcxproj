@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{ef47e154-bacb-4b8b-b16b-d9f0db859b90}</ProjectGuid>
+    <RootNamespace>src</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Algorithms\Algorithms.h" />
+    <ClInclude Include="src\Algorithms\Base64.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\ascii_number.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\bigint.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\constexpr_feature_detect.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\decimal_to_binary.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\digit_comparison.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\fast_float.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\fast_table.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\float_common.h" />
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\parse_number.h" />
+    <ClInclude Include="src\Algorithms\Impl\blqs.h" />
+    <ClInclude Include="src\Algorithms\Impl\xxHashConstexpr-0.8.3.h" />
+    <ClInclude Include="src\Algorithms\RadixSort.h" />
+    <ClInclude Include="src\Algorithms\xxHash-0.8.3\xxh3.h" />
+    <ClInclude Include="src\Algorithms\xxHash-0.8.3\xxhash.h" />
+    <ClInclude Include="src\Algorithms\zmij-1.2\zmij.h" />
+    <ClInclude Include="src\Collections\BitSet.h" />
+    <ClInclude Include="src\Collections\BitSetIterator.h" />
+    <ClInclude Include="src\Collections\IDPool.h" />
+    <ClInclude Include="src\Collections\Queue.h" />
+    <ClInclude Include="src\Collections\QueueIterator.h" />
+    <ClInclude Include="src\Collections\StaticBitSet.h" />
+    <ClInclude Include="src\Collections\StaticQueue.h" />
+    <ClInclude Include="src\Collections\StaticVector.h" />
+    <ClInclude Include="src\Collections\Vector.h" />
+    <ClInclude Include="src\Collections\VectorIterator.h" />
+    <ClInclude Include="src\Concurrency\Atomic.h" />
+    <ClInclude Include="src\Concurrency\Backoff.h" />
+    <ClInclude Include="src\Concurrency\BoundedMPMC.h" />
+    <ClInclude Include="src\Concurrency\Latch.h" />
+    <ClInclude Include="src\Concurrency\Mutex.h" />
+    <ClInclude Include="src\Concurrency\RWMutex.h" />
+    <ClInclude Include="src\Concurrency\Semaphore.h" />
+    <ClInclude Include="src\Concurrency\SemaphoreTimeline.h" />
+    <ClInclude Include="src\Concurrency\SpinMutex.h" />
+    <ClInclude Include="src\Concurrency\Thread.h" />
+    <ClInclude Include="src\Defines.h" />
+    <ClInclude Include="src\IfErr.h" />
+    <ClInclude Include="src\Iterators\Adapters\Adapters.h" />
+    <ClInclude Include="src\Iterators\Adapters\Enumerate.inl" />
+    <ClInclude Include="src\Iterators\Impl\IteratorCore.h" />
+    <ClInclude Include="src\Iterators\IteratorCollector.h" />
+    <ClInclude Include="src\Iterators\Iterator.h" />
+    <ClInclude Include="src\Iterators\IteratorInterface.h" />
+    <ClInclude Include="src\Iterators\IteratorTrait.h" />
+    <ClInclude Include="src\Iterators\STD\STDIteratorForAdapter.h" />
+    <ClInclude Include="src\Iterators\STD\STDCollectors.h" />
+    <ClInclude Include="src\Iterators\STD\STDIterator.h" />
+    <ClInclude Include="src\Math\Impl\AABB2.h" />
+    <ClInclude Include="src\Math\Impl\AABB3.h" />
+    <ClInclude Include="src\Math\Impl\DualQuat.h" />
+    <ClInclude Include="src\Math\Impl\MathPreInclude.h" />
+    <ClInclude Include="src\Math\Impl\Matrix44.h" />
+    <ClInclude Include="src\Math\Impl\Point3.h" />
+    <ClInclude Include="src\Math\Impl\Quat.h" />
+    <ClInclude Include="src\Math\Impl\Vec2.h" />
+    <ClInclude Include="src\Math\Impl\Vec3.h" />
+    <ClInclude Include="src\Math\Impl\Vec4.h" />
+    <ClInclude Include="src\Math\Math.h" />
+    <ClInclude Include="src\Memory\Allocators\ArenaAllocator.h" />
+    <ClInclude Include="src\Memory\Allocators\ArenaAllocatorVirtual.h" />
+    <ClInclude Include="src\Memory\Allocators\EntityPoolAllocator.h" />
+    <ClInclude Include="src\Memory\Allocators\PoolAllocator.h" />
+    <ClInclude Include="src\Memory\Allocators\PoolAllocatorVirtual.h" />
+    <ClInclude Include="src\Memory\Impl\MemoryPreInclude.h" />
+    <ClInclude Include="src\Memory\MaybeUninit.h" />
+    <ClInclude Include="src\Memory\Memory.h" />
+    <ClInclude Include="src\Memory\Ptr.h" />
+    <ClInclude Include="src\Memory\RcConcPtr.h" />
+    <ClInclude Include="src\Memory\RcPtr.h" />
+    <ClInclude Include="src\Memory\Ref.h" />
+    <ClInclude Include="src\Memory\UniquePtr.h" />
+    <ClInclude Include="src\Platform\Impl\PlatformPanicPreInclude.h" />
+    <ClInclude Include="src\Platform\Impl\PlatformPreInclude.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics128.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics16.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics32.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics64.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics8.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32AtomicsCore.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Backoff.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Definitions.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32DefinitionsPreInclude.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Latch.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Mutex.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32RWMutex.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Semaphore.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32SemaphoreTimeline.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32SpinMutex.h" />
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Thread.h" />
+    <ClInclude Include="src\Platform\Platform.h" />
+    <ClInclude Include="src\Random\Xoshiro256.h" />
+    <ClInclude Include="src\String\Format.h" />
+    <ClInclude Include="src\String\Impl\FormatPreInclude.h" />
+    <ClInclude Include="src\String\Impl\StringDetails.h" />
+    <ClInclude Include="src\String\Impl\Utf\Utf16.h" />
+    <ClInclude Include="src\String\Impl\Utf\Utf32.h" />
+    <ClInclude Include="src\String\Impl\Utf\Utf8.h" />
+    <ClInclude Include="src\String\Impl\Utf\UtfCore.h" />
+    <ClInclude Include="src\String\StaticString.h" />
+    <ClInclude Include="src\String\String.h" />
+    <ClInclude Include="src\String\StringIterator.h" />
+    <ClInclude Include="src\String\StringUTF16.h" />
+    <ClInclude Include="src\String\Utf.h" />
+    <ClInclude Include="src\Types.h" />
+    <ClInclude Include="src\TypeTraits.h" />
+    <ClInclude Include="src\Utils\EnumClassBitFlagsImpl.h" />
+    <ClInclude Include="src\Utils\Func.h" />
+    <ClInclude Include="src\Utils\Impl\NumPreInclude.h" />
+    <ClInclude Include="src\Utils\NonCopyableMovable.h" />
+    <ClInclude Include="src\Utils\Num.h" />
+    <ClInclude Include="src\Utils\Optional.h" />
+    <ClInclude Include="src\Utils\Pair.h" />
+    <ClInclude Include="src\Utils\Range.h" />
+    <ClInclude Include="src\Utils\Result.h" />
+    <ClInclude Include="src\Utils\ScopeDefer.h" />
+    <ClInclude Include="src\Utils\Slice.h" />
+    <ClInclude Include="src\Utils\Time.h" />
+    <ClInclude Include="src\Utils\Union.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Algorithms\xxHash-0.8.3\xxhash.c" />
+    <ClCompile Include="src\Algorithms\zmij-1.2\zmij_cc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Iterators\Adapters\Chain.inl" />
+    <None Include="src\Iterators\Adapters\Copied.inl" />
+    <None Include="src\Iterators\Adapters\Filter.inl" />
+    <None Include="src\Iterators\Adapters\Flatten.inl" />
+    <None Include="src\Iterators\Adapters\Fuse.inl" />
+    <None Include="src\Iterators\Adapters\Inspect.inl" />
+    <None Include="src\Iterators\Adapters\Intersperse.inl" />
+    <None Include="src\Iterators\Adapters\Map.inl" />
+    <None Include="src\Iterators\Adapters\Peekable.inl" />
+    <None Include="src\Iterators\Adapters\Rev.inl" />
+    <None Include="src\Iterators\Adapters\Skip.inl" />
+    <None Include="src\Iterators\Adapters\SkipWhile.inl" />
+    <None Include="src\Iterators\Adapters\Step.inl" />
+    <None Include="src\Iterators\Adapters\Take.inl" />
+    <None Include="src\Iterators\Adapters\TakeWhile.inl" />
+    <None Include="src\Iterators\Adapters\Zip.inl" />
+    <None Include="src\Math\Impl\DualQuat.inl" />
+    <None Include="src\Math\Impl\Quat.inl" />
+    <None Include="src\Math\Impl\Vec3.inl" />
+    <None Include="src\Math\Impl\Vec4.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

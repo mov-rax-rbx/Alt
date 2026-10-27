@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{e05bd774-9b06-4e3c-84a6-bed8d7b4cd9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Collections">
+      <UniqueIdentifier>{eefd4b08-ca20-48aa-8ac7-730ea2befc5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Algorithms">
+      <UniqueIdentifier>{5673ad94-961f-4b1e-9ad2-a29ec440a9e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{2ba8e38e-0876-48cb-915c-da79e0eef433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Memory">
+      <UniqueIdentifier>{8a97188e-3baf-427a-b4a3-157a2eb84b38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Iterators">
+      <UniqueIdentifier>{d765b58a-ff9b-4fa3-96c2-22e4e39986ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Iterators\Adapters">
+      <UniqueIdentifier>{45ae8873-f558-43fa-b28f-d749b77909e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Iterators\STD">
+      <UniqueIdentifier>{830174e2-16b7-4c89-a9bf-1cb7d643a1d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Random">
+      <UniqueIdentifier>{f1235692-261e-4ad7-97de-1d117e936112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Iterators\Impl">
+      <UniqueIdentifier>{2f4a1f7e-b8f3-497d-8ab1-ed6b011d5afd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Memory\Allocators">
+      <UniqueIdentifier>{faa8ad6a-7062-4f11-9a5b-fcca5d7393b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform">
+      <UniqueIdentifier>{296d8998-cce6-4d67-88e4-2e5b1d9f6ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\String">
+      <UniqueIdentifier>{9b433d1c-ffc7-4208-9bd1-179c8a4c2cc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\String\Impl">
+      <UniqueIdentifier>{9f9bc505-26cd-4388-8d0e-bf3d2639aea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\String\Impl\Utf">
+      <UniqueIdentifier>{f9326104-2a88-4845-ac73-e5afd20037eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Algorithms\xxHash-0.8.3">
+      <UniqueIdentifier>{4c932449-60d4-45d6-a8ab-2a29e0067931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Algorithms\fast_float-8.2.10">
+      <UniqueIdentifier>{f7519b93-416f-40a4-8d95-88cb5f398fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils\Impl">
+      <UniqueIdentifier>{43dec72f-5ace-4379-9ed4-cb8b56548797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\Impl">
+      <UniqueIdentifier>{1ab9bbf5-5c03-4846-9e95-582e6edffcf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\Impl\Win32">
+      <UniqueIdentifier>{8a9d57ce-a1c7-4b43-9d45-8057940dadb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Memory\Impl">
+      <UniqueIdentifier>{4b43783a-3514-4cf4-ae15-59d9ec4c3f0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Algorithms\Impl">
+      <UniqueIdentifier>{3ae76f6c-e3e9-4883-881a-5697d5c70ebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Math">
+      <UniqueIdentifier>{d26b8607-95f8-44ad-80a5-4daaf1a56f37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Math\Impl">
+      <UniqueIdentifier>{03bec8e1-7101-49b5-b20a-8dfd23a593ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Concurrency">
+      <UniqueIdentifier>{16a9eab9-15d0-4872-b486-e14bd2dc5228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Algorithms\zmij-1.2">
+      <UniqueIdentifier>{005bf8ad-f368-43f2-954a-c98a379a69b0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Utils\EnumClassBitFlagsImpl.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\NonCopyableMovable.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Num.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Range.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Result.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\ScopeDefer.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Slice.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Union.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\RadixSort.h">
+      <Filter>src\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Optional.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Memory.h">
+      <Filter>src\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\UniquePtr.h">
+      <Filter>src\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IfErr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TypeTraits.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\IDPool.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\Iterator.h">
+      <Filter>src\Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Pair.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\Adapters\Enumerate.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\IteratorTrait.h">
+      <Filter>src\Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\Adapters\Adapters.h">
+      <Filter>src\Iterators\Adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\STD\STDCollectors.h">
+      <Filter>src\Iterators\STD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\STD\STDIterator.h">
+      <Filter>src\Iterators\STD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\STD\STDIteratorForAdapter.h">
+      <Filter>src\Iterators\STD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\Vector.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Random\Xoshiro256.h">
+      <Filter>src\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\IteratorCollector.h">
+      <Filter>src\Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\Impl\IteratorCore.h">
+      <Filter>src\Iterators\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Allocators\ArenaAllocator.h">
+      <Filter>src\Memory\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Allocators\PoolAllocator.h">
+      <Filter>src\Memory\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Ref.h">
+      <Filter>src\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Ptr.h">
+      <Filter>src\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Types.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\StaticVector.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\MaybeUninit.h">
+      <Filter>src\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Platform.h">
+      <Filter>src\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\String.h">
+      <Filter>src\String</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\Algorithms.h">
+      <Filter>src\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Utf.h">
+      <Filter>src\String</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Impl\Utf\Utf8.h">
+      <Filter>src\String\Impl\Utf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Impl\Utf\Utf16.h">
+      <Filter>src\String\Impl\Utf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Impl\Utf\Utf32.h">
+      <Filter>src\String\Impl\Utf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Impl\Utf\UtfCore.h">
+      <Filter>src\String\Impl\Utf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Impl\StringDetails.h">
+      <Filter>src\String\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Format.h">
+      <Filter>src\String</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\xxHash-0.8.3\xxh3.h">
+      <Filter>src\Algorithms\xxHash-0.8.3</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\xxHash-0.8.3\xxhash.h">
+      <Filter>src\Algorithms\xxHash-0.8.3</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\ascii_number.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\bigint.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\constexpr_feature_detect.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\decimal_to_binary.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\digit_comparison.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\fast_float.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\fast_table.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\float_common.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\fast_float-8.2.10\parse_number.h">
+      <Filter>src\Algorithms\fast_float-8.2.10</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\BitSet.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\VectorIterator.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\BitSetIterator.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\StaticBitSet.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Allocators\EntityPoolAllocator.h">
+      <Filter>src\Memory\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Func.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\RcPtr.h">
+      <Filter>src\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\Base64.h">
+      <Filter>src\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Impl\NumPreInclude.h">
+      <Filter>src\Utils\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\PlatformPreInclude.h">
+      <Filter>src\Platform\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Definitions.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32DefinitionsPreInclude.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\StringUTF16.h">
+      <Filter>src\String</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Time.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Impl\MemoryPreInclude.h">
+      <Filter>src\Memory\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\PlatformPanicPreInclude.h">
+      <Filter>src\Platform\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\Impl\xxHashConstexpr-0.8.3.h">
+      <Filter>src\Algorithms\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Math.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\AABB2.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\AABB3.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\DualQuat.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\MathPreInclude.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\Matrix44.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\Point3.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\Quat.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\Vec2.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\Vec3.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Impl\Vec4.h">
+      <Filter>src\Math\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Iterators\IteratorInterface.h">
+      <Filter>src\Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\Impl\blqs.h">
+      <Filter>src\Algorithms\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\Queue.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\QueueIterator.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collections\StaticQueue.h">
+      <Filter>src\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Allocators\ArenaAllocatorVirtual.h">
+      <Filter>src\Memory\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Allocators\PoolAllocatorVirtual.h">
+      <Filter>src\Memory\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Defines.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics32.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32AtomicsCore.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics16.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics8.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics64.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Atomics128.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Thread.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\Thread.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\SpinMutex.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\Backoff.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\Mutex.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Backoff.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Mutex.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32SpinMutex.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Semaphore.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\Semaphore.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\Latch.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32Latch.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\SemaphoreTimeline.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32SemaphoreTimeline.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\RWMutex.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Impl\Win32\PlatformWin32RWMutex.h">
+      <Filter>src\Platform\Impl\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\Atomic.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Algorithms\zmij-1.2\zmij.h">
+      <Filter>src\Algorithms\zmij-1.2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency\BoundedMPMC.h">
+      <Filter>src\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\StringIterator.h">
+      <Filter>src\String</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\StaticString.h">
+      <Filter>src\String</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\RcConcPtr.h">
+      <Filter>src\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Impl\FormatPreInclude.h">
+      <Filter>src\String\Impl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Algorithms\xxHash-0.8.3\xxhash.c">
+      <Filter>src\Algorithms\xxHash-0.8.3</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Algorithms\zmij-1.2\zmij_cc.h">
+      <Filter>src\Algorithms\zmij-1.2</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Iterators\Adapters\Peekable.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Skip.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Chain.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Map.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Take.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Step.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Flatten.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Zip.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Filter.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Rev.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\SkipWhile.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\TakeWhile.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Fuse.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Copied.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Inspect.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Iterators\Adapters\Intersperse.inl">
+      <Filter>src\Iterators\Adapters</Filter>
+    </None>
+    <None Include="src\Math\Impl\DualQuat.inl">
+      <Filter>src\Math\Impl</Filter>
+    </None>
+    <None Include="src\Math\Impl\Quat.inl">
+      <Filter>src\Math\Impl</Filter>
+    </None>
+    <None Include="src\Math\Impl\Vec3.inl">
+      <Filter>src\Math\Impl</Filter>
+    </None>
+    <None Include="src\Math\Impl\Vec4.inl">
+      <Filter>src\Math\Impl</Filter>
+    </None>
+  </ItemGroup>
+</Project>
