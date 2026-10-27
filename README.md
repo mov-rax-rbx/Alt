@@ -1,6 +1,4 @@
-﻿# Alternative C++ Standard Library
-
-This library exists because I want to improve the C++ standard library. It is not intended as a replacement for the standard library.
+﻿# Alternative Library
 
 ## Example
 
@@ -68,7 +66,7 @@ int main(int argc, char** argv) {
 
 ## Details
 
-This is not intended as a replacement for the standard library, but rather as a better alternative that should simplify programs written using C++. For now, the target platform is Windows only, and the target compilers are LLVM Clang and MSVC. This is my cummulative stuff which I'm using on internal projects.
+This is not intended as a replacement for the standard library, but rather as a alternative that should simplify programs written using C++. For now, the target platform is Windows only, and the target compilers are LLVM Clang and MSVC. This is my cummulative stuff which I'm using on internal projects.
 
 ## 3rd
 
