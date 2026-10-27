@@ -1,7 +1,4 @@
 ﻿# Alternative Library
-
-## Example
-
 ```cpp
 #include "alt-std/Math/Math.h"
 
@@ -63,10 +60,6 @@ int main(int argc, char** argv) {
     ALT_PRINTLN("Total {}:\n{}", prms.GetSize(), prms);
 }
 ```
-
-## Details
-
-This is not intended as a replacement for the standard library, but rather as a alternative that should simplify programs written using C++. For now, the target platform is Windows only, and the target compilers are LLVM Clang and MSVC. This is my cummulative stuff which I'm using on internal projects.
 
 ## 3rd
 
