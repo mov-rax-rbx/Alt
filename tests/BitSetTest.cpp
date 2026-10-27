@@ -850,6 +850,16 @@ TEST(BitSet, FindFirst) {
 	EXPECT_TRUE(res);
 	EXPECT_EQ(*res, bs.GetSize() - 1);
 
+	bs[0] = true;
+	bs[1] = true;
+	bs[2] = true;
+	bs[3] = false;
+	bs[4] = true;
+
+	res = bs.FindFirstSet(3);
+	EXPECT_TRUE(res);
+	EXPECT_EQ(*res, 4);
+
 	bs.SetAll(true);
 
 	res = bs.FindFirstSet(0);

@@ -433,6 +433,8 @@ public:
         const Usize* pBegin = m_Words.Data() + wordOffset;
         const Usize* pEnd = m_Words.DataEnd();
 
+        const Usize* pBeginOld = pBegin;
+
         pBegin += pBegin != pEnd && (*pBegin >> offset) == 0
             ? 1
             : 0;
@@ -446,7 +448,8 @@ public:
             return Nullopt;
         }
 
-        const usize bitIdx = (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(*pBegin);
+        const usize correction = pBegin == pBeginOld ? offset : 0;
+        const usize bitIdx = correction + (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(*pBegin >> correction);
 
         return bitIdx < m_SizeBits
             ? MakeOptional(bitIdx)
@@ -496,6 +499,8 @@ public:
         const Usize* pBegin = m_Words.Data() + wordOffset;
         const Usize* pEnd = m_Words.DataEnd();
 
+        const Usize* pBeginOld = pBegin;
+
         pBegin += pBegin != pEnd && (*pBegin >> offset) == (WORD_MAX >> offset)
             ? 1
             : 0;
@@ -509,7 +514,8 @@ public:
             return Nullopt;
         }
 
-        const usize bitIdx = (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(~*pBegin);
+        const usize correction = pBegin == pBeginOld ? offset : 0;
+        const usize bitIdx = correction + (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(~*pBegin >> correction);
 
         return bitIdx < m_SizeBits
             ? MakeOptional(bitIdx)
