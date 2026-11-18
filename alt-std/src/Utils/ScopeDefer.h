@@ -51,7 +51,7 @@ namespace _ScopeDeferDetails {
 
 template <typename FuncT>
 struct ScopeDefer {
-    ScopeDefer(FuncT func_) noexcept : func(func_) {}
+    constexpr ScopeDefer(FuncT func_) noexcept : func(func_) {}
     ~ScopeDefer() { (func)(); }
     FuncT func;
 };
@@ -60,7 +60,7 @@ struct ScopeDeferUnit
 {};
 
 template <typename FuncT>
-ALT_FORCE_INLINE ScopeDefer<FuncT> operator+(ScopeDeferUnit, FuncT&& func) noexcept {
+ALT_FORCE_INLINE constexpr ScopeDefer<FuncT> operator+(ScopeDeferUnit, FuncT&& func) noexcept {
     return ScopeDefer<FuncT>(std::forward<FuncT>(func));
 }
 
@@ -70,9 +70,9 @@ struct ScopeDeferDisable {
     ScopeDeferDisable(ScopeDeferDisable&&) = delete;
     ScopeDeferDisable& operator=(const ScopeDeferDisable&) = delete;
     ScopeDeferDisable& operator=(ScopeDeferDisable&&) = delete;
-    ScopeDeferDisable(FuncT func_) noexcept : m_Func(func_) {}
+    constexpr ScopeDeferDisable(FuncT func_) noexcept : m_Func(func_) {}
     ~ScopeDeferDisable() { if (!m_IsDisabled) (m_Func)(); }
-    ALT_FORCE_INLINE void Disable() { m_IsDisabled = true; }
+    ALT_FORCE_INLINE constexpr void Disable() { m_IsDisabled = true; }
 private:
     FuncT m_Func;
     bool m_IsDisabled = false;
@@ -82,7 +82,7 @@ struct ScopeDeferDisableUnit
 {};
 
 template <typename FuncT>
-ALT_NODISCARD ALT_FORCE_INLINE ScopeDeferDisable<FuncT> operator+(ScopeDeferDisableUnit, FuncT&& func) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr ScopeDeferDisable<FuncT> operator+(ScopeDeferDisableUnit, FuncT&& func) noexcept {
     return ScopeDeferDisable<FuncT>(std::forward<FuncT>(func));
 }
 

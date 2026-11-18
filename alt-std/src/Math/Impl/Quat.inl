@@ -17,7 +17,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Quat<T> Quat<T>::FromRotate(Vec3<T> axis, const T
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE Quat<T> Quat<T>::FromVectors(Vec3<T> orig, Vec3<T> dst) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Quat<T> Quat<T>::FromVectors(Vec3<T> orig, Vec3<T> dst) noexcept {
 
     orig = orig.Normalize();
     dst = dst.Normalize();
@@ -25,8 +25,8 @@ ALT_NODISCARD ALT_FORCE_INLINE Quat<T> Quat<T>::FromVectors(Vec3<T> orig, Vec3<T
     T cosTheta = orig.Dot(dst);
     T w = static_cast<T>(1.0) + cosTheta;
 
-    if (w >= Num::Desc<T>::Eps()) {
-        return Normalize(Quat{ orig.Cross(dst), w });
+    if (w >= Desc<T>::Eps()) {
+        return Quat{ orig.Cross(dst), w }.Normalize();
     }
     else {
         return Quat{ orig.PerpNormalized(), static_cast<T>(0.0) };
@@ -34,11 +34,11 @@ ALT_NODISCARD ALT_FORCE_INLINE Quat<T> Quat<T>::FromVectors(Vec3<T> orig, Vec3<T
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> Quat<T>::GetAxis() const noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3<T> Quat<T>::GetAxis() const noexcept {
 
     const T a = static_cast<T>(1.0) - w * w;
     if (a <= static_cast<T>(0.0)) {
-        return Vec3{ 0, 0, 1 };
+        return Vec3{ static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(1.0) };
     }
 
     const T inv = static_cast<T>(1.0) / a;
@@ -71,7 +71,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> Quat<T>::GetEulerAnglesXYZ() const noexce
         const T y = static_cast<T>(2.0) * (q.y * q.z + q.w * q.x);
         const T x = q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z;
 
-        if (Abs(x) < Num::Desc<T>::Eps() && Abs(y) < Num::Desc<T>::Eps()) {
+        if (Abs(x) < Desc<T>::Eps() && Abs(y) < Desc<T>::Eps()) {
             pitch = static_cast<T>(2.0) * Atan2(q.x, q.w);
         }
         else {
@@ -86,7 +86,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> Quat<T>::GetEulerAnglesXYZ() const noexce
         const T y = static_cast<T>(2.0) * (q.x * q.y + q.w * q.z);
         const T x = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
 
-        if (Abs(x) < Num::Desc<T>::Eps() && Abs(y) < Num::Desc<T>::Eps()) {
+        if (Abs(x) < Desc<T>::Eps() && Abs(y) < Desc<T>::Eps()) {
             roll = static_cast<T>(0.0);
         }
         else {
@@ -98,7 +98,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> Quat<T>::GetEulerAnglesXYZ() const noexce
 }
 
 template <typename T>
-ALT_FORCE_INLINE Vec3<T> Quat<T>::operator*(const Vec3<T>& rhs) const noexcept {
+ALT_FORCE_INLINE constexpr Vec3<T> Quat<T>::operator*(const Vec3<T>& rhs) const noexcept {
 
     const Vec3<T> quatVec{ x, y, z };
     const Vec3<T> a = quatVec.Cross(rhs);
@@ -108,7 +108,7 @@ ALT_FORCE_INLINE Vec3<T> Quat<T>::operator*(const Vec3<T>& rhs) const noexcept {
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE Quat<T> Quat<T>::FromMatrix44(const Matrix44<T>& m) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Quat<T> Quat<T>::FromMatrix44(const Matrix44<T>& m) noexcept {
 
     const T tr = m(0, 0) + m(1, 1) + m(2, 2);
 
@@ -166,7 +166,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Quat<T> Quat<T>::FromMatrix44(const Matrix44<T>& 
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE Matrix44<T> Quat<T>::ToMatrix44() const noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44<T> Quat<T>::ToMatrix44() const noexcept {
 
     const T tx = x + x;
     const T ty = y + y;

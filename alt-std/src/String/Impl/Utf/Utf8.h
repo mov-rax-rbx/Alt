@@ -40,13 +40,13 @@ constexpr static u32 UTF8_VALIDATION_MASK[4]{
 } // namespace _TableDetails
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 
-ALT_NODISCARD ALT_FORCE_INLINE bool IsAscii(const u8 utf8First) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsAscii(const u8 utf8First) noexcept {
 
     return utf8First < 0b10000000;
 }
 
 // return numbers of bytes to forward adjust or 0 if invalid utf8
-ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf8(const u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize ForwardUtf8(const u8 (&utf8)[4]) noexcept {
 
     // Table 3-6
     // Table 3-7
@@ -172,7 +172,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf8(const u8 (&utf8)[4]) noexcept {
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     const u32 utf32 =
         utf8_[0] << 18 |
@@ -197,7 +197,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf8(const u8 (&utf8)[4]) noexcept {
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf8IgnoreErrors(const u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize ForwardUtf8IgnoreErrors(const u8 (&utf8)[4]) noexcept {
 
     usize maskIdx = 0;
 
@@ -209,7 +209,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf8IgnoreErrors(const u8 (&utf8)[4]
     return maskIdx + 1;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf8(const u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize BackwardUtf8(const u8 (&utf8)[4]) noexcept {
 
 #ifdef ALT_USE_UTF_NON_BRANCHLESS
 
@@ -293,7 +293,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf8(const u8 (&utf8)[4]) noexcept 
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     const u32 utf32 =
         utf8_[0] << 18 |
@@ -310,7 +310,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf8(const u8 (&utf8)[4]) noexcept 
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf8IgnoreErrors(const u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize BackwardUtf8IgnoreErrors(const u8 (&utf8)[4]) noexcept {
 
     usize maskIdx = 0;
 
@@ -329,19 +329,19 @@ ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf8IgnoreErrors(const u8 (&utf8)[4
     return maskIdx + 1;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE bool IsValidUtf8(const u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsValidUtf8(const u8 (&utf8)[4]) noexcept {
 
     return ForwardUtf8(utf8) != 0;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE usize LengthUtf8ToUtf16(const u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize LengthUtf8ToUtf16(const u8 (&utf8)[4]) noexcept {
 
     // Table 3-6
 
     return 1 + (utf8[0] >= 0b11110000 ? 1 : 0);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32IgnoreErrorsBackward(const u8 (&utf8)[4], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE Result constexpr Utf8ToUtf32IgnoreErrorsBackward(const u8 (&utf8)[4], u32& utf32) noexcept {
 
 #ifdef ALT_USE_UTF_NON_BRANCHLESS
 
@@ -430,7 +430,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32IgnoreErrorsBackward(const u8 (
 
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     utf32 =
         utf8_[0] << 18 |
@@ -447,7 +447,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32IgnoreErrorsBackward(const u8 (
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32Backward(const u8 (&utf8)[4], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf32Backward(const u8 (&utf8)[4], u32& utf32) noexcept {
 
 #ifdef ALT_USE_UTF_NON_BRANCHLESS
 
@@ -553,7 +553,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32Backward(const u8 (&utf8)[4], u
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     utf32 =
         utf8_[0] << 18 |
@@ -574,7 +574,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32Backward(const u8 (&utf8)[4], u
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32ReplaceBackward(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf32ReplaceBackward(
     const u8 (&utf8)[4], u32& utf32, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -687,7 +687,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32ReplaceBackward(
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     utf32 =
         utf8_[0] << 18 |
@@ -710,7 +710,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32ReplaceBackward(
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32IgnoreErrors(const u8 (&utf8)[4], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf32IgnoreErrors(const u8 (&utf8)[4], u32& utf32) noexcept {
 
     // Table 3-6
 
@@ -795,7 +795,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32IgnoreErrors(const u8 (&utf8)[4
 
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     utf32 =
         utf8_[0] << 18 |
@@ -812,7 +812,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32IgnoreErrors(const u8 (&utf8)[4
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32(const u8 (&utf8)[4], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf32(const u8 (&utf8)[4], u32& utf32) noexcept {
 
     // Table 3-6
     // Table 3-7
@@ -913,7 +913,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32(const u8 (&utf8)[4], u32& utf3
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     utf32 =
         utf8_[0] << 18 |
@@ -934,7 +934,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32(const u8 (&utf8)[4], u32& utf3
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32Replace(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf32Replace(
     const u8 (&utf8)[4], u32& utf32, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -1042,7 +1042,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32Replace(
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     utf32 =
         utf8_[0] << 18 |
@@ -1065,7 +1065,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf32Replace(
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16IgnoreErrors(const u8 (&utf8)[4], u16 (&utf16)[2]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf16IgnoreErrors(const u8 (&utf8)[4], u16 (&utf16)[2]) noexcept {
 
     // Table 3-6
     // Table 3-7
@@ -1156,7 +1156,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16IgnoreErrors(const u8 (&utf8)[4
 
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     u32 utf32 =
         utf8_[0] << 18 |
@@ -1192,7 +1192,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16IgnoreErrors(const u8 (&utf8)[4
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16(const u8 (&utf8)[4], u16 (&utf16)[2]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf16(const u8 (&utf8)[4], u16 (&utf16)[2]) noexcept {
 
     // Table 3-6
     // Table 3-7
@@ -1298,7 +1298,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16(const u8 (&utf8)[4], u16 (&utf
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     u32 utf32 =
         utf8_[0] << 18 |
@@ -1338,7 +1338,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16(const u8 (&utf8)[4], u16 (&utf
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16Replace(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf8ToUtf16Replace(
     const u8 (&utf8)[4], u16 (&utf16)[2], const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -1457,7 +1457,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf8ToUtf16Replace(
     bool isOk = (asU32 & UTF8_VALIDATION_MASK[maskIdx]) == UTF8_MASK1[maskIdx];
     asU32 = asU32 & UTF8_MASK0[maskIdx];
 
-    u8 utf8_[4];
+    u8 utf8_[4]{};
     Memory::TransmuteInto<u32, u8[4]>(asU32, utf8_);
     u32 utf32 =
         utf8_[0] << 18 |

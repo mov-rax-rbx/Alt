@@ -7,29 +7,29 @@
 
 #include "../../Utils/Optional.h"
 
-/*
-    Alt::IteratorForwardFromFunc iter{
-        []() {
-            static usize cnt = 0;
-            return cnt++;
-        }
-    };
-
-    Alt::Vector<usize> vec;
-    for (usize val : iter) {
-
-        if (val == 4) {
-            break;
-        }
-
-        vec.Push(val);
-    }
-
-    assert(vec[0] == 0);
-    assert(vec[1] == 1);
-    assert(vec[2] == 2);
-    assert(vec[3] == 3);
-*/
+/**
+ * Alt::IteratorForwardFromFunc iter{
+ *     []() {
+ *         static usize cnt = 0;
+ *         return cnt++;
+ *     }
+ * };
+ *
+ * Alt::Vector<usize> vec;
+ * for (usize val : iter) {
+ *
+ *     if (val == 4) {
+ *         break;
+ *     }
+ *
+ *     vec.Push(val);
+ * }
+ *
+ * assert(vec[0] == 0);
+ * assert(vec[1] == 1);
+ * assert(vec[2] == 2);
+ * assert(vec[3] == 3);
+ */
 
 namespace Alt {
 
@@ -42,11 +42,11 @@ public:
 
     using Type = typename SelfT::Type;
 
-    ALT_FORCE_INLINE STDIterator(const SelfT& iter) noexcept
+    ALT_FORCE_INLINE constexpr STDIterator(const SelfT& iter) noexcept
         : m_Iter(iter)
     {}
 
-    ALT_FORCE_INLINE Type operator*() noexcept {
+    ALT_FORCE_INLINE constexpr Type operator*() noexcept {
 
         if (!m_Deref) {
 
@@ -60,13 +60,13 @@ public:
             .GetValue();
     }
 
-    ALT_FORCE_INLINE STDIterator& operator++() noexcept {
+    ALT_FORCE_INLINE constexpr STDIterator& operator++() noexcept {
 
         m_Deref = m_Iter.Next();
         return *this;
     }
 
-    ALT_FORCE_INLINE STDIterator operator++(int) noexcept {
+    ALT_FORCE_INLINE constexpr STDIterator operator++(int) noexcept {
 
         STDIterator result = *this;
         ++*this;
@@ -74,7 +74,7 @@ public:
         return result;
     }
 
-    ALT_FORCE_INLINE bool operator==(STDIteratorEnd) noexcept {
+    ALT_FORCE_INLINE constexpr bool operator==(STDIteratorEnd) noexcept {
 
         if (!m_Deref) {
 
@@ -84,7 +84,7 @@ public:
         return !*m_Deref;
     }
 
-    ALT_FORCE_INLINE bool operator!=(STDIteratorEnd) noexcept {
+    ALT_FORCE_INLINE constexpr bool operator!=(STDIteratorEnd) noexcept {
 
         return !(*this == STDIteratorEnd{});
     }

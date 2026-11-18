@@ -65,34 +65,34 @@ public:
 
     template <typename IterT,
         std::enable_if_t<!_IterDetails::is_alt_iterator_interface_v<IterT> && std::is_same_v<typename IterT::Type, T>>* = nullptr>
-    ALT_FORCE_INLINE IteratorInterface(IterT& iter) noexcept
+    ALT_FORCE_INLINE constexpr IteratorInterface(IterT& iter) noexcept
         : _IterDetails::IteratorInterfaceImpl<IteratorInterface, T, TraitsT>(iter)...
     {
-        m_pIterObj = reinterpret_cast<void*>(&iter);
+        m_pIterObj = static_cast<void*>(Addressof(iter));
         m_pFuncGetSizeHint = [](void* pIterObj) noexcept -> usize {
-            return reinterpret_cast<const IterT*>(pIterObj)->GetSizeHint();
+            return static_cast<const IterT*>(pIterObj)->GetSizeHint();
         };
     }
 
     template <template <typename> typename ...TraitsU,
         std::enable_if_t<_IterDetails::count_intersect_type_list_v<_IterDetails::type_list<TraitsU<T>...>, Traits> == sizeof...(TraitsT)>* = nullptr>
-    ALT_FORCE_INLINE IteratorInterface(IteratorInterface<T, TraitsU...> iter) noexcept
+    ALT_FORCE_INLINE constexpr IteratorInterface(IteratorInterface<T, TraitsU...> iter) noexcept
         : _IterDetails::IteratorInterfaceImpl<IteratorInterface, T, TraitsT>(iter)...
         , m_pIterObj(iter.m_pIterObj)
         , m_pFuncGetSizeHint(iter.m_pFuncGetSizeHint)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return (*m_pFuncGetSizeHint)(m_pIterObj);
     }
 
 private:
 
-    ALT_FORCE_INLINE void* GetIterObjPtr() noexcept {
+    ALT_FORCE_INLINE constexpr void* GetIterObjPtr() noexcept {
         return m_pIterObj;
     }
 
-    ALT_FORCE_INLINE const void* GetIterObjPtr() const noexcept {
+    ALT_FORCE_INLINE constexpr const void* GetIterObjPtr() const noexcept {
         return m_pIterObj;
     }
 
@@ -121,32 +121,32 @@ class IteratorInterfaceImpl<SelfT, T, IIteratorForwardTrait>
 public:
 
     template <typename IterT>
-    ALT_FORCE_INLINE IteratorInterfaceImpl(IterT&) noexcept {
+    ALT_FORCE_INLINE constexpr IteratorInterfaceImpl(IterT&) noexcept {
 
         m_pFuncNext = [](void* pSelf_) noexcept -> Optional<T> {
 
-            SelfT* pSelf = reinterpret_cast<SelfT*>(pSelf_);
-            return reinterpret_cast<IterT*>(pSelf->GetIterObjPtr())->Next();
+            SelfT* pSelf = static_cast<SelfT*>(pSelf_);
+            return static_cast<IterT*>(pSelf->GetIterObjPtr())->Next();
         };
 
         m_pFuncAdvance = [](void* pSelf_, const usize advance) noexcept -> usize {
 
-            SelfT* pSelf = reinterpret_cast<SelfT*>(pSelf_);
-            return reinterpret_cast<IterT*>(pSelf->GetIterObjPtr())->Advance(advance);
+            SelfT* pSelf = static_cast<SelfT*>(pSelf_);
+            return static_cast<IterT*>(pSelf->GetIterObjPtr())->Advance(advance);
         };
     }
 
     template <typename SelfU>
-    ALT_FORCE_INLINE IteratorInterfaceImpl(IteratorInterfaceImpl<SelfU, T, IIteratorForwardTrait> iter) noexcept
+    ALT_FORCE_INLINE constexpr IteratorInterfaceImpl(IteratorInterfaceImpl<SelfU, T, IIteratorForwardTrait> iter) noexcept
         : m_pFuncNext(iter.m_pFuncNext)
         , m_pFuncAdvance(iter.m_pFuncAdvance)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
         return (*m_pFuncNext)(static_cast<SelfT*>(this));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
         return (*m_pFuncAdvance)(static_cast<SelfT*>(this), advance);
     }
 
@@ -166,32 +166,32 @@ class IteratorInterfaceImpl<SelfT, T, IIteratorBackwardTrait>
 public:
 
     template <typename IterT>
-    ALT_FORCE_INLINE IteratorInterfaceImpl(IterT&) noexcept {
+    ALT_FORCE_INLINE constexpr IteratorInterfaceImpl(IterT&) noexcept {
 
         m_pFuncNextBack = [](void* pSelf_) noexcept -> Optional<T> {
 
-            SelfT* pSelf = reinterpret_cast<SelfT*>(pSelf_);
-            return reinterpret_cast<IterT*>(pSelf->GetIterObjPtr())->NextBack();
+            SelfT* pSelf = static_cast<SelfT*>(pSelf_);
+            return static_cast<IterT*>(pSelf->GetIterObjPtr())->NextBack();
         };
 
         m_pFuncAdvanceBack = [](void* pSelf_, const usize advance) noexcept -> usize {
 
-            SelfT* pSelf = reinterpret_cast<SelfT*>(pSelf_);
-            return reinterpret_cast<IterT*>(pSelf->GetIterObjPtr())->AdvanceBack(advance);
+            SelfT* pSelf = static_cast<SelfT*>(pSelf_);
+            return static_cast<IterT*>(pSelf->GetIterObjPtr())->AdvanceBack(advance);
         };
     }
 
     template <typename SelfU>
-    ALT_FORCE_INLINE IteratorInterfaceImpl(IteratorInterfaceImpl<SelfU, T, IIteratorBackwardTrait> iter) noexcept
+    ALT_FORCE_INLINE constexpr IteratorInterfaceImpl(IteratorInterfaceImpl<SelfU, T, IIteratorBackwardTrait> iter) noexcept
         : m_pFuncNextBack(iter.m_pFuncNextBack)
         , m_pFuncAdvanceBack(iter.m_pFuncAdvanceBack)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Back() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Back() noexcept {
         return (*m_pFuncNextBack)(static_cast<SelfT*>(this));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
         return (*m_pFuncAdvanceBack)(static_cast<SelfT*>(this), advance);
     }
 
@@ -209,32 +209,32 @@ class IteratorInterfaceImpl<SelfT, T, IIteratorExactSizeTrait> {
 public:
 
     template <typename IterT>
-    ALT_FORCE_INLINE IteratorInterfaceImpl(IterT&) noexcept {
+    ALT_FORCE_INLINE constexpr IteratorInterfaceImpl(IterT&) noexcept {
 
         m_pFuncGetSize = [](const void* pSelf_) noexcept -> usize {
 
-            const SelfT* pSelf = reinterpret_cast<const SelfT*>(pSelf_);
-            return reinterpret_cast<const IterT*>(pSelf->GetIterObjPtr())->GetSize();
+            const SelfT* pSelf = static_cast<const SelfT*>(pSelf_);
+            return static_cast<const IterT*>(pSelf->GetIterObjPtr())->GetSize();
         };
 
         m_pFuncIsEmpty = [](const void* pSelf_) noexcept -> bool {
 
-            const SelfT* pSelf = reinterpret_cast<const SelfT*>(pSelf_);
-            return reinterpret_cast<const IterT*>(pSelf->GetIterObjPtr())->IsEmpty();
+            const SelfT* pSelf = static_cast<const SelfT*>(pSelf_);
+            return static_cast<const IterT*>(pSelf->GetIterObjPtr())->IsEmpty();
         };
     }
 
     template <typename SelfU>
-    ALT_FORCE_INLINE IteratorInterfaceImpl(IteratorInterfaceImpl<SelfU, T, IIteratorExactSizeTrait> iter) noexcept
+    ALT_FORCE_INLINE constexpr IteratorInterfaceImpl(IteratorInterfaceImpl<SelfU, T, IIteratorExactSizeTrait> iter) noexcept
         : m_pFuncGetSize(iter.m_pFuncGetSize)
         , m_pFuncIsEmpty(iter.m_pFuncIsEmpty)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return (*m_pFuncGetSize)(static_cast<const SelfT*>(this));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return (*m_pFuncIsEmpty)(static_cast<const SelfT*>(this));
     }
 

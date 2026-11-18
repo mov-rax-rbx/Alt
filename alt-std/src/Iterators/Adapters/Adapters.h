@@ -74,20 +74,20 @@ template <typename SelfT>
 class IteratorForwardAdaptersImpl<true, SelfT> {
 public:
 
-    ALT_NODISCARD ALT_FORCE_INLINE SelfT CloneIter() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SelfT CloneIter() const noexcept {
         return Self();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE STDIterator<SelfT> begin() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr STDIterator<SelfT> begin() const noexcept {
         return STDIterator{ Self() };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE STDIteratorEnd end() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr STDIteratorEnd end() const noexcept {
         return STDIteratorEnd{};
     }
 
     template <typename ContainerT>
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<ContainerT> Collect() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<ContainerT> Collect() noexcept {
 
         ContainerT container{};
 
@@ -100,82 +100,82 @@ public:
     }
 
     template <typename ContainerT>
-    ALT_NODISCARD ALT_FORCE_INLINE ContainerT CollectOrDefault() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr ContainerT CollectOrDefault() noexcept {
 
         return Collect<ContainerT>()
             .GetValueOrDefault();
     }
 
     template <typename ContainerT>
-    ALT_NODISCARD ALT_FORCE_INLINE bool CollectInto(ContainerT& container) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool CollectInto(ContainerT& container) noexcept {
 
         IteratorInterface<typename SelfT::Type, IIteratorForwardTrait> iteratorInterface = Self();
         return IteratorCollector<ContainerT>::ExtendMove(container, iteratorInterface);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Enumerate_<SelfT> Enumerate() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Enumerate_<SelfT> Enumerate() noexcept {
         return Enumerate_{ Self() };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Peekable_<SelfT> Peekable() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Peekable_<SelfT> Peekable() noexcept {
         return Peekable_{ Self() };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Fuse_<SelfT> Fuse() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Fuse_<SelfT> Fuse() noexcept {
         return Fuse_{ Self() };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Skip_<SelfT> Skip(const usize skipN) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Skip_<SelfT> Skip(const usize skipN) noexcept {
         return Skip_{ Self(), skipN };
     }
 
     template <typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_same_v<std::invoke_result_t<FuncT, const typename SelfU::Type&>, bool>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE SkipWhile_<SelfU, FuncT> SkipWhile(FuncT&& pred) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SkipWhile_<SelfU, FuncT> SkipWhile(FuncT&& pred) noexcept {
         return SkipWhile_{ Self(), std::forward<FuncT>(pred) };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Take_<SelfT> Take(const usize takeCnt) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Take_<SelfT> Take(const usize takeCnt) noexcept {
         return Take_{ Self(), takeCnt };
     }
 
     template <typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_same_v<std::invoke_result_t<FuncT, const typename SelfU::Type&>, bool>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE TakeWhile_<SelfU, FuncT> TakeWhile(FuncT&& pred) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr TakeWhile_<SelfU, FuncT> TakeWhile(FuncT&& pred) noexcept {
         return TakeWhile_{ Self(), std::forward<FuncT>(pred)};
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Step_<SelfT> Step(const usize step) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Step_<SelfT> Step(const usize step) noexcept {
         return Step_{ Self(), step };
     }
 
     template <typename SelfU = SelfT,
         std::enable_if_t<_IterDetails::is_trait_alt_iterator_v<SelfU> && _IterDetails::is_trait_alt_iterator_v<typename SelfU::Type>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Flatten_<SelfU> Flatten() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Flatten_<SelfU> Flatten() noexcept {
         return Flatten_{ Self() };
     }
 
     template <typename T,
         std::enable_if_t<_IterDetails::is_trait_alt_iterator_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Zip_<SelfT, T> Zip(const T& iter) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Zip_<SelfT, T> Zip(const T& iter) noexcept {
         return Zip_{ Self(), iter };
     }
 
     template <typename SelfU = SelfT, typename T,
         std::enable_if_t<_IterDetails::is_trait_alt_iterator_v<T> && std::is_convertible_v<typename T::Type, typename SelfU::Type>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Chain_<SelfU, T> Chain(const T& iter) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Chain_<SelfU, T> Chain(const T& iter) noexcept {
         return Chain_{ Self(), iter };
     }
 
     template <typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_same_v<std::invoke_result_t<FuncT, const typename SelfU::Type&>, bool>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Filter_<SelfT, FuncT> Filter(FuncT&& pred) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Filter_<SelfT, FuncT> Filter(FuncT&& pred) noexcept {
         return Filter_{ Self(), std::forward<FuncT>(pred) };
     }
 
     template <typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_same_v<std::invoke_result_t<FuncT, const typename SelfU::Type&>, bool>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<typename SelfU::Type> Find(FuncT&& pred) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<typename SelfU::Type> Find(FuncT&& pred) noexcept {
 
         /*
          * Same as:
@@ -195,27 +195,27 @@ public:
 
     template <typename SelfU = SelfT, typename FuncT,
         std::invoke_result_t<FuncT, const typename SelfU::Type&>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Map_<SelfU, FuncT> Map(FuncT&& func) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Map_<SelfU, FuncT> Map(FuncT&& func) noexcept {
         return Map_{ Self(), std::forward<FuncT>(func) };
     }
 
     template <typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_same_v<std::invoke_result_t<FuncT, const typename SelfU::Type&>, void>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Inspect_<SelfU, FuncT> Inspect(FuncT&& func) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Inspect_<SelfU, FuncT> Inspect(FuncT&& func) noexcept {
         return Inspect_{ Self(), std::forward<FuncT>(func) };
     }
 
     template <typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, typename SelfU::Type>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE Intersperse_<SelfU, FuncT> Intersperse(FuncT&& func) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Intersperse_<SelfU, FuncT> Intersperse(FuncT&& func) noexcept {
         return Intersperse_{ Self(), std::forward<FuncT>(func) };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Copied_<SelfT> Copied() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Copied_<SelfT> Copied() noexcept {
         return Copied_{ Self() };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Count() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Count() noexcept {
 
         return Fold((usize)0, [](const usize acc, const typename SelfT::Type&) {
             return acc + 1;
@@ -224,7 +224,7 @@ public:
 
     template <typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_same_v<std::invoke_result_t<FuncT, typename SelfU::Type>, void>>* = nullptr>
-    ALT_FORCE_INLINE void ForEach(FuncT&& func) noexcept {
+    ALT_FORCE_INLINE constexpr void ForEach(FuncT&& func) noexcept {
 
         using T = typename SelfU::Type;
 
@@ -236,7 +236,7 @@ public:
 
     template <typename U, typename SelfU = SelfT, typename FuncT,
         std::enable_if_t<std::is_same_v<std::invoke_result_t<FuncT, const U&, const typename SelfU::Type&>, U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE U Fold(U&& init, FuncT&& func) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr U Fold(U&& init, FuncT&& func) noexcept {
 
         using T = typename SelfT::Type;
 
@@ -251,11 +251,11 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -268,12 +268,12 @@ template <typename SelfT>
 class IteratorBackwardAdaptersImpl<true, SelfT> {
 public:
 
-    ALT_NODISCARD ALT_FORCE_INLINE Rev_<SelfT> Rev() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Rev_<SelfT> Rev() noexcept {
         return Rev_{ Self() };
     }
 
     template <typename U, typename Func>
-    ALT_NODISCARD ALT_FORCE_INLINE U FoldRight(U&& init, Func&& func) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr U FoldRight(U&& init, Func&& func) noexcept {
 
         using T = typename SelfT::Type;
 
@@ -288,11 +288,11 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };

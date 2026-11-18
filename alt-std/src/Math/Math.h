@@ -15,6 +15,12 @@
 #include "Impl/AABB2.h"
 #include "Impl/AABB3.h"
 
+namespace Alt {
+
+using namespace Alt::Math;
+
+} // namespace Alt 
+
 #ifdef ALT_USE_MATH_TYPES_IN_GLOBAL_NAMESPACE
 
 template <typename T>

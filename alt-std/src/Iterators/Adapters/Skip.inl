@@ -2,7 +2,7 @@
 
 #include "../../Utils/Num.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter{
  *     []() {
  *         static usize cnt = 0;
@@ -35,7 +35,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Skip_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_SkipN != 0) {
 
@@ -47,7 +47,7 @@ public:
         return Self().m_Iter.Next();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         if (Self().m_SkipN != 0) {
 
@@ -61,7 +61,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -70,10 +70,10 @@ template <bool IS_NEED_IMPL, typename PrevIterT>
 class SkipBackwardTraitImpl {
 public:
 
-    ALT_FORCE_INLINE SkipBackwardTraitImpl(const PrevIterT&, const usize) noexcept
+    ALT_FORCE_INLINE constexpr SkipBackwardTraitImpl(const PrevIterT&, const usize) noexcept
     {}
 
-    ALT_FORCE_INLINE void OnAdvance(const usize) noexcept {
+    ALT_FORCE_INLINE constexpr void OnAdvance(const usize) noexcept {
     }
 };
 
@@ -84,11 +84,11 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Skip_<PrevIterT>;
 
-    ALT_FORCE_INLINE SkipBackwardTraitImpl(const PrevIterT& iter, const usize skipN) noexcept
-        : m_TakeCnt(Num::SubWrap(iter.GetSize(), skipN))
+    ALT_FORCE_INLINE constexpr SkipBackwardTraitImpl(const PrevIterT& iter, const usize skipN) noexcept
+        : m_TakeCnt(SubWrap(iter.GetSize(), skipN))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         if (m_TakeCnt == 0) {
             return Nullopt;
@@ -98,23 +98,23 @@ public:
         return Self().m_Iter.NextBack();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, Self().m_TakeCnt);
+        const usize advance = Min(advance_, Self().m_TakeCnt);
         Self().m_TakeCnt -= advance;
 
         return Self().m_Iter.AdvanceBack(advance);
     }
 
-    ALT_FORCE_INLINE void OnAdvance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr void OnAdvance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, Self().m_TakeCnt);
+        const usize advance = Min(advance_, Self().m_TakeCnt);
         Self().m_TakeCnt -= advance;
     }
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 
@@ -134,18 +134,18 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Skip_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
-        return Num::SubWrap(Self().m_Iter.GetSize(), Self().m_SkipN);
+        return SubWrap(Self().m_Iter.GetSize(), Self().m_SkipN);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return GetSize() == 0;
     }
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -198,14 +198,14 @@ public:
         , _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorExactSizeTrait<Type>, PrevIterT, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Skip_(const PrevIterT& iter, const usize skipN) noexcept
+    ALT_FORCE_INLINE constexpr Skip_(const PrevIterT& iter, const usize skipN) noexcept
         : SuperSkipBackwardTraitImpl(iter, skipN)
         , m_Iter(iter)
         , m_SkipN(skipN)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
-        return Num::SubWrap(m_Iter.GetSizeHint(), m_SkipN);
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
+        return SubWrap(m_Iter.GetSizeHint(), m_SkipN);
     }
 
 private:

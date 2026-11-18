@@ -80,13 +80,13 @@ private:
 
 public:
 
-    ALT_FORCE_INLINE Pair() noexcept = default;
+    ALT_FORCE_INLINE constexpr Pair() noexcept = default;
 
-    Pair(const Pair&) noexcept = default;
-    Pair& operator=(const Pair&) noexcept = default;
+    constexpr Pair(const Pair&) noexcept = default;
+    constexpr Pair& operator=(const Pair&) noexcept = default;
 
-    Pair(Pair&&) noexcept = default;
-    Pair& operator=(Pair&&) noexcept = default;
+    constexpr Pair(Pair&&) noexcept = default;
+    constexpr Pair& operator=(Pair&&) noexcept = default;
 
     ~Pair() noexcept = default;
 
@@ -107,35 +107,35 @@ public:
      * assert(&Alt::Pair<usize&, usize&>(pair.f(), pair.s()).s() == &pair.s());
      */
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&>
         f() & noexcept { return _f; }
 
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&>
         f() const & noexcept { return _f; }
 
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&&>
         f() && noexcept { return std::move(_f); }
 
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&&>
         f() const && noexcept { return std::move(_f); }
 
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&>
         first() & noexcept { return _f; }
 
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&>
         first() const & noexcept { return _f; }
 
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT0>&, CleanT0&&>
         first() && noexcept { return std::move(_f); }
 
     template <typename U = CleanT0>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT0>&, const CleanT0&&>
         first() const && noexcept { return std::move(_f); }
 
     /**
@@ -155,35 +155,35 @@ public:
      * assert(&Alt::Pair<usize&, usize&>(pair.f(), pair.s()).s() == &pair.s());
      */
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&>
         s() & noexcept { return _s; }
 
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&>
         s() const & noexcept { return _s; }
 
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&&>
         s() && noexcept { return std::move(_s); }
 
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&&>
         s() const && noexcept { return std::move(_s); }
 
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&>
         second() & noexcept { return _s; }
 
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&>
         second() const & noexcept { return _s; }
 
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT1>&, CleanT1&&>
         second() && noexcept { return std::move(_s); }
 
     template <typename U = CleanT1>
-    ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&&>
+    ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT1>&, const CleanT1&&>
         second() const && noexcept { return std::move(_s); }
 
     /**
@@ -199,7 +199,7 @@ public:
      */
     template <typename U0 = T0, typename U1 = T1,
         std::enable_if_t<std::is_constructible_v<T0, U0&&> && std::is_constructible_v<T1, U1&&>>* = nullptr>
-    ALT_FORCE_INLINE Pair(U0&& f, U1&& s) noexcept
+    ALT_FORCE_INLINE constexpr Pair(U0&& f, U1&& s) noexcept
         : _f(std::forward<U0>(f))
         , _s(std::forward<U1>(s))
     {}
@@ -218,14 +218,14 @@ public:
      */
     template <typename U0 = T0, typename U1 = T1,
         std::enable_if_t<std::is_constructible_v<T0, U0&&> && std::is_constructible_v<T1, U1&&>>* = nullptr>
-    ALT_FORCE_INLINE Pair(Pair<U0, U1>&& pair) noexcept
+    ALT_FORCE_INLINE constexpr Pair(Pair<U0, U1>&& pair) noexcept
         : _f(std::move(pair._f))
         , _s(std::move(pair._s))
     {}
 
     template <typename U0 = T0, typename U1 = T1,
         std::enable_if_t<std::is_constructible_v<T0, const U0&> && std::is_constructible_v<T1, const U1&>>* = nullptr>
-    ALT_FORCE_INLINE Pair(const Pair<U0, U1>& pair) noexcept
+    ALT_FORCE_INLINE constexpr Pair(const Pair<U0, U1>& pair) noexcept
         : _f(pair._f)
         , _s(pair._s)
     {}
@@ -247,7 +247,7 @@ public:
      */
     template <typename U0 = T0, typename U1 = T1,
         std::enable_if_t<std::is_assignable_v<T0&, U0&&> && std::is_assignable_v<T1&, U1&&>>* = nullptr>
-    ALT_FORCE_INLINE Pair& operator=(Pair<U0, U1>&& pair) noexcept {
+    ALT_FORCE_INLINE constexpr Pair& operator=(Pair<U0, U1>&& pair) noexcept {
 
         _f = std::move(pair._f);
         _s = std::move(pair._s);
@@ -257,7 +257,7 @@ public:
 
     template <typename U0 = T0, typename U1 = T1,
         std::enable_if_t<std::is_assignable_v<T0&, const U0&> && std::is_assignable_v<T1&, const U1&>>* = nullptr>
-    ALT_FORCE_INLINE Pair& operator=(const Pair<U0, U1>& pair) noexcept {
+    ALT_FORCE_INLINE constexpr Pair& operator=(const Pair<U0, U1>& pair) noexcept {
 
         _f = pair._f;
         _s = pair._s;
@@ -291,7 +291,7 @@ public:
             (TypeTraits::is_only_clonable_to_from_v<T0, const U0&> || std::is_assignable_v<T0&, const U0&>) &&
             (TypeTraits::is_only_clonable_to_from_v<T1, const U1&> || std::is_assignable_v<T1&, const U1&>)
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const Pair<U0, U1>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const Pair<U0, U1>& rhs) noexcept {
 
         const T0* pResult0 = Memory::CloneOrMoveObject(_f, rhs._f);
         if (pResult0 == &_f) {
@@ -313,7 +313,7 @@ public:
             (TypeTraits::is_only_clonable_to_from_v<T0, const U0&> || std::is_constructible_v<T0, const U0&>) &&
             (TypeTraits::is_only_clonable_to_from_v<T1, const U1&> || std::is_constructible_v<T1, const U1&>)
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const Pair<U0, U1>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const Pair<U0, U1>& rhs) noexcept {
 
         const T0* pResult0 = Memory::CloneConstructOrMoveConstructObject(_f, rhs._f);
         if (pResult0 == &_f) {
@@ -378,7 +378,7 @@ public:
      * assert(pair0 == pair2);
      */
     template <typename U0 = T0, typename U1 = T1>
-    ALT_FORCE_INLINE bool operator==(const Pair<U0, U1>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator==(const Pair<U0, U1>& rhs) const noexcept {
         return _f == rhs._f && _s == rhs._s;
     }
 
@@ -396,7 +396,7 @@ public:
      * assert(pair0 != pair2);
      */
     template <typename U0 = T0, typename U1 = T1>
-    ALT_FORCE_INLINE bool operator!=(const Pair<U0, U1>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator!=(const Pair<U0, U1>& rhs) const noexcept {
         return !(*this == rhs);
     }
 
@@ -415,7 +415,7 @@ public:
      * assert(pair0 < pair2);
      */
     template <typename U0 = T0, typename U1 = T1>
-    ALT_FORCE_INLINE bool operator<(const Pair<U0, U1>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator<(const Pair<U0, U1>& rhs) const noexcept {
         return _f < rhs._f || (_f <= rhs._f && _s < rhs._s);
     }
 
@@ -433,7 +433,7 @@ public:
      * assert(pair0 > pair2);
      */
     template <typename U0 = T0, typename U1 = T1>
-    ALT_FORCE_INLINE bool operator>(const Pair<U0, U1>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator>(const Pair<U0, U1>& rhs) const noexcept {
         return rhs < *this;
     }
 
@@ -451,7 +451,7 @@ public:
      * assert(pair0 <= pair2);
      */
     template <typename U0 = T0, typename U1 = T1>
-    ALT_FORCE_INLINE bool operator<=(const Pair<U0, U1>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator<=(const Pair<U0, U1>& rhs) const noexcept {
         return !(*this > rhs);
     }
 
@@ -469,7 +469,7 @@ public:
      * assert(pair0 >= pair2);
      */
     template <typename U0 = T0, typename U1 = T1>
-    ALT_FORCE_INLINE bool operator>=(const Pair<U0, U1>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator>=(const Pair<U0, U1>& rhs) const noexcept {
         return !(*this < rhs);
     }
 
@@ -485,21 +485,21 @@ public:
      * assert(str.Data() == pair.s().Data());
      */
     template <std::size_t Index>
-    ALT_FORCE_INLINE auto& get() & noexcept { return GetSTDStructuredBindings<Index>(*this); }
+    ALT_FORCE_INLINE constexpr auto& get() & noexcept { return GetSTDStructuredBindings<Index>(*this); }
 
     template <std::size_t Index>
-    ALT_FORCE_INLINE auto const& get() const & noexcept { return GetSTDStructuredBindings<Index>(*this); }
+    ALT_FORCE_INLINE constexpr auto const& get() const & noexcept { return GetSTDStructuredBindings<Index>(*this); }
 
     template <std::size_t Index>
-    ALT_FORCE_INLINE auto&& get() && noexcept { return GetSTDStructuredBindings<Index>(*this); }
+    ALT_FORCE_INLINE constexpr auto&& get() && noexcept { return GetSTDStructuredBindings<Index>(*this); }
 
     template <std::size_t Index>
-    ALT_FORCE_INLINE auto&& get() const && noexcept { return GetSTDStructuredBindings<Index>(*this); }
+    ALT_FORCE_INLINE constexpr auto&& get() const && noexcept { return GetSTDStructuredBindings<Index>(*this); }
 
 private:
 
     template <std::size_t Index, typename SelfT>
-    ALT_FORCE_INLINE static auto&& GetSTDStructuredBindings(SelfT&& self) noexcept {
+    ALT_FORCE_INLINE constexpr static auto&& GetSTDStructuredBindings(SelfT&& self) noexcept {
         if constexpr (Index == 0) return std::forward<SelfT>(self)._f;
         if constexpr (Index == 1) return std::forward<SelfT>(self)._s;
     }

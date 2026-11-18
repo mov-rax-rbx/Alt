@@ -94,7 +94,7 @@ public:
     ALT_NODISCARD static Optional<IfErrInjectionMove<BoundedMPMC>> Allocate(const usize capacity_) noexcept {
         iferr_scope;
 
-        const usize capacity = Num::RoundUpToPowerOf2(capacity_);
+        const usize capacity = RoundUpToPowerOf2(capacity_);
 
         BoundedMPMC mpmc{};
         mpmc.m_CapacityMask = capacity - 1;
@@ -399,7 +399,7 @@ private:
 template <typename T, usize CAPACITY_IN_ELEMENTS_POW2>
 class StaticBoundedMPMC {
 
-    static_assert(Num::IsPowerOf2(CAPACITY_IN_ELEMENTS_POW2), "");
+    static_assert(IsPowerOf2(CAPACITY_IN_ELEMENTS_POW2), "");
     static_assert(std::is_move_constructible_v<T> || std::is_copy_constructible_v<T>, "");
 
     using Self = StaticBoundedMPMC;

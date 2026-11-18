@@ -25,10 +25,10 @@ struct __is_trivially_reallocatable__<_PlatformDetails::Thread>
 
 } // namespace TypeTraits
 
-/*
+/**
  * Win32 function for thread should return u32 value
  */
-#define ALT_THREAD_RETURN_SUCCESS return __Win32__ERROR_SUCCESS
+#define ALT_THREAD_RETURN_SUCCESS return static_cast<Alt::_PlatformDetails::Thread::NativeReturnType>(__Win32__ERROR_SUCCESS)
 
 namespace _PlatformDetails {
 
@@ -332,7 +332,7 @@ public:
      * 
      * iferr_scope;
      * 
-     * Alt::Thread thread = Alt::Thread::CreateFromNativeFuncPtr([](void*) noexcept -> Alt::Thread::NativeReturnType {
+     * Alt::Thread thread = Alt::Thread::CreateFromNativeFuncPtr([](void*) noexcept {
      *     Alt::Thread::Sleep(100);
      * 
      *     ALT_THREAD_RETURN_SUCCESS;

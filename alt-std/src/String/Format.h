@@ -183,11 +183,25 @@ constexpr static char _2DecDigitToStr[201]{
     "90919293949596979899"
 };
 
+ALT_FORCE_INLINE void WriteZeroes(char* pBegin, const char* pEnd) noexcept {
+
+    while (pBegin + 2 <= pEnd) {
+
+        std::memcpy(pBegin, "00", 2);
+        pBegin += 2;
+    }
+
+    if (pBegin != pEnd) {
+
+        *pBegin = '0';
+    }
+}
+
 template <typename T, typename FormatWriterT,
-    std::enable_if_t<std::is_scalar_v<T> && std::is_unsigned_v<T>>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T> && Desc<T>::IsUnsigned()>* = nullptr>
 ALT_FORCE_INLINE bool ToStringAppendDecImpl(FormatWriter<FormatWriterT>& writer, T val) noexcept {
 
-    constexpr static usize MAX_DIGIT_COUNT = Num::Desc<T>::DigitCount() + (Num::Desc<T>::DigitCount() % 2 != 0 ? 1 : 0);
+    constexpr static usize MAX_DIGIT_COUNT = Desc<T>::DigitCount() + (Desc<T>::DigitCount() % 2 != 0 ? 1 : 0);
     static_assert(MAX_DIGIT_COUNT % 2 == 0, "");
 
     char buf[MAX_DIGIT_COUNT];
@@ -209,16 +223,91 @@ ALT_FORCE_INLINE bool ToStringAppendDecImpl(FormatWriter<FormatWriterT>& writer,
     return writer.Append(str);
 }
 
+template <typename FormatWriterT>
+ALT_FORCE_INLINE bool ToStringAppendDecImpl(FormatWriter<FormatWriterT>& writer, u128 val_) noexcept {
+
+    constexpr static usize MAX_DIGIT_COUNT = Desc<u128>::DigitCount() + (Desc<u128>::DigitCount() % 2 != 0 ? 1 : 0);
+    static_assert(MAX_DIGIT_COUNT % 2 == 0, "");
+
+    constexpr static u64 MAX_PRE_DIVISOR = 10000000000000000000ULL;
+    constexpr static usize MAX_DIGIT_COUNT_PER_PRE_DIVISOR = 19;
+
+    char buf[MAX_DIGIT_COUNT];
+    char* pBuf = buf + MAX_DIGIT_COUNT - 2;
+
+    {
+        u64 val = static_cast<u64>(val_ % MAX_PRE_DIVISOR);
+        val_ /= MAX_PRE_DIVISOR;
+
+        while (val >= 100) {
+
+            const u64 _2Digits = static_cast<u64>(val % 100);
+            val /= 100;
+
+            std::memcpy(pBuf, &_2DecDigitToStr[_2Digits * 2], 2);
+            pBuf -= 2;
+        }
+
+        std::memcpy(pBuf, &_2DecDigitToStr[val * 2], 2);
+        pBuf += val > 9 ? 0 : 1;
+    }
+
+    {
+        u64 val = static_cast<u64>(val_ % MAX_PRE_DIVISOR);
+        val_ /= MAX_PRE_DIVISOR;
+
+        if (val != 0) {
+
+            {
+                const char* pBufEnd = pBuf;
+                pBuf -= MAX_DIGIT_COUNT_PER_PRE_DIVISOR - static_cast<usize>((buf + MAX_DIGIT_COUNT) - pBuf);
+                WriteZeroes(pBuf, pBufEnd);
+            }
+
+            pBuf -= 2;
+
+            while (val >= 100) {
+
+                const u64 _2Digits = static_cast<u64>(val % 100);
+                val /= 100;
+
+                std::memcpy(pBuf, &_2DecDigitToStr[_2Digits * 2], 2);
+                pBuf -= 2;
+            }
+
+            std::memcpy(pBuf, &_2DecDigitToStr[val * 2], 2);
+            pBuf += val > 9 ? 0 : 1;
+        }
+    }
+
+    if (val_ != 0) {
+
+        {
+            const char* pBufEnd = pBuf;
+            pBuf -= MAX_DIGIT_COUNT_PER_PRE_DIVISOR * 2 - static_cast<usize>((buf + MAX_DIGIT_COUNT) - pBuf);
+            WriteZeroes(pBuf, pBufEnd);
+        }
+
+        pBuf -= 1;
+        *pBuf = '0' + static_cast<u8>(val_);
+    }
+
+    const Slice<const char> str{ pBuf, buf + MAX_DIGIT_COUNT };
+    return writer.Append(str);
+}
+
 template <typename T, typename FormatWriterT,
-    std::enable_if_t<std::is_scalar_v<T> && std::is_signed_v<T> && !std::is_floating_point_v<T>>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T> && Desc<T>::IsSigned() && !Alt::Desc<T>::IsFloat()>* = nullptr>
 ALT_FORCE_INLINE bool ToStringAppendDecImpl(FormatWriter<FormatWriterT>& writer, const T val_) noexcept {
 
-    using U = typename Num::Desc<T>::Unsigned;
+    using U = typename Desc<T>::Unsigned;
 
-    const bool isPlus = Num::IsSignPositive(val_);
-    U val = static_cast<U>(Num::Abs(val_));
+    const bool isPlus = IsSignPositive(val_);
 
-    constexpr static usize MAX_DIGIT_COUNT = Num::Desc<T>::DigitCount() + 1 + ((Num::Desc<T>::DigitCount() + 1) % 2 != 0 ? 1 : 0);
+    U val = Memory::Transmute<T, U>(val_);
+    val = isPlus ? val : ~val + 1;
+
+    constexpr static usize MAX_DIGIT_COUNT = Desc<T>::DigitCount() + 1 + ((Desc<T>::DigitCount() + 1) % 2 != 0 ? 1 : 0);
     static_assert(MAX_DIGIT_COUNT % 2 == 0, "");
 
     char buf[MAX_DIGIT_COUNT];
@@ -243,28 +332,111 @@ ALT_FORCE_INLINE bool ToStringAppendDecImpl(FormatWriter<FormatWriterT>& writer,
     return writer.Append(str);
 }
 
+template <typename FormatWriterT>
+ALT_FORCE_INLINE bool ToStringAppendDecImpl(FormatWriter<FormatWriterT>& writer, const s128 valSigned) noexcept {
+
+    using U = typename Desc<s128>::Unsigned;
+
+    const bool isPlus = IsSignPositive(valSigned);
+
+    U val_ = Memory::Transmute<s128, U>(valSigned);
+    val_ = isPlus ? val_ : ~val_ + 1;
+
+    constexpr static usize MAX_DIGIT_COUNT = Desc<s128>::DigitCount() + 1 + ((Desc<s128>::DigitCount() + 1) % 2 != 0 ? 1 : 0);
+    static_assert(MAX_DIGIT_COUNT % 2 == 0, "");
+
+    constexpr static u64 MAX_PRE_DIVISOR = 10000000000000000000ULL;
+    constexpr static usize MAX_DIGIT_COUNT_PER_PRE_DIVISOR = 19;
+
+    char buf[MAX_DIGIT_COUNT];
+    char* pBuf = buf + MAX_DIGIT_COUNT - 2;
+
+    {
+        u64 val = static_cast<u64>(val_ % MAX_PRE_DIVISOR);
+        val_ /= MAX_PRE_DIVISOR;
+
+        while (val >= 100) {
+
+            const u64 _2Digits = static_cast<u64>(val % 100);
+            val /= 100;
+
+            std::memcpy(pBuf, &_2DecDigitToStr[_2Digits * 2], 2);
+            pBuf -= 2;
+        }
+
+        std::memcpy(pBuf, &_2DecDigitToStr[val * 2], 2);
+        pBuf += val > 9 ? 0 : 1;
+    }
+
+    {
+        u64 val = static_cast<u64>(val_ % MAX_PRE_DIVISOR);
+        val_ /= MAX_PRE_DIVISOR;
+
+        if (val != 0) {
+
+            {
+                const char* pBufEnd = pBuf;
+                pBuf -= MAX_DIGIT_COUNT_PER_PRE_DIVISOR - static_cast<usize>((buf + MAX_DIGIT_COUNT) - pBuf);
+                WriteZeroes(pBuf, pBufEnd);
+            }
+
+            pBuf -= 2;
+
+            while (val >= 100) {
+
+                const u64 _2Digits = static_cast<u64>(val % 100);
+                val /= 100;
+
+                std::memcpy(pBuf, &_2DecDigitToStr[_2Digits * 2], 2);
+                pBuf -= 2;
+            }
+
+            std::memcpy(pBuf, &_2DecDigitToStr[val * 2], 2);
+            pBuf += val > 9 ? 0 : 1;
+        }
+    }
+
+    if (val_ != 0) {
+
+        {
+            const char* pBufEnd = pBuf;
+            pBuf -= MAX_DIGIT_COUNT_PER_PRE_DIVISOR * 2 - static_cast<usize>((buf + MAX_DIGIT_COUNT) - pBuf);
+            WriteZeroes(pBuf, pBufEnd);
+        }
+
+        pBuf -= 1;
+        *pBuf = '0' + static_cast<u8>(val_);
+    }
+
+    pBuf -= isPlus ? 0 : 1;
+    if (!isPlus) *pBuf = '-';
+
+    const Slice<const char> str{ pBuf, buf + MAX_DIGIT_COUNT };
+    return writer.Append(str);
+}
+
 template <typename T,
-    std::enable_if_t<std::is_scalar_v<T>>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T>>* = nullptr>
 ALT_FORCE_INLINE usize ToStringAppendBinImpl_CalculateBitsSize(const T val_, const bool isWithSeparator) noexcept {
 
-    using U = typename Num::Desc<T>::Unsigned;
+    using U = typename Desc<T>::Unsigned;
     U val = Memory::Transmute<T, U>(val_);
 
-    const usize numBits = Num::CeilDiv(Num::Max(Num::Desc<U>::Bits() - Num::Count0BitsLeft(val), 1), 8) * 8;
+    const usize numBits = CeilDiv(Max(Desc<U>::Bits() - Count0BitsLeft(val), 1), 8) * 8;
     const usize numBitSeparators = (numBits / 8) - 1;
 
     return numBits + (isWithSeparator ? numBitSeparators : 0);
 }
 
 template <typename T, typename FormatWriterT,
-    std::enable_if_t<std::is_scalar_v<T>>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T> && !(std::is_same_v<T, u128> || std::is_same_v<T, s128>)>* = nullptr>
 ALT_FORCE_INLINE bool ToStringAppendBinImpl(FormatWriter<FormatWriterT>& writer, const T val_, const bool isWithSeparator) noexcept {
 
-    using U = typename Num::Desc<T>::Unsigned;
+    using U = typename Desc<T>::Unsigned;
     U val = Memory::Transmute<T, U>(val_);
 
     // ...00000001'10101010'00001111
-    constexpr static usize MAX_BIN_COUNT = Num::Desc<U>::Bits();
+    constexpr static usize MAX_BIN_COUNT = Desc<U>::Bits();
     constexpr static usize MAX_BIN_SEPARATOR_COUNT = MAX_BIN_COUNT / 8;
 
     constexpr usize MAX_SIZE = MAX_BIN_COUNT + MAX_BIN_SEPARATOR_COUNT;
@@ -296,6 +468,97 @@ ALT_FORCE_INLINE bool ToStringAppendBinImpl(FormatWriter<FormatWriterT>& writer,
     return writer.Append(str);
 }
 
+template <typename T, typename FormatWriterT,
+    std::enable_if_t<TypeTraits::is_number_v<T> && (std::is_same_v<T, u128> || std::is_same_v<T, s128>)>* = nullptr>
+ALT_FORCE_INLINE bool ToStringAppendBinImpl(FormatWriter<FormatWriterT>& writer, const T val_, const bool isWithSeparator) noexcept {
+
+    using U = typename Desc<T>::Unsigned;
+    U wideval = Memory::Transmute<T, U>(val_);
+
+    // ...00000001'10101010'00001111
+    constexpr static usize MAX_BIN_COUNT = Desc<U>::Bits();
+    constexpr static usize MAX_BIN_SEPARATOR_COUNT = MAX_BIN_COUNT / 8;
+
+    constexpr usize MAX_SIZE = MAX_BIN_COUNT + MAX_BIN_SEPARATOR_COUNT;
+
+    char buf[MAX_SIZE];
+    char* pBuf = buf + MAX_SIZE - 1;
+
+    {
+        u64 val = wideval.GetLow();
+
+        do {
+
+            for (usize i = 0; i < 8; ++i) {
+
+                *pBuf = '0' + ((val & 1) == 1 ? 1 : 0);
+                pBuf -= 1;
+
+                val >>= 1;
+            }
+
+            if (isWithSeparator) {
+
+                *pBuf = '\'';
+                pBuf -= val == 0 ? 0 : 1;
+            }
+
+        } while (val != 0);
+    }
+
+    {
+        u64 val = wideval.GetHigh();
+
+        if (val != 0) {
+
+            if (isWithSeparator) {
+
+                *pBuf = '\'';
+                pBuf -= 1;
+            }
+
+            const usize numBlocks = isWithSeparator
+                ? ((buf + MAX_SIZE) - pBuf) / 9
+                : ((buf + MAX_SIZE) - pBuf) / 8;
+
+            for (usize i = numBlocks; i < 8; ++i) {
+
+                pBuf -= 7;
+                std::memcpy(pBuf, "00000000", 8);
+
+                if (isWithSeparator) {
+
+                    *pBuf = '\'';
+                    pBuf -= 1;
+                }
+            }
+
+            do {
+
+                for (usize i = 0; i < 8; ++i) {
+
+                    *pBuf = '0' + ((val & 1) == 1 ? 1 : 0);
+                    pBuf -= 1;
+
+                    val >>= 1;
+                }
+
+                if (isWithSeparator) {
+
+                    *pBuf = '\'';
+                    pBuf -= val == 0 ? 0 : 1;
+                }
+
+            } while (val != 0);
+        }
+    }
+
+    pBuf += 1;
+
+    const Slice<const char> str{ pBuf, buf + MAX_SIZE };
+    return writer.Append(str);
+}
+
 constexpr static char _2HexDigitToStr[256 * 2 + 1]{
     "00"
     "0102030405060708090a0b0c0d0e0f"
@@ -318,29 +581,29 @@ constexpr static char _2HexDigitToStr[256 * 2 + 1]{
 };
 
 template <typename T,
-    std::enable_if_t<std::is_scalar_v<T>>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T>>* = nullptr>
 ALT_FORCE_INLINE usize ToStringAppendHexImpl_CalculateBitsSize(const T val_) noexcept {
 
-    using U = typename Num::Desc<T>::Unsigned;
+    using U = typename Desc<T>::Unsigned;
     U val = Memory::Transmute<T, U>(val_);
 
-    return static_cast<usize>((Num::Log2((val | 1) - 1) >> 2) + 1);
+    return static_cast<usize>((Log2((val | 1) - 1) >> 2) + 1);
 }
 
 ALT_FORCE_INLINE constexpr usize ToStringAppendPtrHexImpl_CalculateBitsSize() noexcept {
 
-    return static_cast<usize>((Num::Log2Constexpr(Num::Desc<uptr>::Max()) >> 2) + 1);
+    return static_cast<usize>((Log2(Desc<uptr>::Max()) >> 2) + 1);
 }
 
 template <typename T, typename FormatWriterT,
-    std::enable_if_t<std::is_scalar_v<T> && (sizeof(T) != 1)>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T> && (sizeof(T) != 1) && !(std::is_same_v<T, u128> || std::is_same_v<T, s128>)>* = nullptr>
 ALT_FORCE_INLINE bool ToStringAppendHexImpl(FormatWriter<FormatWriterT>& writer, const T val_) noexcept {
 
-    using U = typename Num::Desc<T>::Unsigned;
+    using U = typename Desc<T>::Unsigned;
     U val = Memory::Transmute<T, U>(val_);
 
     // ff
-    constexpr static usize MAX_SIZE = static_cast<usize>((Num::Log2Constexpr((Num::Desc<umax>::Max() | 1) - 1) >> 2) + 1);
+    constexpr static usize MAX_SIZE = static_cast<usize>((Log2((Desc<umax>::Max() | 1) - 1) >> 2) + 1);
     static_assert(MAX_SIZE % 2 == 0, "");
 
     char buf[MAX_SIZE];
@@ -356,20 +619,114 @@ ALT_FORCE_INLINE bool ToStringAppendHexImpl(FormatWriter<FormatWriterT>& writer,
     }
 
     std::memcpy(pBuf, &_2HexDigitToStr[val * 2], 2);
-    pBuf += val > 15 ? 0: 1;
+    pBuf += val > 15 ? 0 : 1;
 
     const Slice<const char> str{ pBuf, buf + MAX_SIZE };
     return writer.Append(str);
 }
 
 template <typename T, typename FormatWriterT,
-    std::enable_if_t<std::is_scalar_v<T> && (sizeof(T) == 1)>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T> && (std::is_same_v<T, u128> || std::is_same_v<T, s128>)>* = nullptr>
+ALT_FORCE_INLINE bool ToStringAppendHexImpl(FormatWriter<FormatWriterT>& writer, const T value) noexcept {
+
+    using U = typename Desc<T>::Unsigned;
+    U val_ = Memory::Transmute<T, U>(value);
+
+    // ff
+    constexpr static usize MAX_SIZE = static_cast<usize>((Log2((Desc<T>::Max() | 1) - 1) >> 2) + 1);
+    static_assert(MAX_SIZE % 2 == 0, "");
+
+    constexpr static u64 MAX_PRE_DIVISOR = 1152921504606846976ULL;
+    constexpr static usize MAX_NUM_PER_PRE_DIVISOR = 15;
+
+    char buf[MAX_SIZE];
+    char* pBuf = buf + MAX_SIZE - 2;
+
+    {
+        u64 val = static_cast<u64>(val_ % MAX_PRE_DIVISOR);
+        val_ /= MAX_PRE_DIVISOR;
+
+        while (val >= 256) {
+
+            const usize hex = static_cast<usize>(val & 255);
+            val /= static_cast<u64>(256);
+
+            std::memcpy(pBuf, &_2HexDigitToStr[hex * 2], 2);
+            pBuf -= 2;
+        }
+
+        std::memcpy(pBuf, &_2HexDigitToStr[val * 2], 2);
+        pBuf += val > 15 ? 0 : 1;
+    }
+
+    {
+        u64 val = static_cast<u64>(val_ % MAX_PRE_DIVISOR);
+        val_ /= MAX_PRE_DIVISOR;
+
+        if (val != 0) {
+
+            {
+                const char* pBufEnd = pBuf;
+                pBuf -= MAX_NUM_PER_PRE_DIVISOR - static_cast<usize>((buf + MAX_SIZE) - pBuf);
+                WriteZeroes(pBuf, pBufEnd);
+            }
+
+            pBuf -= 2;
+
+            while (val >= 256) {
+
+                const usize hex = static_cast<usize>(val & 255);
+                val /= static_cast<u64>(256);
+
+                std::memcpy(pBuf, &_2HexDigitToStr[hex * 2], 2);
+                pBuf -= 2;
+            }
+
+            std::memcpy(pBuf, &_2HexDigitToStr[val * 2], 2);
+            pBuf += val > 15 ? 0 : 1;
+        }
+    }
+
+    if (val_ != 0) {
+
+        {
+            const char* pBufEnd = pBuf;
+            pBuf -= MAX_NUM_PER_PRE_DIVISOR * 2 - static_cast<usize>((buf + MAX_SIZE) - pBuf);
+            WriteZeroes(pBuf, pBufEnd);
+        }
+
+        pBuf -= 2;
+
+        const u64 val = static_cast<u64>(val_);
+
+        std::memcpy(pBuf, &_2HexDigitToStr[val * 2], 2);
+        pBuf += val > 15 ? 0 : 1;
+    }
+
+    const Slice<const char> str{ pBuf, buf + MAX_SIZE };
+    return writer.Append(str);
+}
+
+template <typename T, typename FormatWriterT,
+    std::enable_if_t<TypeTraits::is_number_v<T> && (sizeof(T) == 1)>* = nullptr>
 ALT_FORCE_INLINE bool ToStringAppendHexImpl(FormatWriter<FormatWriterT>& writer, const T val_) noexcept {
 
-    using U = typename Num::Desc<T>::Unsigned;
-    u16 val = static_cast<u16>(Memory::Transmute<T, U>(val_));
+    using U = typename Desc<T>::Unsigned;
+    U val = Memory::Transmute<T, U>(val_);
 
-    return ToStringAppendHexImpl(writer, val);
+    // ff
+    constexpr static usize MAX_SIZE = 2;
+
+    char buf[MAX_SIZE];
+    char* pBuf = buf + MAX_SIZE - 2;
+
+    const usize hex = static_cast<usize>(val);
+
+    std::memcpy(pBuf, &_2HexDigitToStr[hex * 2], 2);
+    pBuf += val > 15 ? 0 : 1;
+
+    const Slice<const char> str{ pBuf, buf + MAX_SIZE };
+    return writer.Append(str);
 }
 
 template <typename FormatWriterT>
@@ -533,7 +890,7 @@ public:
     ALT_NODISCARD ALT_FORCE_INLINE bool AppendIndent(const ssize additionalIndent = 0) noexcept {
         iferr_scope;
 
-        const usize indentScope = static_cast<usize>(Num::Max(this->m_IndentScope + additionalIndent, 0));
+        const usize indentScope = static_cast<usize>(Max(this->m_IndentScope + additionalIndent, 0));
         for (usize i = 0; i < indentScope; ++i) {
 
             Append("    ") iferr_return false;
@@ -599,7 +956,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -631,7 +988,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -693,7 +1050,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -724,7 +1081,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -976,7 +1333,7 @@ public:
         if (parameters.IsEmpty() || parameters == "dec"_s) {
 
             EstimateExactSizeResult estimated{};
-            estimated.size = Num::DigitCount(val);
+            estimated.size = DigitCount(val);
 
             return estimated;
         }
@@ -1053,7 +1410,7 @@ public:
         if (parameters.IsEmpty() || parameters == "dec"_s) {
 
             EstimateExactSizeResult estimated{};
-            estimated.size = Num::DigitCount(val);
+            estimated.size = DigitCount(val);
 
             return estimated;
         }
@@ -1130,7 +1487,7 @@ public:
         if (parameters.IsEmpty() || parameters == "dec"_s) {
 
             EstimateExactSizeResult estimated{};
-            estimated.size = Num::DigitCount(val);
+            estimated.size = DigitCount(val);
 
             return estimated;
         }
@@ -1207,7 +1564,7 @@ public:
         if (parameters.IsEmpty() || parameters == "dec"_s) {
 
             EstimateExactSizeResult estimated{};
-            estimated.size = Num::DigitCount(val);
+            estimated.size = DigitCount(val);
 
             return estimated;
         }
@@ -1217,6 +1574,83 @@ public:
 
     template <typename FormatWriterT>
     ALT_NODISCARD ALT_FORCE_INLINE static bool WriteAppend(FormatWriter<FormatWriterT>& writer, const Slice<const char> parameters, const u64 val) noexcept {
+
+        if (parameters == "bin"_s) {
+
+            const bool isWithSeparator = false;
+
+            return _FormatDetails::ToStringAppendBinImpl(writer, val, isWithSeparator);
+        }
+
+        if (parameters == "bin_sep"_s) {
+
+            const bool isWithSeparator = true;
+
+            return _FormatDetails::ToStringAppendBinImpl(writer, val, isWithSeparator);
+        }
+
+        if (parameters == "hex"_s) {
+            return _FormatDetails::ToStringAppendHexImpl(writer, val);
+        }
+
+        if (parameters.IsEmpty() || parameters == "dec"_s) {
+            return _FormatDetails::ToStringAppendDecImpl(writer, val);
+        }
+
+        return false;
+    }
+};
+
+/**
+ * @brief Specialization for u128.
+ */
+template <>
+class Format<u128> {
+public:
+
+    ALT_NODISCARD ALT_FORCE_INLINE static Optional<EstimateExactSizeResult> EstimateExactSize(FormatEstimator&, const Slice<const char> parameters, const u128 val) noexcept {
+
+        if (parameters == "bin"_s) {
+
+            const bool isWithSeparator = false;
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = _FormatDetails::ToStringAppendBinImpl_CalculateBitsSize(val, isWithSeparator);
+
+            return estimated;
+        }
+
+        if (parameters == "bin_sep"_s) {
+
+            const bool isWithSeparator = true;
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = _FormatDetails::ToStringAppendBinImpl_CalculateBitsSize(val, isWithSeparator);
+
+            return estimated;
+        }
+
+        if (parameters == "hex"_s) {
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = _FormatDetails::ToStringAppendHexImpl_CalculateBitsSize(val);
+
+            return estimated;
+        }
+
+        if (parameters.IsEmpty() || parameters == "dec"_s) {
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = DigitCount(val);
+
+            return estimated;
+        }
+
+        return Nullopt;
+    }
+
+    template <typename FormatWriterT>
+    ALT_NODISCARD ALT_FORCE_INLINE static bool WriteAppend(FormatWriter<FormatWriterT>& writer, const Slice<const char> parameters, u128 val) noexcept {
 
         if (parameters == "bin"_s) {
 
@@ -1285,8 +1719,8 @@ public:
 
             EstimateExactSizeResult estimated{};
 
-            estimated.size = Num::IsSignPositive(val) ? 0 : 1;
-            estimated.size += Num::DigitCount(val);
+            estimated.size = IsSignPositive(val) ? 0 : 1;
+            estimated.size += DigitCount(val);
 
             return estimated;
         }
@@ -1364,8 +1798,8 @@ public:
 
             EstimateExactSizeResult estimated{};
 
-            estimated.size = Num::IsSignPositive(val) ? 0 : 1;
-            estimated.size += Num::DigitCount(val);
+            estimated.size = IsSignPositive(val) ? 0 : 1;
+            estimated.size += DigitCount(val);
 
             return estimated;
         }
@@ -1443,8 +1877,8 @@ public:
 
             EstimateExactSizeResult estimated{};
 
-            estimated.size = Num::IsSignPositive(val) ? 0 : 1;
-            estimated.size += Num::DigitCount(val);
+            estimated.size = IsSignPositive(val) ? 0 : 1;
+            estimated.size += DigitCount(val);
 
             return estimated;
         }
@@ -1522,8 +1956,8 @@ public:
 
             EstimateExactSizeResult estimated{};
 
-            estimated.size = Num::IsSignPositive(val) ? 0 : 1;
-            estimated.size += Num::DigitCount(val);
+            estimated.size = IsSignPositive(val) ? 0 : 1;
+            estimated.size += DigitCount(val);
 
             return estimated;
         }
@@ -1533,6 +1967,83 @@ public:
 
     template <typename FormatWriterT>
     ALT_NODISCARD ALT_FORCE_INLINE static bool WriteAppend(FormatWriter<FormatWriterT>& writer, const Slice<const char> parameters, const s64 val) noexcept {
+
+        if (parameters == "bin"_s) {
+
+            const bool isWithSeparator = false;
+
+            return _FormatDetails::ToStringAppendBinImpl(writer, val, isWithSeparator);
+        }
+
+        if (parameters == "bin_sep"_s) {
+
+            const bool isWithSeparator = true;
+
+            return _FormatDetails::ToStringAppendBinImpl(writer, val, isWithSeparator);
+        }
+
+        if (parameters == "hex"_s) {
+            return _FormatDetails::ToStringAppendHexImpl(writer, val);
+        }
+
+        if (parameters.IsEmpty() || parameters == "dec"_s) {
+            return _FormatDetails::ToStringAppendDecImpl(writer, val);
+        }
+
+        return false;
+    }
+};
+
+/**
+ * @brief Specialization for s128.
+ */
+template <>
+class Format<s128> {
+public:
+
+    ALT_NODISCARD ALT_FORCE_INLINE static Optional<EstimateExactSizeResult> EstimateExactSize(FormatEstimator&, const Slice<const char> parameters, const s128 val) noexcept {
+
+        if (parameters == "bin"_s) {
+
+            const bool isWithSeparator = false;
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = _FormatDetails::ToStringAppendBinImpl_CalculateBitsSize(val, isWithSeparator);
+
+            return estimated;
+        }
+
+        if (parameters == "bin_sep"_s) {
+
+            const bool isWithSeparator = true;
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = _FormatDetails::ToStringAppendBinImpl_CalculateBitsSize(val, isWithSeparator);
+
+            return estimated;
+        }
+
+        if (parameters == "hex"_s) {
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = _FormatDetails::ToStringAppendHexImpl_CalculateBitsSize(val);
+
+            return estimated;
+        }
+
+        if (parameters.IsEmpty() || parameters == "dec"_s) {
+
+            EstimateExactSizeResult estimated{};
+            estimated.size = DigitCount(val);
+
+            return estimated;
+        }
+
+        return Nullopt;
+    }
+
+    template <typename FormatWriterT>
+    ALT_NODISCARD ALT_FORCE_INLINE static bool WriteAppend(FormatWriter<FormatWriterT>& writer, const Slice<const char> parameters, s128 val) noexcept {
 
         if (parameters == "bin"_s) {
 
@@ -2907,7 +3418,7 @@ class FormatParserWriter : public FormatParser<FormatParserWriter<FormatWriterT>
 public:
 
     ALT_FORCE_INLINE FormatParserWriter(FormatWriter<FormatWriterT>& writer) noexcept
-        : m_pWriter(&writer)
+        : m_pWriter(Addressof(writer))
     {}
 
     template <typename T>
@@ -2945,7 +3456,7 @@ public:
     ALT_FORCE_INLINE FormatResult OnFmtStrAppend(const T) noexcept {
         iferr_scope;
 
-        m_EstimatedSize = Num::AddOverflowCheck(m_EstimatedSize, 1) iferr_return FormatError::Overflow;
+        m_EstimatedSize = AddOverflowCheck(m_EstimatedSize, 1) iferr_return FormatError::Overflow;
 
         return FormatResult::Ok();
     }
@@ -2955,7 +3466,7 @@ public:
     ALT_FORCE_INLINE FormatResult OnFmtStrAppend(const T* str) noexcept {
         iferr_scope;
 
-        m_EstimatedSize = Num::AddOverflowCheck(m_EstimatedSize, _StringDetails::CalculateCStrLen(str)) iferr_return FormatError::Overflow;
+        m_EstimatedSize = AddOverflowCheck(m_EstimatedSize, _StringDetails::CalculateCStrLen(str)) iferr_return FormatError::Overflow;
 
         return FormatResult::Ok();
     }
@@ -2966,7 +3477,7 @@ public:
         iferr_scope;
 
         const Slice<const InnerT> str = str_;
-        m_EstimatedSize = Num::AddOverflowCheck(m_EstimatedSize, str.GetSize()) iferr_return FormatError::Overflow;
+        m_EstimatedSize = AddOverflowCheck(m_EstimatedSize, str.GetSize()) iferr_return FormatError::Overflow;
 
         return FormatResult::Ok();
     }
@@ -2979,7 +3490,7 @@ public:
         using CleanT = _FormatDetails::clean_t<T>;
 
         const EstimateExactSizeResult estimated = Format<CleanT>::EstimateExactSize(m_FormatEstimator, parameters, val).GetValueOrDefault();
-        m_EstimatedSize = Num::AddOverflowCheck(m_EstimatedSize, estimated.size) iferr_return FormatError::Overflow;
+        m_EstimatedSize = AddOverflowCheck(m_EstimatedSize, estimated.size) iferr_return FormatError::Overflow;
 
         return FormatResult::Ok();
     }

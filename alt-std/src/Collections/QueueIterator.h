@@ -22,7 +22,9 @@ class StaticQueue;
  * @tparam T The numeric type of the Queue elements.
  */
 template <typename T>
-class QueueIterator final : public Iterator<QueueIterator<T>, T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait> {
+class QueueIterator final
+    : public Iterator<QueueIterator<T>, T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
+{
 public:
 
     /**
@@ -30,7 +32,7 @@ public:
      * @param self The Queue object to copy boundaries from.
      */
     template <usize MIN_ELEMENT_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE QueueIterator(Queue<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr QueueIterator(Queue<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pMemoryBegin(self.m_pMemoryBegin)
         , m_pMemoryEnd(self.m_pMemoryEnd)
         , m_pQueueBegin(self.m_pQueueBegin)
@@ -42,7 +44,7 @@ public:
      * @param self The StaticQueue object to copy boundaries from.
      */
     template <usize SIZE>
-    ALT_FORCE_INLINE QueueIterator(StaticQueue<T, SIZE>& self) noexcept
+    ALT_FORCE_INLINE constexpr QueueIterator(StaticQueue<T, SIZE>& self) noexcept
         : m_pMemoryBegin(self.GetMemoryBegin())
         , m_pMemoryEnd(self.GetMemoryEnd())
         , m_pQueueBegin(self.GetQueueBegin())
@@ -53,7 +55,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
 
@@ -72,7 +74,7 @@ public:
      * assert(*it.Next() == 0);
      * assert(*it.Next() == 1);
      */
-    ALT_FORCE_INLINE Optional<T&> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T&> Next() noexcept {
 
         if (m_Size == 0) {
             return Nullopt;
@@ -105,9 +107,9 @@ public:
      * assert(skipped == 3);
      * assert(it.GetSize() == 2);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, m_Size);
+        const usize advance = Min(advance_, m_Size);
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
         if (advance > sizeBottomCapacity) {
@@ -139,7 +141,7 @@ public:
      * assert(*it.NextBack() == 4);
      * assert(*it.NextBack() == 3);
      */
-    ALT_FORCE_INLINE Optional<T&> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T&> NextBack() noexcept {
 
         if (m_Size == 0) {
             return Nullopt;
@@ -173,9 +175,9 @@ public:
      * assert(skipped == 1);
      * assert(it.GetSize() == 4);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, m_Size);
+        const usize advance = Min(advance_, m_Size);
         m_Size -= advance;
 
         return advance;
@@ -185,7 +187,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's Queue.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_Size;
     }
 
@@ -193,7 +195,7 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_Size == 0;
     }
 
@@ -213,7 +215,9 @@ private:
  * @tparam T The numeric type of the Queue elements.
  */
 template <typename T>
-class QueueIteratorConst final : public Iterator<QueueIteratorConst<T>, const T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait> {
+class QueueIteratorConst final
+    : public Iterator<QueueIteratorConst<T>, const T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
+{
 public:
 
     /**
@@ -221,7 +225,7 @@ public:
      * @param self The Queue object to copy boundaries from.
      */
     template <usize MIN_ELEMENT_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE QueueIteratorConst(const Queue<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr QueueIteratorConst(const Queue<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pMemoryBegin(self.m_pMemoryBegin)
         , m_pMemoryEnd(self.m_pMemoryEnd)
         , m_pQueueBegin(self.m_pQueueBegin)
@@ -233,7 +237,7 @@ public:
      * @param self The StaticQueue object to copy boundaries from.
      */
     template <usize SIZE>
-    ALT_FORCE_INLINE QueueIteratorConst(StaticQueue<T, SIZE>& self) noexcept
+    ALT_FORCE_INLINE constexpr QueueIteratorConst(StaticQueue<T, SIZE>& self) noexcept
         : m_pMemoryBegin(self.GetMemoryBegin())
         , m_pMemoryEnd(self.GetMemoryEnd())
         , m_pQueueBegin(self.GetQueueBegin())
@@ -244,7 +248,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
 
@@ -263,7 +267,7 @@ public:
      * assert(*it.Next() == 0);
      * assert(*it.Next() == 1);
      */
-    ALT_FORCE_INLINE Optional<const T&> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<const T&> Next() noexcept {
 
         if (m_Size == 0) {
             return Nullopt;
@@ -296,9 +300,9 @@ public:
      * assert(skipped == 3);
      * assert(it.GetSize() == 2);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, m_Size);
+        const usize advance = Min(advance_, m_Size);
         m_Size -= advance;
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
@@ -329,7 +333,7 @@ public:
      * assert(*it.NextBack() == 4);
      * assert(*it.NextBack() == 3);
      */
-    ALT_FORCE_INLINE Optional<const T&> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<const T&> NextBack() noexcept {
 
         if (m_Size == 0) {
             return Nullopt;
@@ -363,9 +367,9 @@ public:
      * assert(skipped == 1);
      * assert(it.GetSize() == 4);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, m_Size);
+        const usize advance = Min(advance_, m_Size);
         m_Size -= advance;
 
         return advance;
@@ -375,7 +379,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's Queue.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_Size;
     }
 
@@ -383,7 +387,7 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_Size == 0;
     }
 

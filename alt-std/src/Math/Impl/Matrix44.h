@@ -30,7 +30,7 @@ public:
 
     using Type = T;
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 Identity() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 Identity() noexcept {
 
         return Matrix44{
             static_cast<T>(1.0), static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0),
@@ -40,7 +40,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 FromTranslation(const Vec3<T>& vec3) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 FromTranslation(const Vec3<T>& vec3) noexcept {
 
         return Matrix44{
             static_cast<T>(1.0), static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0),
@@ -50,7 +50,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 FromTranslation(const T x, const T y, const T z) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 FromTranslation(const T x, const T y, const T z) noexcept {
 
         return Matrix44{
             static_cast<T>(1.0), static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0),
@@ -60,7 +60,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 FromScale(T scale) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 FromScale(T scale) noexcept {
 
         return Matrix44{
             scale,               static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0),
@@ -70,7 +70,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 FromScale(const Vec3<T> scale) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 FromScale(const Vec3<T> scale) noexcept {
 
         return Matrix44{
             scale.x,           static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0),
@@ -80,7 +80,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 FromScale(const T x, const T y, const T z) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 FromScale(const T x, const T y, const T z) noexcept {
 
         return Matrix44{
             x,                   static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0),
@@ -120,14 +120,14 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44<T> FromVectors(Vec3<T> orig, Vec3<T> dest) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44<T> FromVectors(Vec3<T> orig, Vec3<T> dest) noexcept {
 
         orig = orig.Normalize();
         dest = dest.Normalize();
 
         const T c = orig.Dot(dest);
 
-        const bool isInOppositeDir = static_cast<T>(1.0) + c <= Num::Desc<T>::Eps();
+        const bool isInOppositeDir = static_cast<T>(1.0) + c <= Desc<T>::Eps();
         if (isInOppositeDir) {
 
             const Vec3<T> axis = orig.PerpNormalized();
@@ -151,7 +151,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44<T> FromQuat(const Quat<T>& quat) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44<T> FromQuat(const Quat<T>& quat) noexcept {
 
         return quat.ToMatrix44();
     }
@@ -193,7 +193,7 @@ public:
     /*
      * Right Hended we revert Z axis 
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 Ortho_LH_Z__1_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 Ortho_LH_Z__1_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
 
         return Matrix44{
             static_cast<T>(2.0) / (right - left), static_cast<T>(0.0),                  static_cast<T>(0.0),                   static_cast<T>(0.0),
@@ -203,7 +203,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 Ortho_RH_Z__1_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 Ortho_RH_Z__1_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
 
         return Matrix44{
             static_cast<T>(2.0) / (right - left), static_cast<T>(0.0),                  static_cast<T>(0.0),                   static_cast<T>(0.0),
@@ -213,7 +213,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 Ortho_LH_Z_0_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 Ortho_LH_Z_0_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
 
         return Matrix44{
             static_cast<T>(2.0) / (right - left), static_cast<T>(0.0),                  static_cast<T>(0.0),                   static_cast<T>(0.0),
@@ -223,7 +223,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 Ortho_RH_Z_0_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 Ortho_RH_Z_0_1(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) noexcept {
 
         return Matrix44{
             static_cast<T>(2.0) / (right - left), static_cast<T>(0.0),                  static_cast<T>(0.0),                   static_cast<T>(0.0),
@@ -281,7 +281,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 LookAt_RH(const Vec3<T>& eye, const Vec3<T>& center, const Vec3<T>& up) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 LookAt_RH(const Vec3<T>& eye, const Vec3<T>& center, const Vec3<T>& up) noexcept {
 
         const Vec3<T> f = (center - eye).Normalize();
         const Vec3<T> r = f.Cross(up).Normalize();
@@ -295,7 +295,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Matrix44 LookAtByRight_RH(const Vec3<T>& eye, const Vec3<T>& center, const Vec3<T>& right) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Matrix44 LookAtByRight_RH(const Vec3<T>& eye, const Vec3<T>& center, const Vec3<T>& right) noexcept {
 
         const Vec3<T> f = (center - eye).Normalize();
         const Vec3<T> u = right.Cross(f).Normalize();
@@ -309,9 +309,9 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Matrix44() = default;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44() = default;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Matrix44(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44(
         const T m00, const T m01, const T m02, const T m03,
         const T m10, const T m11, const T m12, const T m13,
         const T m20, const T m21, const T m22, const T m23,
@@ -324,7 +324,7 @@ public:
         m_Matrix[3][0] = m30; m_Matrix[3][1] = m31; m_Matrix[3][2] = m32; m_Matrix[3][3] = m33;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Matrix44(const Vec4<T>& c1, const Vec4<T>& c2, const Vec4<T>& c3, const Vec4<T>& c4) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44(const Vec4<T>& c1, const Vec4<T>& c2, const Vec4<T>& c3, const Vec4<T>& c4) noexcept {
 
         m_Matrix[0][0] = c1.x;
         m_Matrix[0][1] = c1.y;
@@ -347,42 +347,42 @@ public:
         m_Matrix[3][3] = c4.w;
     }
 
-    ALT_FORCE_INLINE Matrix44(Matrix44&& mat) noexcept {
+    ALT_FORCE_INLINE constexpr Matrix44(Matrix44&& mat) noexcept {
 
-        const T* ptr = &mat.m_Matrix[0][0];
-        Memory::CopyObjectsNonOverlap(&m_Matrix[0][0], ptr, ptr + 16);
+        const T* ptr = Addressof(mat.m_Matrix[0][0]);
+        Memory::CopyObjectsNonOverlap(Addressof(m_Matrix[0][0]), ptr, ptr + 16);
     }
 
-    ALT_FORCE_INLINE Matrix44& operator=(Matrix44&& mat) noexcept {
+    ALT_FORCE_INLINE constexpr Matrix44& operator=(Matrix44&& mat) noexcept {
 
         if (this == &mat) {
             return *this;
         }
 
-        const T* ptr = &mat.m_Matrix[0][0];
-        Memory::CopyObjectsNonOverlap(&m_Matrix[0][0], ptr, ptr + 16);
+        const T* ptr = Addressof(mat.m_Matrix[0][0]);
+        Memory::CopyObjectsNonOverlap(Addressof(m_Matrix[0][0]), ptr, ptr + 16);
 
         return *this;
     }
 
-    ALT_FORCE_INLINE Matrix44(const Matrix44& mat) noexcept {
+    ALT_FORCE_INLINE constexpr Matrix44(const Matrix44& mat) noexcept {
 
-        const T* ptr = &mat.m_Matrix[0][0];
-        Memory::CopyObjectsNonOverlap(&m_Matrix[0][0], ptr, ptr + 16);
+        const T* ptr = Addressof(mat.m_Matrix[0][0]);
+        Memory::CopyObjectsNonOverlap(Addressof(m_Matrix[0][0]), ptr, ptr + 16);
     }
 
-    ALT_FORCE_INLINE Matrix44& operator=(const Matrix44& mat) noexcept {
+    ALT_FORCE_INLINE constexpr Matrix44& operator=(const Matrix44& mat) noexcept {
 
         if (this == &mat) {
             return *this;
         }
 
-        const T* ptr = &mat.m_Matrix[0][0];
-        Memory::CopyObjectsNonOverlap(&m_Matrix[0][0], ptr, ptr + 16);
+        const T* ptr = Addressof(mat.m_Matrix[0][0]);
+        Memory::CopyObjectsNonOverlap(Addressof(m_Matrix[0][0]), ptr, ptr + 16);
         return *this;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T Det() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T Det() const noexcept {
 
         const T A2323 = m_Matrix[2][2] * m_Matrix[3][3] - m_Matrix[2][3] * m_Matrix[3][2];
         const T A1323 = m_Matrix[2][1] * m_Matrix[3][3] - m_Matrix[2][3] * m_Matrix[3][1];
@@ -400,7 +400,7 @@ public:
         return det;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Matrix44> Inverse() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Matrix44> Inverse() const noexcept {
 
         const T A2323 = m_Matrix[2][2] * m_Matrix[3][3] - m_Matrix[2][3] * m_Matrix[3][2];
         const T A1323 = m_Matrix[2][1] * m_Matrix[3][3] - m_Matrix[2][3] * m_Matrix[3][1];
@@ -427,7 +427,7 @@ public:
             + m_Matrix[0][2] * (m_Matrix[1][0] * A1323 - m_Matrix[1][1] * A0323 + m_Matrix[1][3] * A0123)
             - m_Matrix[0][3] * (m_Matrix[1][0] * A1223 - m_Matrix[1][1] * A0223 + m_Matrix[1][2] * A0123);
 
-        if (Abs(det) <= Num::Desc<T>::Eps()) {
+        if (Abs(det) <= Desc<T>::Eps()) {
             return Nullopt;
         }
 
@@ -453,7 +453,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Matrix44 Transpose() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44 Transpose() const noexcept {
 
         Matrix44 res;
 
@@ -477,8 +477,20 @@ public:
         return res;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Matrix44<T> ConvertToMatrixForNormals() const noexcept {
-        return Transpose(Inverse(*this));
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44<T> ConvertToMatrixForNormals() const noexcept {
+
+        /**
+         * (matrix.ConvertToMatrixForNormals() * normal).Normalize();
+         */
+
+        return Matrix44{
+            Vec4(m_Matrix[2][2] * m_Matrix[1][1] - m_Matrix[2][1] * m_Matrix[1][2], m_Matrix[2][0] * m_Matrix[1][2] - m_Matrix[2][2] * m_Matrix[1][0], m_Matrix[2][1] * m_Matrix[1][0] - m_Matrix[2][0] * m_Matrix[1][1]),
+            Vec4(m_Matrix[2][1] * m_Matrix[0][2] - m_Matrix[0][1] * m_Matrix[2][2], m_Matrix[2][2] * m_Matrix[0][0] - m_Matrix[2][0] * m_Matrix[0][2], m_Matrix[0][1] * m_Matrix[2][0] - m_Matrix[2][1] * m_Matrix[0][0]),
+            Vec4(m_Matrix[0][1] * m_Matrix[1][2] - m_Matrix[0][2] * m_Matrix[1][1], m_Matrix[0][2] * m_Matrix[1][0] - m_Matrix[0][0] * m_Matrix[1][2], m_Matrix[0][0] * m_Matrix[1][1] - m_Matrix[0][1] * m_Matrix[1][0]),
+            Vec4(static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(1.0)),
+        };
+
+        //return Transpose(Inverse(*this));
     }
 
     ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> GetEulerAnglesXYZ() const noexcept {
@@ -490,34 +502,34 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> GetTranslation() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3<T> GetTranslation() const noexcept {
 
         return Vec3<T>{ GetCol(3) };
     }
 
-    ALT_FORCE_INLINE void SetTranslation(const Vec3<T>& translation) noexcept {
+    ALT_FORCE_INLINE constexpr void SetTranslation(const Vec3<T>& translation) noexcept {
 
         m_Matrix[3][0] = translation[0];
         m_Matrix[3][1] = translation[1];
         m_Matrix[3][2] = translation[2];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec4<T> GetCol(const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec4<T> GetCol(const usize i) const noexcept {
 
         return Vec4<T>{ m_Matrix[i][0], m_Matrix[i][1], m_Matrix[i][2], m_Matrix[i][3] };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T* GetPtr() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T* GetPtr() noexcept {
 
-        return &m_Matrix[0][0];
+        return Addressof(m_Matrix[0][0]);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T* GetPtr() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* GetPtr() const noexcept {
 
-        return &m_Matrix[0][0];
+        return Addressof(m_Matrix[0][0]);
     }
 
-    ALT_FORCE_INLINE Matrix44 operator*(const Matrix44& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Matrix44 operator*(const Matrix44& rhs) const noexcept {
 
         Matrix44 res;
         const Matrix44 lhsTransp = Transpose();
@@ -621,7 +633,7 @@ public:
         return res.Transpose();
     }
 
-    ALT_FORCE_INLINE Vec4<T> operator*(const Vec4<T>& vec4) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec4<T> operator*(const Vec4<T>& vec4) const noexcept {
 
         return Vec4<T>{
             m_Matrix[0][0] * vec4[0] + m_Matrix[0][1] * vec4[1] + m_Matrix[0][2] * vec4[2] + m_Matrix[0][3] * vec4[3],
@@ -631,7 +643,7 @@ public:
         };
     }
 
-    ALT_FORCE_INLINE Vec3<T> operator*(const Vec3<T>& vec3) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3<T> operator*(const Vec3<T>& vec3) const noexcept {
 
         return Vec3<T>{
             m_Matrix[0][0] * vec3[0] + m_Matrix[0][1] * vec3[1] + m_Matrix[0][2] * vec3[2],
@@ -640,7 +652,7 @@ public:
         };
     }
 
-    ALT_FORCE_INLINE Point3<T> operator*(const Point3<T>& vec3) const noexcept {
+    ALT_FORCE_INLINE constexpr Point3<T> operator*(const Point3<T>& vec3) const noexcept {
 
         return Point3<T>{
             m_Matrix[0][0] * vec3[0] + m_Matrix[0][1] * vec3[1] + m_Matrix[0][2] * vec3[2] + m_Matrix[0][3] * vec3[3],
@@ -649,12 +661,12 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator()(const usize iRow, const usize iCol) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator()(const usize iRow, const usize iCol) noexcept {
 
         return m_Matrix[iCol][iRow];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& operator()(const usize iRow, const usize iCol) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& operator()(const usize iRow, const usize iCol) const noexcept {
 
         return m_Matrix[iCol][iRow];
     }

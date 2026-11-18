@@ -100,6 +100,9 @@ do { \
 #endif // defined(ALT_COMPILER_MSVC)
 #endif // ALT_DEV
 
+#define ALT_IS_CONSTANT_EVALUATED __builtin_is_constant_evaluated()
+#define ALT_IF_IS_CONSTANT_EVALUATED if (ALT_IS_CONSTANT_EVALUATED)
+
 #define __ALT_STD_STRINGIFY0__(x) #x
 #define __ALT_STD_STRINGIFY__(x) __ALT_STD_STRINGIFY0__(x)
 
@@ -121,6 +124,15 @@ using clean_t = std::remove_cv_t<T>;
 template <typename T0, typename T1>
 using select_larger_t = std::conditional_t<(sizeof(T0) > sizeof(T1)), T0, T1>;
 
+template <typename T>
+using is_number_t = __is_number__<clean_t<T>>;
+
+template <typename T>
+constexpr static bool is_number_v = is_number_t<T>::value;
+
+template <typename T>
+constexpr static bool is_scalar_v = is_number_v<T> || std::is_scalar_v<T>;
+
 /*
  * Reallocatable Trait
  * 
@@ -129,7 +141,12 @@ using select_larger_t = std::conditional_t<(sizeof(T0) > sizeof(T1)), T0, T1>;
 template <typename T>
 struct __is_trivially_reallocatable__
     : std::conditional_t<
-        std::is_trivially_copyable_v<T>,
+
+        /**
+         * Should be used on memory reallocation or, when emulating such behaviour if not trivially reallocatable:
+         * move destructible from source0 then move constructible to source1
+         */
+        std::is_trivially_move_constructible_v<T> && std::is_trivially_copyable_v<T>,
         std::true_type,
         std::false_type
     >
@@ -379,12 +396,12 @@ constexpr static bool is_string_v = is_string_t<T>::value;
 } // namespace TypeTraits
 
 template <typename T, usize N>
-ALT_FORCE_INLINE constexpr usize ArraySize(T(&)[N]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize ArraySize(T(&)[N]) noexcept {
     return N;
 }
 
 template <typename T, typename U = T>
-ALT_FORCE_INLINE constexpr T Exchange(T& x, U&& y)
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T Exchange(T& x, U&& y)
     noexcept(std::is_nothrow_move_constructible_v<T> && std::is_nothrow_assignable_v<T&, U>)
 {
     T old = std::move(x);
@@ -399,6 +416,11 @@ ALT_FORCE_INLINE constexpr void Swap(T& x, T& y)
     T tmp = std::move(x);
     x = std::move(y);
     y = std::move(tmp);
+}
+
+template <typename T>
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T* Addressof(T& x) noexcept {
+    return std::addressof(x);
 }
 
 } // namespace Alt

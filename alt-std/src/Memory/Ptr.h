@@ -89,52 +89,52 @@ public:
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
     Ptr& operator=(U&&) noexcept = delete;
 
-    ALT_FORCE_INLINE Ptr() noexcept
+    ALT_FORCE_INLINE constexpr Ptr() noexcept
         : Ref<T>(nullptr)
     {}
 
-    ALT_FORCE_INLINE Ptr(T* ptr) noexcept
+    ALT_FORCE_INLINE constexpr Ptr(T* ptr) noexcept
         : Ref<T>(ptr)
     {}
 
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T*, U*>>* = nullptr>
-    ALT_FORCE_INLINE Ptr(U& rhs) noexcept
+    ALT_FORCE_INLINE constexpr Ptr(U& rhs) noexcept
         : Ref<T>(rhs)
     {}
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Ptr& operator=(U& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Ptr& operator=(U& rhs) noexcept {
 
         this->m_Ptr = &rhs;
         return *this;
     }
 
-    ALT_FORCE_INLINE Ptr& operator=(T* ptr) noexcept {
+    ALT_FORCE_INLINE constexpr Ptr& operator=(T* ptr) noexcept {
 
         this->m_Ptr = ptr;
         return *this;
     }
 
-    ALT_FORCE_INLINE Ptr(Ptr&&) noexcept = default;
-    ALT_FORCE_INLINE Ptr& operator=(Ptr&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ptr(Ptr&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ptr& operator=(Ptr&&) noexcept = default;
 
-    ALT_FORCE_INLINE Ptr(const Ptr&) noexcept = default;
-    ALT_FORCE_INLINE Ptr& operator=(const Ptr&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ptr(const Ptr&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ptr& operator=(const Ptr&) noexcept = default;
 
-    ALT_FORCE_INLINE bool operator==(const T* ptr) const noexcept { return this->m_Ptr == ptr; }
-    ALT_FORCE_INLINE bool operator!=(const T* ptr) const noexcept { return this->m_Ptr != ptr; }
+    ALT_FORCE_INLINE constexpr bool operator==(const T* ptr) const noexcept { return this->m_Ptr == ptr; }
+    ALT_FORCE_INLINE constexpr bool operator!=(const T* ptr) const noexcept { return this->m_Ptr != ptr; }
 
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T*, U*>>* = nullptr>
-    ALT_FORCE_INLINE Ptr(const Ptr<U>& ptr) noexcept
+    ALT_FORCE_INLINE constexpr Ptr(const Ptr<U>& ptr) noexcept
         : Ref<T>(ptr.GetPtr())
     {}
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Ptr& operator=(const Ptr<U>& ptr) noexcept {
+    ALT_FORCE_INLINE constexpr Ptr& operator=(const Ptr<U>& ptr) noexcept {
 
         *this = ptr.GetPtr();
         return *this;
@@ -142,31 +142,31 @@ public:
 
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T*, U*>>* = nullptr>
-    ALT_FORCE_INLINE Ptr(const Ref<U>& ref) noexcept
+    ALT_FORCE_INLINE constexpr Ptr(const Ref<U>& ref) noexcept
         : Ref<T>(ref)
     {}
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Ptr& operator=(const Ref<U>& ref) noexcept {
+    ALT_FORCE_INLINE constexpr Ptr& operator=(const Ref<U>& ref) noexcept {
 
         static_cast<Ref<T>*>(this)->operator=(ref);
         return *this;
     }
 
-    ALT_FORCE_INLINE operator T*() noexcept {
+    ALT_FORCE_INLINE constexpr operator T*() noexcept {
         return this->m_Ptr;
     }
 
-    ALT_FORCE_INLINE operator const T*() const noexcept {
+    ALT_FORCE_INLINE constexpr operator const T*() const noexcept {
         return this->m_Ptr;
     }
 
-    ALT_FORCE_INLINE T* GetPtr() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetPtr() noexcept {
         return this->m_Ptr;
     }
 
-    ALT_FORCE_INLINE const T* GetPtr() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetPtr() const noexcept {
         return this->m_Ptr;
     }
 };

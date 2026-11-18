@@ -3,8 +3,6 @@
 #ifndef __ALT_STD_MAYBE_UNINIT__
 #define __ALT_STD_MAYBE_UNINIT__
 
-#include <new>
-
 #include "../TypeTraits.h"
 
 namespace Alt {
@@ -123,13 +121,13 @@ struct TemplateStorageDestruct;
 template <typename SelfT, typename T>
 struct TemplateStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted> : TemplateStorageCore<SelfT, T> {
 
-    TemplateStorageDestruct() noexcept = default;
+    constexpr TemplateStorageDestruct() noexcept = default;
 
-    TemplateStorageDestruct(const TemplateStorageDestruct&) noexcept = default;
-    TemplateStorageDestruct& operator=(const TemplateStorageDestruct&) noexcept = default;
+    constexpr TemplateStorageDestruct(const TemplateStorageDestruct&) noexcept = default;
+    constexpr TemplateStorageDestruct& operator=(const TemplateStorageDestruct&) noexcept = default;
 
-    TemplateStorageDestruct(TemplateStorageDestruct&&) noexcept = default;
-    TemplateStorageDestruct& operator=(TemplateStorageDestruct&&) noexcept = default;
+    constexpr TemplateStorageDestruct(TemplateStorageDestruct&&) noexcept = default;
+    constexpr TemplateStorageDestruct& operator=(TemplateStorageDestruct&&) noexcept = default;
 
     ~TemplateStorageDestruct() noexcept = delete;
 };
@@ -137,13 +135,13 @@ struct TemplateStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Delete
 template <typename SelfT, typename T>
 struct TemplateStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial> : TemplateStorageCore<SelfT, T> {
 
-    TemplateStorageDestruct() noexcept = default;
+    constexpr TemplateStorageDestruct() noexcept = default;
 
-    TemplateStorageDestruct(const TemplateStorageDestruct&) noexcept = default;
-    TemplateStorageDestruct& operator=(const TemplateStorageDestruct&) noexcept = default;
+    constexpr TemplateStorageDestruct(const TemplateStorageDestruct&) noexcept = default;
+    constexpr TemplateStorageDestruct& operator=(const TemplateStorageDestruct&) noexcept = default;
 
-    TemplateStorageDestruct(TemplateStorageDestruct&&) noexcept = default;
-    TemplateStorageDestruct& operator=(TemplateStorageDestruct&&) noexcept = default;
+    constexpr TemplateStorageDestruct(TemplateStorageDestruct&&) noexcept = default;
+    constexpr TemplateStorageDestruct& operator=(TemplateStorageDestruct&&) noexcept = default;
 
     ~TemplateStorageDestruct() noexcept = default;
 };
@@ -151,13 +149,13 @@ struct TemplateStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivia
 template <typename SelfT, typename T>
 struct TemplateStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial> : TemplateStorageCore<SelfT, T> {
 
-    TemplateStorageDestruct() noexcept = default;
+    constexpr TemplateStorageDestruct() noexcept = default;
 
-    TemplateStorageDestruct(const TemplateStorageDestruct&) noexcept = default;
-    TemplateStorageDestruct& operator=(const TemplateStorageDestruct&) noexcept = default;
+    constexpr TemplateStorageDestruct(const TemplateStorageDestruct&) noexcept = default;
+    constexpr TemplateStorageDestruct& operator=(const TemplateStorageDestruct&) noexcept = default;
 
-    TemplateStorageDestruct(TemplateStorageDestruct&&) noexcept = default;
-    TemplateStorageDestruct& operator=(TemplateStorageDestruct&&) noexcept = default;
+    constexpr TemplateStorageDestruct(TemplateStorageDestruct&&) noexcept = default;
+    constexpr TemplateStorageDestruct& operator=(TemplateStorageDestruct&&) noexcept = default;
 
     ~TemplateStorageDestruct() noexcept {
 
@@ -171,38 +169,38 @@ struct TemplateStorageMoveAssign;
 template <typename SelfT, typename T>
 struct TemplateStorageMoveAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted> : TemplateStorageDestruct<SelfT, T> {
 
-    TemplateStorageMoveAssign() noexcept = default;
+    constexpr TemplateStorageMoveAssign() noexcept = default;
 
-    TemplateStorageMoveAssign(const TemplateStorageMoveAssign&) noexcept = default;
-    TemplateStorageMoveAssign& operator=(const TemplateStorageMoveAssign&) noexcept = default;
+    constexpr TemplateStorageMoveAssign(const TemplateStorageMoveAssign&) noexcept = default;
+    constexpr TemplateStorageMoveAssign& operator=(const TemplateStorageMoveAssign&) noexcept = default;
 
-    TemplateStorageMoveAssign(TemplateStorageMoveAssign&&) noexcept = default;
+    constexpr TemplateStorageMoveAssign(TemplateStorageMoveAssign&&) noexcept = default;
     TemplateStorageMoveAssign& operator=(TemplateStorageMoveAssign&&) noexcept = delete;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageMoveAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial> : TemplateStorageDestruct<SelfT, T> {
 
-    TemplateStorageMoveAssign() noexcept = default;
+    constexpr TemplateStorageMoveAssign() noexcept = default;
 
-    TemplateStorageMoveAssign(const TemplateStorageMoveAssign&) noexcept = default;
-    TemplateStorageMoveAssign& operator=(const TemplateStorageMoveAssign&) noexcept = default;
+    constexpr TemplateStorageMoveAssign(const TemplateStorageMoveAssign&) noexcept = default;
+    constexpr TemplateStorageMoveAssign& operator=(const TemplateStorageMoveAssign&) noexcept = default;
 
-    TemplateStorageMoveAssign(TemplateStorageMoveAssign&&) noexcept = default;
-    TemplateStorageMoveAssign& operator=(TemplateStorageMoveAssign&&) noexcept = default;
+    constexpr TemplateStorageMoveAssign(TemplateStorageMoveAssign&&) noexcept = default;
+    constexpr TemplateStorageMoveAssign& operator=(TemplateStorageMoveAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageMoveAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial> : TemplateStorageDestruct<SelfT, T> {
 
-    TemplateStorageMoveAssign() noexcept = default;
+    constexpr TemplateStorageMoveAssign() noexcept = default;
 
-    TemplateStorageMoveAssign(const TemplateStorageMoveAssign&) noexcept = default;
-    TemplateStorageMoveAssign& operator=(const TemplateStorageMoveAssign&) noexcept = default;
+    constexpr TemplateStorageMoveAssign(const TemplateStorageMoveAssign&) noexcept = default;
+    constexpr TemplateStorageMoveAssign& operator=(const TemplateStorageMoveAssign&) noexcept = default;
 
-    TemplateStorageMoveAssign(TemplateStorageMoveAssign&&) noexcept = default;
+    constexpr TemplateStorageMoveAssign(TemplateStorageMoveAssign&&) noexcept = default;
 
-    TemplateStorageMoveAssign& operator=(TemplateStorageMoveAssign&& rhs) noexcept {
+    constexpr TemplateStorageMoveAssign& operator=(TemplateStorageMoveAssign&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
         return *this;
@@ -215,41 +213,41 @@ struct TemplateStorageMoveConstruct;
 template <typename SelfT, typename T>
 struct TemplateStorageMoveConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted> : TemplateStorageMoveAssign<SelfT, T> {
 
-    TemplateStorageMoveConstruct() noexcept = default;
+    constexpr TemplateStorageMoveConstruct() noexcept = default;
 
-    TemplateStorageMoveConstruct(const TemplateStorageMoveConstruct&) noexcept = default;
-    TemplateStorageMoveConstruct& operator=(const TemplateStorageMoveConstruct&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct(const TemplateStorageMoveConstruct&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct& operator=(const TemplateStorageMoveConstruct&) noexcept = default;
 
     TemplateStorageMoveConstruct(TemplateStorageMoveConstruct&&) noexcept = delete;
-    TemplateStorageMoveConstruct& operator=(TemplateStorageMoveConstruct&&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct& operator=(TemplateStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageMoveConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial> : TemplateStorageMoveAssign<SelfT, T> {
 
-    TemplateStorageMoveConstruct() noexcept = default;
+    constexpr TemplateStorageMoveConstruct() noexcept = default;
 
-    TemplateStorageMoveConstruct(const TemplateStorageMoveConstruct&) noexcept = default;
-    TemplateStorageMoveConstruct& operator=(const TemplateStorageMoveConstruct&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct(const TemplateStorageMoveConstruct&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct& operator=(const TemplateStorageMoveConstruct&) noexcept = default;
 
-    TemplateStorageMoveConstruct(TemplateStorageMoveConstruct&&) noexcept = default;
-    TemplateStorageMoveConstruct& operator=(TemplateStorageMoveConstruct&&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct(TemplateStorageMoveConstruct&&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct& operator=(TemplateStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageMoveConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial> : TemplateStorageMoveAssign<SelfT, T> {
 
-    TemplateStorageMoveConstruct() noexcept = default;
+    constexpr TemplateStorageMoveConstruct() noexcept = default;
 
-    TemplateStorageMoveConstruct(const TemplateStorageMoveConstruct&) noexcept = default;
-    TemplateStorageMoveConstruct& operator=(const TemplateStorageMoveConstruct&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct(const TemplateStorageMoveConstruct&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct& operator=(const TemplateStorageMoveConstruct&) noexcept = default;
 
-    TemplateStorageMoveConstruct(TemplateStorageMoveConstruct&& rhs) noexcept {
+    constexpr TemplateStorageMoveConstruct(TemplateStorageMoveConstruct&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    TemplateStorageMoveConstruct& operator=(TemplateStorageMoveConstruct&&) noexcept = default;
+    constexpr TemplateStorageMoveConstruct& operator=(TemplateStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, _MaybeUninitDetails::Rule5Trait RULE5_TRAIT = _MaybeUninitDetails::rule5_copy_assignable_v<T>>
@@ -259,42 +257,42 @@ template <typename SelfT, typename T>
 struct TemplateStorageCopyAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted>
     : TemplateStorageMoveConstruct<T>
 {
-    TemplateStorageCopyAssign() noexcept = default;
+    constexpr TemplateStorageCopyAssign() noexcept = default;
 
-    TemplateStorageCopyAssign(const TemplateStorageCopyAssign&) noexcept = default;
+    constexpr TemplateStorageCopyAssign(const TemplateStorageCopyAssign&) noexcept = default;
     TemplateStorageCopyAssign& operator=(const TemplateStorageCopyAssign&) noexcept = delete;
 
-    TemplateStorageCopyAssign(TemplateStorageCopyAssign&&) noexcept = default;
-    TemplateStorageCopyAssign& operator=(TemplateStorageCopyAssign&&) noexcept = default;
+    constexpr TemplateStorageCopyAssign(TemplateStorageCopyAssign&&) noexcept = default;
+    constexpr TemplateStorageCopyAssign& operator=(TemplateStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageCopyAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial> : TemplateStorageMoveConstruct<SelfT, T> {
 
-    TemplateStorageCopyAssign() noexcept = default;
+    constexpr TemplateStorageCopyAssign() noexcept = default;
 
-    TemplateStorageCopyAssign(const TemplateStorageCopyAssign&) noexcept = default;
-    TemplateStorageCopyAssign& operator=(const TemplateStorageCopyAssign&) noexcept = default;
+    constexpr TemplateStorageCopyAssign(const TemplateStorageCopyAssign&) noexcept = default;
+    constexpr TemplateStorageCopyAssign& operator=(const TemplateStorageCopyAssign&) noexcept = default;
 
-    TemplateStorageCopyAssign(TemplateStorageCopyAssign&&) noexcept = default;
-    TemplateStorageCopyAssign& operator=(TemplateStorageCopyAssign&&) noexcept = default;
+    constexpr TemplateStorageCopyAssign(TemplateStorageCopyAssign&&) noexcept = default;
+    constexpr TemplateStorageCopyAssign& operator=(TemplateStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageCopyAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial> : TemplateStorageMoveConstruct<SelfT, T> {
 
-    TemplateStorageCopyAssign() noexcept = default;
+    constexpr TemplateStorageCopyAssign() noexcept = default;
 
-    TemplateStorageCopyAssign(const TemplateStorageCopyAssign&) noexcept = default;
+    constexpr TemplateStorageCopyAssign(const TemplateStorageCopyAssign&) noexcept = default;
 
-    TemplateStorageCopyAssign& operator=(const TemplateStorageCopyAssign& rhs) noexcept {
+    constexpr TemplateStorageCopyAssign& operator=(const TemplateStorageCopyAssign& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    TemplateStorageCopyAssign(TemplateStorageCopyAssign&&) noexcept = default;
-    TemplateStorageCopyAssign& operator=(TemplateStorageCopyAssign&&) noexcept = default;
+    constexpr TemplateStorageCopyAssign(TemplateStorageCopyAssign&&) noexcept = default;
+    constexpr TemplateStorageCopyAssign& operator=(TemplateStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, _MaybeUninitDetails::Rule5Trait RULE5_TRAIT = _MaybeUninitDetails::rule5_copy_constructible_v<T>>
@@ -303,41 +301,41 @@ struct TemplateStorageCopyConstruct;
 template <typename SelfT, typename T>
 struct TemplateStorageCopyConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted> : TemplateStorageCopyAssign<SelfT, T> {
 
-    TemplateStorageCopyConstruct() noexcept = default;
+    constexpr TemplateStorageCopyConstruct() noexcept = default;
 
     TemplateStorageCopyConstruct(const TemplateStorageCopyConstruct&) noexcept = delete;
-    TemplateStorageCopyConstruct& operator=(const TemplateStorageCopyConstruct&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct& operator=(const TemplateStorageCopyConstruct&) noexcept = default;
 
-    TemplateStorageCopyConstruct(TemplateStorageCopyConstruct&&) noexcept = default;
-    TemplateStorageCopyConstruct& operator=(TemplateStorageCopyConstruct&&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct(TemplateStorageCopyConstruct&&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct& operator=(TemplateStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageCopyConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial> : TemplateStorageCopyAssign<SelfT, T> {
 
-    TemplateStorageCopyConstruct() noexcept = default;
+    constexpr TemplateStorageCopyConstruct() noexcept = default;
 
-    TemplateStorageCopyConstruct(const TemplateStorageCopyConstruct&) noexcept = default;
-    TemplateStorageCopyConstruct& operator=(const TemplateStorageCopyConstruct&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct(const TemplateStorageCopyConstruct&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct& operator=(const TemplateStorageCopyConstruct&) noexcept = default;
 
-    TemplateStorageCopyConstruct(TemplateStorageCopyConstruct&&) noexcept = default;
-    TemplateStorageCopyConstruct& operator=(TemplateStorageCopyConstruct&&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct(TemplateStorageCopyConstruct&&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct& operator=(TemplateStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct TemplateStorageCopyConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial> : TemplateStorageCopyAssign<SelfT, T> {
 
-    TemplateStorageCopyConstruct() noexcept = default;
+    constexpr TemplateStorageCopyConstruct() noexcept = default;
 
-    TemplateStorageCopyConstruct(const TemplateStorageCopyConstruct& rhs) noexcept {
+    constexpr TemplateStorageCopyConstruct(const TemplateStorageCopyConstruct& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    TemplateStorageCopyConstruct& operator=(const TemplateStorageCopyConstruct&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct& operator=(const TemplateStorageCopyConstruct&) noexcept = default;
 
-    TemplateStorageCopyConstruct(TemplateStorageCopyConstruct&&) noexcept = default;
-    TemplateStorageCopyConstruct& operator=(TemplateStorageCopyConstruct&&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct& operator=(TemplateStorageCopyConstruct&&) noexcept = default;
+    constexpr TemplateStorageCopyConstruct(TemplateStorageCopyConstruct&&) noexcept = default;
 };
 */
 enum class Rule5Trait { Deleted, Trivial, NonTrivial };
@@ -439,366 +437,208 @@ using unwrap_void_to_unit_or_just_type_t = TypeTraits::unwrap_void_to_unit_or_ju
 template <typename T>
 constexpr static bool is_unit_v = TypeTraits::is_unit_v<T>;
 
-template <typename T, typename U>
-constexpr inline T Max(const T x, const U y_) noexcept {
-
-    const T y{ static_cast<T>(y_) };
-    return x > y ? x : y;
-}
-
-template <typename T>
-struct align_of {
-    constexpr static usize value = alignof(T);
-};
-
-template <typename T>
-constexpr static usize align_of_v = align_of<T>::value;
-
-template <typename T>
-struct size_of {
-    constexpr static usize value = sizeof(T);
-};
-
-template <typename T>
-constexpr static usize size_of_v = size_of<T>::value;
-
 template <typename ...ArgsT>
-struct max_align_of_variadic;
+struct MaybeUninitOperator;
 
-template <typename HeadT, typename ...TailT>
-struct max_align_of_variadic<HeadT, TailT...> {
-    constexpr static usize value = Max(align_of_v<HeadT>, max_align_of_variadic<TailT...>::value);
+template <typename FirstT, typename ...TailT>
+struct MaybeUninitOperator<FirstT, TailT...> {
+
+    template <typename T>
+    using is_same_as_first = std::is_same<clean_t<T>, clean_t<FirstT>>;
+
+    template <typename T>
+    constexpr static bool is_same_as_first_v = is_same_as_first<T>::value;
+
+    template <typename T, typename SelfT,
+        std::enable_if_t<is_same_as_first_v<T>>* = nullptr>
+    ALT_FORCE_INLINE constexpr static T& Get(SelfT& self) noexcept {
+        return self.m_Val0;
+    }
+
+    template <typename T, typename SelfT,
+        std::enable_if_t<!is_same_as_first_v<T>>* = nullptr>
+    ALT_FORCE_INLINE constexpr static T& Get(SelfT& self) noexcept {
+        return MaybeUninitOperator<TailT...>::template Get<T>(self.m_Val1);
+    }
+
+    template <typename T, typename SelfT,
+        std::enable_if_t<is_same_as_first_v<T>>* = nullptr>
+    ALT_FORCE_INLINE constexpr static const T& Get(const SelfT& self) noexcept {
+        return self.m_Val0;
+    }
+
+    template <typename T, typename SelfT,
+        std::enable_if_t<!is_same_as_first_v<T>>* = nullptr>
+    ALT_FORCE_INLINE constexpr static const T& Get(const SelfT& self) noexcept {
+        return MaybeUninitOperator<TailT...>::template Get<T>(self.m_Val1);
+    }
 };
-
-template <typename T>
-struct max_align_of_variadic<T> {
-    constexpr static usize value = align_of_v<T>;
-};
-
-template <typename ...ArgsT>
-constexpr static usize max_align_of_variadic_v = max_align_of_variadic<ArgsT...>::value;
-
-template <typename ...ArgsT>
-struct max_size_of_variadic;
-
-template <typename HeadT, typename ...TailT>
-struct max_size_of_variadic<HeadT, TailT...> {
-    constexpr static usize value = Max(size_of_v<HeadT>, max_size_of_variadic<TailT...>::value);
-};
-
-template <typename T>
-struct max_size_of_variadic<T> {
-    constexpr static usize value = size_of_v<T>;
-};
-
-template <typename ...ArgsT>
-constexpr static usize max_size_of_variadic_v = max_size_of_variadic<ArgsT...>::value;
 
 template <Rule5Trait CONSTRUCT_TRAIT, Rule5Trait DESTRUCT_TRAIT, typename ...ArgsT>
-union __MaybeUninitOneOfMarker;
+struct MaybeUninitOneOfStorage;
 
 template <Rule5Trait CONSTRUCT_TRAIT, Rule5Trait DESTRUCT_TRAIT>
-union __MaybeUninitOneOfMarker<CONSTRUCT_TRAIT, DESTRUCT_TRAIT>
+struct MaybeUninitOneOfStorage<CONSTRUCT_TRAIT, DESTRUCT_TRAIT>
 {};
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::Deleted, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::Deleted, Rule5Trait::Deleted, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept
+    constexpr MaybeUninitOneOfStorage() noexcept
     {}
 
-    ~__MaybeUninitOneOfMarker() noexcept = delete;
+    ~MaybeUninitOneOfStorage() noexcept = delete;
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::Deleted, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::Deleted, Rule5Trait::Deleted, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::Trivial, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::Deleted, Rule5Trait::Trivial, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept
+    constexpr MaybeUninitOneOfStorage() noexcept
     {}
 
-    ~__MaybeUninitOneOfMarker() noexcept = default;
+    ~MaybeUninitOneOfStorage() noexcept = default;
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::Trivial, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::Deleted, Rule5Trait::Trivial, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::NonTrivial, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::Deleted, Rule5Trait::NonTrivial, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept
+    constexpr MaybeUninitOneOfStorage() noexcept
     {}
 
-    ~__MaybeUninitOneOfMarker() noexcept
+    ~MaybeUninitOneOfStorage() noexcept
     {}
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::NonTrivial, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::Deleted, Rule5Trait::NonTrivial, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::Deleted, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::Trivial, Rule5Trait::Deleted, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept = default;
+    constexpr MaybeUninitOneOfStorage() noexcept = default;
 
-    ~__MaybeUninitOneOfMarker() noexcept = delete;
+    ~MaybeUninitOneOfStorage() noexcept = delete;
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::Deleted, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::Trivial, Rule5Trait::Deleted, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::Trivial, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::Trivial, Rule5Trait::Trivial, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept = default;
+    constexpr MaybeUninitOneOfStorage() noexcept = default;
 
-    ~__MaybeUninitOneOfMarker() noexcept = default;
+    ~MaybeUninitOneOfStorage() noexcept = default;
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::Trivial, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::Trivial, Rule5Trait::Trivial, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::NonTrivial, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::Trivial, Rule5Trait::NonTrivial, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept = default;
+    constexpr MaybeUninitOneOfStorage() noexcept = default;
 
-    ~__MaybeUninitOneOfMarker() noexcept
+    ~MaybeUninitOneOfStorage() noexcept
     {}
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::NonTrivial, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::Trivial, Rule5Trait::NonTrivial, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::Deleted, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::NonTrivial, Rule5Trait::Deleted, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept
+    constexpr MaybeUninitOneOfStorage() noexcept
     {}
 
-    ~__MaybeUninitOneOfMarker() noexcept = delete;
+    ~MaybeUninitOneOfStorage() noexcept = delete;
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::Deleted, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::NonTrivial, Rule5Trait::Deleted, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::Trivial, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::NonTrivial, Rule5Trait::Trivial, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept
+    constexpr MaybeUninitOneOfStorage() noexcept
     {}
 
-    ~__MaybeUninitOneOfMarker() noexcept = default;
+    ~MaybeUninitOneOfStorage() noexcept = default;
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::Trivial, TailT...> __marker1;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::NonTrivial, Rule5Trait::Trivial, TailT...> m_Val1;
     };
 };
 
 template <typename HeadT, typename ...TailT>
-union __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::NonTrivial, HeadT, TailT...> {
+struct MaybeUninitOneOfStorage<Rule5Trait::NonTrivial, Rule5Trait::NonTrivial, HeadT, TailT...> {
 
-    __MaybeUninitOneOfMarker() noexcept
+    constexpr MaybeUninitOneOfStorage() noexcept
     {}
 
-    ~__MaybeUninitOneOfMarker() noexcept
+    ~MaybeUninitOneOfStorage() noexcept
     {}
 
     union {
 
-        HeadT __marker0;
-        __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::NonTrivial, TailT...> __marker1;
-    };
-};
-
-template <Rule5Trait CONSTRUCT_TRAIT, Rule5Trait DESTRUCT_TRAIT, typename ...ArgsT>
-union MaybeUninitOneOf;
-
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::Deleted, Rule5Trait::Deleted, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept
-    {}
-
-    ~MaybeUninitOneOf() noexcept = delete;
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::Deleted, ArgsT...> __marker;
+        HeadT m_Val0;
+        MaybeUninitOneOfStorage<Rule5Trait::NonTrivial, Rule5Trait::NonTrivial, TailT...> m_Val1;
     };
 };
 
 template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::Deleted, Rule5Trait::Trivial, ArgsT...> {
+class MaybeUninitOneOf {
+public:
 
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
+    template <typename T>
+    ALT_FORCE_INLINE constexpr T* GetPtr() noexcept {
 
-    MaybeUninitOneOf() noexcept
-    {}
+        return Addressof(MaybeUninitOperator<ArgsT...>::template Get<T>(m_Storage));
+    }
 
-    ~MaybeUninitOneOf() noexcept = default;
+    template <typename T>
+    ALT_FORCE_INLINE constexpr const T* GetPtr() const noexcept {
 
-    union {
+        return Addressof(MaybeUninitOperator<ArgsT...>::template Get<T>(m_Storage));
+    }
 
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::Trivial, ArgsT...> __marker;
-    };
-};
+private:
 
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::Deleted, Rule5Trait::NonTrivial, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept
-    {}
-
-    ~MaybeUninitOneOf() noexcept
-    {}
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::Deleted, Rule5Trait::NonTrivial, ArgsT...> __marker;
-    };
-};
-
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::Trivial, Rule5Trait::Deleted, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept = default;
-
-    ~MaybeUninitOneOf() noexcept = delete;
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::Deleted, ArgsT...> __marker;
-    };
-};
-
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::Trivial, Rule5Trait::Trivial, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept = default;
-
-    ~MaybeUninitOneOf() noexcept = default;
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::Trivial, ArgsT...> __marker;
-    };
-};
-
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::Trivial, Rule5Trait::NonTrivial, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept = default;
-
-    ~MaybeUninitOneOf() noexcept
-    {}
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::Trivial, Rule5Trait::NonTrivial, ArgsT...> __marker;
-    };
-};
-
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::NonTrivial, Rule5Trait::Deleted, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept
-    {}
-
-    ~MaybeUninitOneOf() noexcept = delete;
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::Deleted, ArgsT...> __marker;
-    };
-};
-
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::NonTrivial, Rule5Trait::Trivial, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept
-    {}
-
-    ~MaybeUninitOneOf() noexcept = default;
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::Trivial, ArgsT...> __marker;
-    };
-};
-
-template <typename ...ArgsT>
-union MaybeUninitOneOf<Rule5Trait::NonTrivial, Rule5Trait::NonTrivial, ArgsT...> {
-
-    constexpr static usize size_of = _MaybeUninitDetails::max_size_of_variadic_v<ArgsT...>;
-    constexpr static usize align_of = _MaybeUninitDetails::max_align_of_variadic_v<ArgsT...>;
-
-    MaybeUninitOneOf() noexcept
-    {}
-
-    ~MaybeUninitOneOf() noexcept
-    {}
-
-    union {
-
-        alignas(align_of) u8 m_Memory[sizeof(size_of)];
-        __MaybeUninitOneOfMarker<Rule5Trait::NonTrivial, Rule5Trait::NonTrivial, ArgsT...> __marker;
-    };
+    MaybeUninitOneOfStorage<
+        _MaybeUninitDetails::rule5_constructible_v<ArgsT...>,
+        _MaybeUninitDetails::rule5_destructible_v<ArgsT...>,
+        ArgsT...
+    > m_Storage;
 };
 
 } // namespace _MaybeUninitDetails
@@ -834,14 +674,10 @@ private:
 
     using T = clean_t<T_>;
 
-    using Storage = _MaybeUninitDetails::MaybeUninitOneOf<
-        _MaybeUninitDetails::rule5_constructible_v<T>,
-        _MaybeUninitDetails::rule5_destructible_v<T>,
-        T
-    >;
+    using Storage = _MaybeUninitDetails::MaybeUninitOneOf<T>;
 
-    template <typename T>
-    constexpr static bool is_unit_v = _MaybeUninitDetails::is_unit_v<T>;
+    template <typename U>
+    constexpr static bool is_exist_v = std::is_same_v<U, T>;
 
 public:
 
@@ -859,17 +695,17 @@ public:
      * // Leak!
      */
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(U&& val) noexcept {
+        std::enable_if_t<std::is_constructible_v<T, U&&>>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Construct(U&& val) noexcept {
 
-        Memory::ConstructObject<T>(m_Storage.m_Memory, std::forward<U>(val));
+        Memory::ConstructObject(m_Storage.template GetPtr<T>(), std::forward<U>(val));
     }
 
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && std::is_default_constructible_v<T>>* = nullptr>
-    ALT_FORCE_INLINE void Construct() noexcept {
+        std::enable_if_t<std::is_default_constructible_v<T>>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Construct() noexcept {
 
-        Memory::ConstructDefaultObject<T>(m_Storage.m_Memory);
+        Memory::ConstructDefaultObject(m_Storage.template GetPtr<T>());
     }
 
     /**
@@ -892,11 +728,13 @@ public:
      * // Leak!
      */
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && (TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_constructible_v<T, U&&>)>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool ConstructCloneOrMove(U&& val) noexcept {
+        std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_constructible_v<T, U&&>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(U&& val) noexcept {
 
-        const T* pResult = Memory::CloneConstructOrMoveConstructObject(reinterpret_cast<T*>(m_Storage.m_Memory), std::forward<U>(val));
-        return pResult != static_cast<const void*>(m_Storage.m_Memory);
+        T* ptr = m_Storage.template GetPtr<T>();
+
+        const T* pResult = Memory::CloneConstructOrMoveConstructObject(ptr, std::forward<U>(val));
+        return pResult != ptr;
     }
 
     /**
@@ -914,8 +752,8 @@ public:
      * // Leak!
      */
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_assignable_v<T&, U&&>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(U&& val) noexcept {
+        std::enable_if_t<std::is_assignable_v<T&, U&&>>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Assign(U&& val) noexcept {
 
         T* ptr = GetPtr();
         *ptr = std::forward<U>(val);
@@ -940,8 +778,8 @@ public:
      * // Leak!
      */
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && (TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_assignable_v<T&, U&&>)>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool AssignCloneOrMove(U&& val) noexcept {
+        std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_assignable_v<T&, U&&>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool AssignCloneOrMove(U&& val) noexcept {
 
         T* ptr = GetPtr();
         const T* pResult = Memory::CloneOrMoveObject(*ptr, std::forward<U>(val));
@@ -961,9 +799,7 @@ public:
      * 
      * opt.Destroy(); // call destructor!
      */
-    template <typename U = T,
-        std::enable_if_t<!is_unit_v<U>>* = nullptr>
-    ALT_FORCE_INLINE void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         Memory::DestroyObject(GetVal());
     }
@@ -988,20 +824,20 @@ public:
      * opt.Destroy();
      */
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetVal() & noexcept { return *GetPtr(); }
+        std::enable_if_t<is_exist_v<U>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetVal() & noexcept { return *GetPtr(); }
 
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetVal() const & noexcept { return *GetPtr(); }
+        std::enable_if_t<is_exist_v<U>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetVal() const & noexcept { return *GetPtr(); }
 
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T&& GetVal() && noexcept { return std::move(*GetPtr()); }
+        std::enable_if_t<is_exist_v<U>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T&& GetVal() && noexcept { return std::move(*GetPtr()); }
 
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T&& GetVal() const && noexcept { return std::move(*GetPtr()); }
+        std::enable_if_t<is_exist_v<U>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T&& GetVal() const && noexcept { return std::move(*GetPtr()); }
 
     /**
      * @brief Accesses to the pointer of object.
@@ -1020,61 +856,12 @@ public:
      * opt.Destroy();
      */
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T* GetPtr() noexcept { return std::launder(reinterpret_cast<T*>(m_Storage.m_Memory)); }
+        std::enable_if_t<is_exist_v<U>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T* GetPtr() noexcept { return m_Storage.template GetPtr<T>(); }
 
     template <typename U = T,
-        std::enable_if_t<!is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T* GetPtr() const noexcept { return std::launder(reinterpret_cast<const T*>(m_Storage.m_Memory)); }
-
-    /*
-     * `Unit_t` case (just do nothing, from getters just return underlying pointer for
-     * compatibility with other methods). This is not necessary compiler should optimize
-     * any empty `Unit_t` struct.
-     */
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(U&&) noexcept {}
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U>>* = nullptr>
-    ALT_FORCE_INLINE bool ConstructCloneOrMove(U&&) noexcept { return true; }
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(U&&) noexcept {}
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U>>* = nullptr>
-    ALT_FORCE_INLINE bool AssignCloneOrMove(U&&) noexcept { return true; }
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U>>* = nullptr>
-    ALT_FORCE_INLINE void Destroy() noexcept {}
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetVal() & noexcept { return *reinterpret_cast<T*>(m_Storage.m_Memory); }
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetVal() const & noexcept { return *reinterpret_cast<const T*>(m_Storage.m_Memory); }
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T&& GetVal() && noexcept { return Unit_t{}; }
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T&& GetVal() const && noexcept { return Unit_t{}; }
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T* GetPtr() noexcept { return reinterpret_cast<T*>(m_Storage.m_Memory); }
-
-    template <typename U = T,
-        std::enable_if_t<is_unit_v<U> && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T* GetPtr() const noexcept { return reinterpret_cast<const T*>(m_Storage.m_Memory); }
+        std::enable_if_t<is_exist_v<U>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* GetPtr() const noexcept { return m_Storage.template GetPtr<T>(); }
 
 private:
 
@@ -1108,18 +895,10 @@ private:
     template <typename T>
     using clean_t = _MaybeUninitDetails::unwrap_void_to_unit_or_just_type_t<_MaybeUninitDetails::clean_t<T>>;
 
-    using Storage = _MaybeUninitDetails::MaybeUninitOneOf<
-        _MaybeUninitDetails::rule5_constructible_v<clean_t<ArgsT>...>,
-        _MaybeUninitDetails::rule5_destructible_v<clean_t<ArgsT>...>,
-        clean_t<ArgsT>...
-    >;
+    using Storage = _MaybeUninitDetails::MaybeUninitOneOf<clean_t<ArgsT>...>;
 
-    template <typename T>
-    constexpr static bool is_unit_v = _MaybeUninitDetails::is_unit_v<T>;
-
-    template <typename T>
-    constexpr static bool is_compatible_v =
-        (_MaybeUninitDetails::size_of_v<clean_t<T>> <= Storage::size_of) && (_MaybeUninitDetails::align_of_v<clean_t<T>> <= Storage::align_of);
+    template <typename U>
+    constexpr static bool is_exist_v = std::disjunction<std::is_same<clean_t<U>, clean_t<ArgsT>>...>::value;
 
 public:
 
@@ -1137,17 +916,17 @@ public:
      * // Leak!
      */
     template <typename T, typename U = T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(U&& val) noexcept {
+        std::enable_if_t<is_exist_v<T> && std::is_constructible_v<T, U&&>>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Construct(U&& val) noexcept {
 
-        Memory::ConstructObject<T>(m_Storage.m_Memory, std::forward<U>(val));
+        Memory::ConstructObject(m_Storage.template GetPtr<T>(), std::forward<U>(val));
     }
 
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && std::is_default_constructible_v<T>>* = nullptr>
-    ALT_FORCE_INLINE void Construct() noexcept {
+        std::enable_if_t<is_exist_v<T> && std::is_default_constructible_v<T>>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Construct() noexcept {
 
-        Memory::ConstructDefaultObject<T>(m_Storage.m_Memory);
+        Memory::ConstructDefaultObject(m_Storage.template GetPtr<T>());
     }
 
     /**
@@ -1170,11 +949,13 @@ public:
      * // Leak!
      */
     template <typename T, typename U = T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T> && (TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_constructible_v<T, U&&>)>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool ConstructCloneOrMove(U&& val) noexcept {
+        std::enable_if_t<is_exist_v<T> && (TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_constructible_v<T, U&&>)>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(U&& val) noexcept {
 
-        const T* pResult = Memory::CloneConstructOrMoveConstructObject(reinterpret_cast<T*>(m_Storage.m_Memory), std::forward<U>(val));
-        return pResult != static_cast<const void*>(m_Storage.m_Memory);
+        T* ptr = m_Storage.template GetPtr<T>();
+
+        const T* pResult = Memory::CloneConstructOrMoveConstructObject(ptr, std::forward<U>(val));
+        return pResult != ptr;
     }
 
     /**
@@ -1193,8 +974,8 @@ public:
      * // Leak!
      */
     template <typename T, typename U = T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T> && std::is_assignable_v<T&, U&&>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(U&& val) noexcept {
+        std::enable_if_t<is_exist_v<T> && std::is_assignable_v<T&, U&&>>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Assign(U&& val) noexcept {
 
         T* ptr = GetPtr<T>();
         *ptr = std::forward<U>(val);
@@ -1220,8 +1001,8 @@ public:
      * // Leak!
      */
     template <typename T, typename U = T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T> && (TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_assignable_v<T&, U&&>)>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool AssignCloneOrMove(U&& val) noexcept {
+        std::enable_if_t<is_exist_v<T> && (TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_assignable_v<T&, U&&>)>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool AssignCloneOrMove(U&& val) noexcept {
 
         T* ptr = GetPtr<T>();
         const T* pResult = Memory::CloneOrMoveObject(*ptr, std::forward<U>(val));
@@ -1243,8 +1024,8 @@ public:
      * opt.Destroy<Alt::String>(); // call destructor!
      */
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T>>* = nullptr>
-    ALT_FORCE_INLINE void Destroy() noexcept {
+        std::enable_if_t<is_exist_v<T>>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         Memory::DestroyObject(GetVal<T>());
     }
@@ -1270,20 +1051,20 @@ public:
      * opt.Destroy<Alt::Vector<usize>>();
      */
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetVal() & noexcept { return *GetPtr<T>(); }
+        std::enable_if_t<is_exist_v<T>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetVal() & noexcept { return *GetPtr<T>(); }
 
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetVal() const & noexcept { return *GetPtr<T>(); }
+        std::enable_if_t<is_exist_v<T>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetVal() const & noexcept { return *GetPtr<T>(); }
 
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T&& GetVal() && noexcept { return std::move(*GetPtr<T>()); }
+        std::enable_if_t<is_exist_v<T>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T&& GetVal() && noexcept { return std::move(*GetPtr<T>()); }
 
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T&& GetVal() const && noexcept { return std::move(*GetPtr<T>()); }
+        std::enable_if_t<is_exist_v<T>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T&& GetVal() const && noexcept { return std::move(*GetPtr<T>()); }
 
     /**
      * @brief Accesses to the pointer of object.
@@ -1306,68 +1087,19 @@ public:
      * opt.Destroy<Alt::Vector<usize>>();
      */
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE T* GetPtr() noexcept { return std::launder(reinterpret_cast<T*>(m_Storage.m_Memory)); }
+        std::enable_if_t<is_exist_v<T>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T* GetPtr() noexcept { return m_Storage.template GetPtr<T>(); }
 
     template <typename T,
-        std::enable_if_t<!is_unit_v<T> && is_compatible_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const T* GetPtr() const noexcept { return std::launder(reinterpret_cast<const T*>(m_Storage.m_Memory)); }
-
-    /*
-     * `Unit_t` case (just do nothing, from getters just return underlying pointer for
-     * compatibility with other methods). This is not necessary - compiler should optimize
-     * any empty `Unit_t` struct.
-     */
-    template <typename T, typename U = T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(U&&) noexcept {}
-
-    template <typename T, typename U = T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_FORCE_INLINE bool ConstructCloneOrMove(U&&) noexcept { return true; }
-
-    template <typename T, typename U = T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(U&&) noexcept {}
-
-    template <typename T, typename U = T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_FORCE_INLINE bool AssignCloneOrMove(U&&) noexcept { return true; }
-
-    template <typename T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_FORCE_INLINE void Destroy() noexcept {}
-
-    template <typename T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE clean_t<T>& GetVal() & noexcept { return *reinterpret_cast<clean_t<T>*>(m_Storage.m_Memory); }
-
-    template <typename T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const clean_t<T>& GetVal() const & noexcept { return *reinterpret_cast<const clean_t<T>*>(m_Storage.m_Memory); }
-
-    template <typename T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE clean_t<T>&& GetVal() && noexcept { return Unit_t{}; }
-
-    template <typename T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const clean_t<T>&& GetVal() const && noexcept { return Unit_t{}; }
-
-    template <typename T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE clean_t<T>* GetPtr() noexcept { return reinterpret_cast<clean_t<T>*>(m_Storage.m_Memory); }
-
-    template <typename T,
-        std::enable_if_t<is_unit_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const clean_t<T>* GetPtr() const noexcept { return reinterpret_cast<const clean_t<T>*>(m_Storage.m_Memory); }
+        std::enable_if_t<is_exist_v<T>>* = nullptr>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* GetPtr() const noexcept { return m_Storage.template GetPtr<T>(); }
 
 private:
 
     Storage m_Storage;
 };
 
-/*
+/**
  * Case with empty oneof - just use `Unit_t`
  */
 template <>

@@ -1,6 +1,6 @@
 ﻿#include "../IteratorTrait.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter0{
  *     []() {
  *         static usize cnt = 0;
@@ -40,7 +40,7 @@ public:
     using T = typename PrevIterT0::Type;
     using SelfT = Chain_<PrevIterT0, PrevIterT1>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_Iter0) {
 
@@ -63,7 +63,7 @@ public:
         return Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
 
@@ -92,7 +92,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -108,7 +108,7 @@ public:
     using T = typename PrevIterT0::Type;
     using SelfT = Chain_<PrevIterT0, PrevIterT1>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         if (Self().m_Iter1) {
 
@@ -131,7 +131,7 @@ public:
         return Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = 0;
 
@@ -160,7 +160,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -176,7 +176,7 @@ public:
     using T = typename PrevIterT0::Type;
     using SelfT = Chain_<PrevIterT0, PrevIterT1>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         const usize size0 = Self().m_Iter0
             ? Self().m_Iter0->GetSize()
@@ -189,7 +189,7 @@ public:
         return size0 + size1;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
 
         const bool isEmpty0 = Self().m_Iter0
             ? Self().m_Iter0->IsEmpty()
@@ -204,7 +204,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -255,14 +255,14 @@ public:
         , _IterDetails::return_if_exist_type_in_type_list_t<IIteratorExactSizeTrait<Type>, _IterDetails::type_list<PrevIterT0, PrevIterT1>, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Chain_(const PrevIterT0& iter0, const PrevIterT1& iter1) noexcept
+    ALT_FORCE_INLINE constexpr Chain_(const PrevIterT0& iter0, const PrevIterT1& iter1) noexcept
         : m_Iter0(iter0)
         , m_Iter1(iter1)
     {
         ALT_ASSERT((void*)&m_Iter0 != (void*)&m_Iter1);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_Iter0->GetSizeHint() + m_Iter1->GetSizeHint();
     }
 

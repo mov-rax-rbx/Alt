@@ -20,7 +20,7 @@ struct MallocWrapResult {
 template <typename T>
 ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> MallocWrap(
     const usize cnt,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const MallocBits bits = MallocBits::None
 ) noexcept {
 
@@ -41,7 +41,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> ReallocWrap(
     T* pMemoryOld,
     const usize cntOld,
     const usize cntNew,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const ReallocBits bits = ReallocBits::None
 ) noexcept {
 
@@ -60,7 +60,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> ReallocWrap(
 template <typename T>
 ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> AlignedMallocWrap(
     const usize cnt,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const MallocBits bits = MallocBits::None
 ) noexcept {
 
@@ -81,7 +81,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> AlignedReallocWrap(
     T* pMemoryOld,
     const usize cntOld,
     const usize cntNew,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const ReallocBits bits = ReallocBits::None
 ) noexcept {
 
@@ -101,7 +101,7 @@ template <typename T,
     std::enable_if_t<(alignof(T) <= MallocDefaultAlignment())>* = nullptr>
 ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> ChooseAlignedMallocWrap(
     const usize cnt,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const MallocBits bits = MallocBits::None
 ) noexcept {
 
@@ -121,7 +121,7 @@ template <typename T,
     std::enable_if_t<(alignof(T) > MallocDefaultAlignment())>* = nullptr>
 ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> ChooseAlignedMallocWrap(
     const usize cnt,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const MallocBits bits = MallocBits::None
 ) noexcept {
 
@@ -143,7 +143,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> ChooseAlignedReallo
     T* pMemoryOld,
     const usize cntOld,
     const usize cntNew,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const ReallocBits bits = ReallocBits::None
 ) noexcept {
 
@@ -165,7 +165,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Optional<MallocWrapResult<T>> ChooseAlignedReallo
     T* pMemoryOld,
     const usize cntOld,
     const usize cntNew,
-    const usize wrapCnt = Num::Desc<usize>::Max() / sizeof(T),
+    const usize wrapCnt = Desc<usize>::Max() / sizeof(T),
     const ReallocBits bits = ReallocBits::None
 ) noexcept {
 

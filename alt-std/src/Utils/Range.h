@@ -55,12 +55,12 @@ struct __is_trivially_reallocatable__<Range<T>>
  * @example
  * 
  * Alt::RangeUsize range0{ 0, 5 };
- * assert(range0.Size() == 5);
+ * assert(range0.GetSize() == 5);
  * assert(!range0.IsEmpty());
  * 
  * Alt::Rangef32 range1{ 10.0f, 10.0f };
  * assert(range1.IsEmpty());
- * assert(range1.Size() == 0);
+ * assert(range1.GetSize() == 0);
  */
 template <typename T>
 struct Range {
@@ -71,12 +71,12 @@ struct Range {
     /**
      * @brief Default empty range constructor.
      */
-    ALT_FORCE_INLINE Range() noexcept = default;
+    ALT_FORCE_INLINE constexpr Range() noexcept = default;
 
     /**
      * @brief Range constructor from [begin, end).
      */
-    ALT_FORCE_INLINE Range(const T& begin, const T& end) noexcept
+    ALT_FORCE_INLINE constexpr Range(const T& begin, const T& end) noexcept
         : begin(begin)
         , end(end)
     {}
@@ -85,7 +85,7 @@ struct Range {
      * @brief Returns the number of elements contained within the range.
      * @return The count of elements as a usize.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize Size() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return static_cast<usize>(end - begin);
     }
 
@@ -93,15 +93,23 @@ struct Range {
      * @brief Checks if the range contains no elements.
      * @return True if the range is empty (begin == end), false otherwise.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return end == begin;
+    }
+
+    /**
+     * @brief Checks if the range contains no elements.
+     * @return True if the range is contains elements , false otherwise.
+     */
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsPopulated() const noexcept {
+        return end != begin;
     }
 
     /**
      * @brief Creates a new iterator for the current range.
      * @return An `RangeIterator` object initialized to the start of the range.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE RangeIterator<T> GetIterator() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr RangeIterator<T> GetIterator() const noexcept {
 
         return RangeIterator<T>{ *this };
     }
@@ -121,7 +129,7 @@ public:
      * @brief Constructs an iterator from a specific range.
      * @param range The Range object to copy boundaries from.
      */
-    ALT_FORCE_INLINE RangeIterator(const Range<T>& range) noexcept
+    ALT_FORCE_INLINE constexpr RangeIterator(const Range<T>& range) noexcept
         : m_Range(range)
     {}
 
@@ -129,7 +137,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
 
         return GetSize();
     }
@@ -146,7 +154,7 @@ public:
      * assert(*it.Next() == 1);
      * assert(it.Next() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (m_Range.begin == m_Range.end) {
 
@@ -173,11 +181,11 @@ public:
      * assert(skipped == 5);
      * assert(it.GetSize() == 5);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, m_Range.Size());
+        const usize advance = Min(advance_, m_Range.GetSize());
 
-        ALT_ASSERT(advance <= static_cast<usize>(Num::Desc<T>::Max()));
+        ALT_ASSERT(advance <= static_cast<usize>(Desc<T>::Max()));
         m_Range.begin += static_cast<T>(advance);
 
         return advance;
@@ -195,7 +203,7 @@ public:
      * assert(*it.NextBack() == 0);
      * assert(it.NextBack() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         if (m_Range.begin == m_Range.end) {
 
@@ -221,11 +229,11 @@ public:
      * assert(skipped == 3);
      * assert(it.GetSize() == 7);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, m_Range.Size());
+        const usize advance = Min(advance_, m_Range.GetSize());
 
-        ALT_ASSERT(advance <= static_cast<usize>(Num::Desc<T>::Max()));
+        ALT_ASSERT(advance <= static_cast<usize>(Desc<T>::Max()));
         m_Range.end -= static_cast<T>(advance);
 
         return advance;
@@ -235,15 +243,15 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's range.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
-        return m_Range.Size();
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
+        return m_Range.GetSize();
     }
 
     /**
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_Range.IsEmpty();
     }
 

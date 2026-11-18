@@ -135,7 +135,7 @@ public:
 
         BlockIDAndLocalID result{};
 
-        result.blockID = Num::Log2(id);
+        result.blockID = Log2(id);
         const usize blockPrevSize = static_cast<usize>(1) << result.blockID;
 
         result.localID = id;
@@ -228,7 +228,7 @@ public:
     ALT_NODISCARD Optional<AllocateBytesResult> AllocateBytes() noexcept {
         iferr_scope;
 
-        const usize blockID = Num::Count0BitsRight(m_VacantBlocks);
+        const usize blockID = Count0BitsRight(m_VacantBlocks);
         if (blockID >= BITS - 1) {
             return Nullopt;
         }
@@ -344,7 +344,7 @@ public:
      */
     Optional<usize> DeallocateBytesAllBlocksUnused() noexcept {
 
-        const usize numBlocksToExcept = BITS - Num::Count0BitsLeft(m_BlocksWhichHaveAtLeastOneElement);
+        const usize numBlocksToExcept = BITS - Count0BitsLeft(m_BlocksWhichHaveAtLeastOneElement);
         const bool isDeallocateBlocks = numBlocksToExcept < m_BlocksSize;
 
         DeallocateBytesAllBlocksExcept(numBlocksToExcept);
@@ -357,7 +357,7 @@ public:
      */
     Optional<usize> DeallocateBytesAllBlocksUnusedExceptFirstUnused() noexcept {
 
-        const usize numBlocksToExcept = BITS - Num::Count0BitsLeft(m_BlocksWhichHaveAtLeastOneElement) + 1;
+        const usize numBlocksToExcept = BITS - Count0BitsLeft(m_BlocksWhichHaveAtLeastOneElement) + 1;
         const bool isDeallocateBlocks = numBlocksToExcept < m_BlocksSize;
 
         DeallocateBytesAllBlocksExcept(numBlocksToExcept);
@@ -381,7 +381,7 @@ public:
      */
     void DeallocateBytesAllBlocksExcept(usize numBlocksToExcept) noexcept {
 
-        numBlocksToExcept = Num::Min(numBlocksToExcept, m_BlocksSize);
+        numBlocksToExcept = Min(numBlocksToExcept, m_BlocksSize);
 
         for (usize iBlock = numBlocksToExcept; iBlock < m_BlocksSize; ++iBlock) {
 
@@ -401,7 +401,7 @@ public:
      */
     void ReleaseAllBlocksExcept(usize numBlocksToExcept) noexcept {
 
-        numBlocksToExcept = Num::Min(numBlocksToExcept, m_BlocksSize);
+        numBlocksToExcept = Min(numBlocksToExcept, m_BlocksSize);
 
         for (usize iBlock = numBlocksToExcept; iBlock < m_BlocksSize; ++iBlock) {
 
@@ -489,7 +489,7 @@ public:
             m_BlockID = decomposed.blockID;
             m_LocalID = decomposed.localID;
 
-            const usize blockSize = Num::Min(GetBlockSize(decomposed.blockID) - decomposed.localID, m_Size);
+            const usize blockSize = Min(GetBlockSize(decomposed.blockID) - decomposed.localID, m_Size);
             m_SizeCorrection = blockSize + decomposed.localID;
             m_Size -= blockSize;
 
@@ -541,7 +541,7 @@ public:
 
             for (;;) {
 
-                const usize localAdvance = Num::Min(static_cast<usize>(m_pMemoryEnd - m_pMemory) / m_SizeOf, advance);
+                const usize localAdvance = Min(static_cast<usize>(m_pMemoryEnd - m_pMemory) / m_SizeOf, advance);
 
                 advance -= localAdvance;
                 result += localAdvance;
@@ -581,7 +581,7 @@ public:
 
         ALT_FORCE_INLINE void UpdateStateForNextBlock() noexcept {
 
-            const usize blockID = Num::Count0BitsRight(m_BlocksWhichHaveAtLeastOneElement);
+            const usize blockID = Count0BitsRight(m_BlocksWhichHaveAtLeastOneElement);
             ALT_ASSERT(blockID < BITS - 1);
 
             m_BlocksWhichHaveAtLeastOneElement &= ~(static_cast<usize>(1) << blockID);
@@ -589,7 +589,7 @@ public:
             m_BlockID = blockID;
             m_LocalID = 0;
 
-            const usize blockSize = Num::Min(GetBlockSize(blockID), m_Size);
+            const usize blockSize = Min(GetBlockSize(blockID), m_Size);
             m_SizeCorrection = blockSize;
             m_Size -= blockSize;
 
@@ -648,8 +648,8 @@ private:
 
         Block block{};
 
-        usize totalSizeInBytes = Num::MulOverflowCheck(sizeInElements, elementSizeOf) iferr_return Nullopt;
-        totalSizeInBytes = Num::AddOverflowCheck(totalSizeInBytes, elementAlignOf - 1) iferr_return Nullopt;
+        usize totalSizeInBytes = MulOverflowCheck(sizeInElements, elementSizeOf) iferr_return Nullopt;
+        totalSizeInBytes = AddOverflowCheck(totalSizeInBytes, elementAlignOf - 1) iferr_return Nullopt;
 
         u8* pMemory = Memory::Malloc<u8>(totalSizeInBytes) iferr_return Nullopt;
 
@@ -669,7 +669,7 @@ private:
     }
 
     ALT_FORCE_INLINE EntityPoolAllocatorImpl(Rule5Move_t, EntityPoolAllocatorImpl& rhs) noexcept
-        : m_VacantBlocks(Exchange(rhs.m_VacantBlocks, Num::Desc<usize>::Max()))
+        : m_VacantBlocks(Exchange(rhs.m_VacantBlocks, Desc<usize>::Max()))
         , m_BlocksWhichHaveAtLeastOneElement(Exchange(rhs.m_BlocksWhichHaveAtLeastOneElement, 0))
         , m_Blocks(Exchange(rhs.m_Blocks, Blocks{}))
         , m_BlocksSize(Exchange(rhs.m_BlocksSize, 0))
@@ -677,7 +677,7 @@ private:
 
     ALT_FORCE_INLINE void Assign(Rule5Move_t, EntityPoolAllocatorImpl& rhs) noexcept {
 
-        m_VacantBlocks = Exchange(rhs.m_VacantBlocks, Num::Desc<usize>::Max());
+        m_VacantBlocks = Exchange(rhs.m_VacantBlocks, Desc<usize>::Max());
         m_BlocksWhichHaveAtLeastOneElement = Exchange(rhs.m_BlocksWhichHaveAtLeastOneElement, 0);
         m_Blocks = Exchange(rhs.m_Blocks, Blocks{});
         m_BlocksSize = Exchange(rhs.m_BlocksSize, 0);
@@ -694,7 +694,7 @@ private:
             DeallocateBlock(m_Blocks.blocks[iBlock]);
         }
 
-        m_VacantBlocks = Num::Desc<usize>::Max();
+        m_VacantBlocks = Desc<usize>::Max();
         m_BlocksWhichHaveAtLeastOneElement = 0;
 
         m_BlocksSize = 0;
@@ -702,12 +702,12 @@ private:
 
 private:
 
-    constexpr static usize BITS = Num::Desc<usize>::Bits();
+    constexpr static usize BITS = Desc<usize>::Bits();
 
     constexpr static usize BLOCK_ID_NONE = BITS;
-    constexpr static usize BLOCKS_LOG2 = Num::Log2Constexpr(BITS);
+    constexpr static usize BLOCKS_LOG2 = Log2(BITS);
 
-    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Num::Count0BitsRightConstexpr(BITS);
+    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Count0BitsRight(BITS);
     constexpr static usize BITS_TO_BITIDX_IN_WORD_MASK = BITS - 1;
 
     struct Block {
@@ -725,7 +725,7 @@ private:
         Block blocks[BITS - 1]{};
     };
 
-    usize m_VacantBlocks = Num::Desc<usize>::Max();
+    usize m_VacantBlocks = Desc<usize>::Max();
     usize m_BlocksWhichHaveAtLeastOneElement = 0;
 
     Blocks m_Blocks;
@@ -768,11 +768,11 @@ public:
     ALT_FORCE_INLINE EntityPoolAllocator() noexcept = default;
 
     ALT_FORCE_INLINE usize GetElementSizeOf() const noexcept {
-        return Num::Max(sizeof(T), alignof(T), sizeof(uptr));
+        return Max(sizeof(T), alignof(T), sizeof(uptr));
     }
 
     ALT_FORCE_INLINE usize GetElementAlignOf() const noexcept {
-        return Num::Max(alignof(T), alignof(uptr));
+        return Max(alignof(T), alignof(uptr));
     }
 
     struct AllocateResult {
@@ -858,8 +858,8 @@ public:
 
     ALT_FORCE_INLINE EntityPoolAllocatorDynamic(const MemoryDesc& desc) noexcept {
 
-        m_Desc.elementAlignOf = Num::Max(desc.elementAlignOf, sizeof(uptr));
-        m_Desc.elementSizeOf = Num::Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
+        m_Desc.elementAlignOf = Max(desc.elementAlignOf, sizeof(uptr));
+        m_Desc.elementSizeOf = Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
     }
 
     EntityPoolAllocatorDynamic(EntityPoolAllocatorDynamic&& rhs) noexcept

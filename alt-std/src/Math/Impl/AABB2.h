@@ -18,25 +18,25 @@ public:
 
     using Vec2 = Vec2<T>;
 
-    ALT_FORCE_INLINE AABB2() noexcept
-        : m_Min(Num::Desc<T>::Max())
-        , m_Max(Num::Desc<T>::Lowest())
+    ALT_FORCE_INLINE constexpr AABB2() noexcept
+        : m_Min(Desc<T>::Max())
+        , m_Max(Desc<T>::Lowest())
     {}
 
-    ALT_FORCE_INLINE AABB2(const Vec2& min, const Vec2& max) noexcept
+    ALT_FORCE_INLINE constexpr AABB2(const Vec2& min, const Vec2& max) noexcept
         : m_Min(min)
         , m_Max(max)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE static AABB2 Empty() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static AABB2 Empty() noexcept {
 
         return AABB2{
-            Vec2{ Num::Desc<T>::Max() },
-            Vec2{ Num::Desc<T>::Lowest() },
+            Vec2{ Desc<T>::Max() },
+            Vec2{ Desc<T>::Lowest() },
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static AABB2 Zero() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static AABB2 Zero() noexcept {
 
         return AABB2{
             Vec2{ static_cast<T>(0.0) },
@@ -44,23 +44,23 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const Vec2& GetMin() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const Vec2& GetMin() const noexcept {
         return m_Min;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const Vec2& GetMax() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const Vec2& GetMax() const noexcept {
         return m_Max;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2 GetCenter() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2 GetCenter() const noexcept {
         return m_Max * static_cast<T>(0.5) + m_Min * static_cast<T>(0.5);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2 GetSpan() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2 GetSpan() const noexcept {
         return m_Max - m_Min;
     }
 
-    ALT_FORCE_INLINE void Include(const Vec2& p) noexcept {
+    ALT_FORCE_INLINE constexpr void Include(const Vec2& p) noexcept {
 
         m_Min.x = Min(m_Min.x, p.x);
         m_Min.y = Min(m_Min.y, p.y);
@@ -69,33 +69,33 @@ public:
         m_Max.y = Max(m_Max.y, p.y);
     }
 
-    ALT_FORCE_INLINE AABB2 operator+(const Vec2& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB2 operator+(const Vec2& offset) const noexcept {
         return AABB2(m_Min + offset, m_Max + offset);
     }
 
-    ALT_FORCE_INLINE AABB2& operator+=(const Vec2& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB2& operator+=(const Vec2& offset) const noexcept {
 
         *this = AABB2(m_Min + offset, m_Max + offset);
         return *this;
     }
 
-    ALT_FORCE_INLINE AABB2 operator-(const Vec2& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB2 operator-(const Vec2& offset) const noexcept {
         return AABB2(m_Min - offset, m_Max - offset);
     }
 
-    ALT_FORCE_INLINE AABB2& operator-=(const Vec2& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB2& operator-=(const Vec2& offset) const noexcept {
 
         *this = AABB2(m_Min - offset, m_Max - offset);
         return *this;
     }
 
-    ALT_FORCE_INLINE void ExtendByOffset(const Vec2& offset) noexcept {
+    ALT_FORCE_INLINE constexpr void ExtendByOffset(const Vec2& offset) noexcept {
 
         m_Min -= offset;
         m_Max += offset;
     }
 
-    ALT_FORCE_INLINE void ExtendByOffset_Max(const Vec2& offset) noexcept {
+    ALT_FORCE_INLINE constexpr void ExtendByOffset_Max(const Vec2& offset) noexcept {
 
         m_Max += offset;
     }

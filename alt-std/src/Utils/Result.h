@@ -311,13 +311,13 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageDestruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ResultStorageCore<T, E>
 {
-    ResultStorageDestruct() noexcept = default;
+    constexpr ResultStorageDestruct() noexcept = default;
 
-    ResultStorageDestruct(const ResultStorageDestruct&) noexcept = default;
-    ResultStorageDestruct& operator=(const ResultStorageDestruct&) noexcept = default;
+    constexpr ResultStorageDestruct(const ResultStorageDestruct&) noexcept = default;
+    constexpr ResultStorageDestruct& operator=(const ResultStorageDestruct&) noexcept = default;
 
-    ResultStorageDestruct(ResultStorageDestruct&&) noexcept = default;
-    ResultStorageDestruct& operator=(ResultStorageDestruct&&) noexcept = default;
+    constexpr ResultStorageDestruct(ResultStorageDestruct&&) noexcept = default;
+    constexpr ResultStorageDestruct& operator=(ResultStorageDestruct&&) noexcept = default;
 
     ~ResultStorageDestruct() noexcept = delete;
 };
@@ -326,13 +326,13 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageDestruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ResultStorageCore<T, E>
 {
-    ResultStorageDestruct() noexcept = default;
+    constexpr ResultStorageDestruct() noexcept = default;
 
-    ResultStorageDestruct(const ResultStorageDestruct&) noexcept = default;
-    ResultStorageDestruct& operator=(const ResultStorageDestruct&) noexcept = default;
+    constexpr ResultStorageDestruct(const ResultStorageDestruct&) noexcept = default;
+    constexpr ResultStorageDestruct& operator=(const ResultStorageDestruct&) noexcept = default;
 
-    ResultStorageDestruct(ResultStorageDestruct&&) noexcept = default;
-    ResultStorageDestruct& operator=(ResultStorageDestruct&&) noexcept = default;
+    constexpr ResultStorageDestruct(ResultStorageDestruct&&) noexcept = default;
+    constexpr ResultStorageDestruct& operator=(ResultStorageDestruct&&) noexcept = default;
 
     ~ResultStorageDestruct() noexcept = default;
 };
@@ -341,13 +341,13 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageDestruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ResultStorageCore<T, E>
 {
-    ResultStorageDestruct() noexcept = default;
+    constexpr ResultStorageDestruct() noexcept = default;
 
-    ResultStorageDestruct(const ResultStorageDestruct&) noexcept = default;
-    ResultStorageDestruct& operator=(const ResultStorageDestruct&) noexcept = default;
+    constexpr ResultStorageDestruct(const ResultStorageDestruct&) noexcept = default;
+    constexpr ResultStorageDestruct& operator=(const ResultStorageDestruct&) noexcept = default;
 
-    ResultStorageDestruct(ResultStorageDestruct&&) noexcept = default;
-    ResultStorageDestruct& operator=(ResultStorageDestruct&&) noexcept = default;
+    constexpr ResultStorageDestruct(ResultStorageDestruct&&) noexcept = default;
+    constexpr ResultStorageDestruct& operator=(ResultStorageDestruct&&) noexcept = default;
 
     ~ResultStorageDestruct() noexcept {
 
@@ -367,12 +367,12 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageMoveAssign<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ResultStorageDestruct<SelfT, T, E>
 {
-    ResultStorageMoveAssign() noexcept = default;
+    constexpr ResultStorageMoveAssign() noexcept = default;
 
-    ResultStorageMoveAssign(const ResultStorageMoveAssign&) noexcept = default;
-    ResultStorageMoveAssign& operator=(const ResultStorageMoveAssign&) noexcept = default;
+    constexpr ResultStorageMoveAssign(const ResultStorageMoveAssign&) noexcept = default;
+    constexpr ResultStorageMoveAssign& operator=(const ResultStorageMoveAssign&) noexcept = default;
 
-    ResultStorageMoveAssign(ResultStorageMoveAssign&&) noexcept = default;
+    constexpr ResultStorageMoveAssign(ResultStorageMoveAssign&&) noexcept = default;
     ResultStorageMoveAssign& operator=(ResultStorageMoveAssign&&) noexcept = delete;
 };
 
@@ -380,27 +380,27 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageMoveAssign<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ResultStorageDestruct<SelfT, T, E>
 {
-    ResultStorageMoveAssign() noexcept = default;
+    constexpr ResultStorageMoveAssign() noexcept = default;
 
-    ResultStorageMoveAssign(const ResultStorageMoveAssign&) noexcept = default;
-    ResultStorageMoveAssign& operator=(const ResultStorageMoveAssign&) noexcept = default;
+    constexpr ResultStorageMoveAssign(const ResultStorageMoveAssign&) noexcept = default;
+    constexpr ResultStorageMoveAssign& operator=(const ResultStorageMoveAssign&) noexcept = default;
 
-    ResultStorageMoveAssign(ResultStorageMoveAssign&&) noexcept = default;
-    ResultStorageMoveAssign& operator=(ResultStorageMoveAssign&&) noexcept = default;
+    constexpr ResultStorageMoveAssign(ResultStorageMoveAssign&&) noexcept = default;
+    constexpr ResultStorageMoveAssign& operator=(ResultStorageMoveAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, typename E>
 struct ResultStorageMoveAssign<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ResultStorageDestruct<SelfT, T, E>
 {
-    ResultStorageMoveAssign() noexcept = default;
+    constexpr ResultStorageMoveAssign() noexcept = default;
 
-    ResultStorageMoveAssign(const ResultStorageMoveAssign&) noexcept = default;
-    ResultStorageMoveAssign& operator=(const ResultStorageMoveAssign&) noexcept = default;
+    constexpr ResultStorageMoveAssign(const ResultStorageMoveAssign&) noexcept = default;
+    constexpr ResultStorageMoveAssign& operator=(const ResultStorageMoveAssign&) noexcept = default;
 
-    ResultStorageMoveAssign(ResultStorageMoveAssign&&) noexcept = default;
+    constexpr ResultStorageMoveAssign(ResultStorageMoveAssign&&) noexcept = default;
 
-    ResultStorageMoveAssign& operator=(ResultStorageMoveAssign&& rhs) noexcept {
+    constexpr ResultStorageMoveAssign& operator=(ResultStorageMoveAssign&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
         return *this;
@@ -419,43 +419,43 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageMoveConstruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ResultStorageMoveAssign<SelfT, T, E>
 {
-    ResultStorageMoveConstruct() noexcept = default;
+    constexpr ResultStorageMoveConstruct() noexcept = default;
 
-    ResultStorageMoveConstruct(const ResultStorageMoveConstruct&) noexcept = default;
-    ResultStorageMoveConstruct& operator=(const ResultStorageMoveConstruct&) noexcept = default;
+    constexpr ResultStorageMoveConstruct(const ResultStorageMoveConstruct&) noexcept = default;
+    constexpr ResultStorageMoveConstruct& operator=(const ResultStorageMoveConstruct&) noexcept = default;
 
     ResultStorageMoveConstruct(ResultStorageMoveConstruct&&) noexcept = delete;
-    ResultStorageMoveConstruct& operator=(ResultStorageMoveConstruct&&) noexcept = default;
+    constexpr ResultStorageMoveConstruct& operator=(ResultStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, typename E>
 struct ResultStorageMoveConstruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ResultStorageMoveAssign<SelfT, T, E>
 {
-    ResultStorageMoveConstruct() noexcept = default;
+    constexpr ResultStorageMoveConstruct() noexcept = default;
 
-    ResultStorageMoveConstruct(const ResultStorageMoveConstruct&) noexcept = default;
-    ResultStorageMoveConstruct& operator=(const ResultStorageMoveConstruct&) noexcept = default;
+    constexpr ResultStorageMoveConstruct(const ResultStorageMoveConstruct&) noexcept = default;
+    constexpr ResultStorageMoveConstruct& operator=(const ResultStorageMoveConstruct&) noexcept = default;
 
-    ResultStorageMoveConstruct(ResultStorageMoveConstruct&&) noexcept = default;
-    ResultStorageMoveConstruct& operator=(ResultStorageMoveConstruct&&) noexcept = default;
+    constexpr ResultStorageMoveConstruct(ResultStorageMoveConstruct&&) noexcept = default;
+    constexpr ResultStorageMoveConstruct& operator=(ResultStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, typename E>
 struct ResultStorageMoveConstruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ResultStorageMoveAssign<SelfT, T, E>
 {
-    ResultStorageMoveConstruct() noexcept = default;
+    constexpr ResultStorageMoveConstruct() noexcept = default;
 
-    ResultStorageMoveConstruct(const ResultStorageMoveConstruct&) noexcept = default;
-    ResultStorageMoveConstruct& operator=(const ResultStorageMoveConstruct&) noexcept = default;
+    constexpr ResultStorageMoveConstruct(const ResultStorageMoveConstruct&) noexcept = default;
+    constexpr ResultStorageMoveConstruct& operator=(const ResultStorageMoveConstruct&) noexcept = default;
 
-    ResultStorageMoveConstruct(ResultStorageMoveConstruct&& rhs) noexcept {
+    constexpr ResultStorageMoveConstruct(ResultStorageMoveConstruct&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    ResultStorageMoveConstruct& operator=(ResultStorageMoveConstruct&&) noexcept = default;
+    constexpr ResultStorageMoveConstruct& operator=(ResultStorageMoveConstruct&&) noexcept = default;
 };
 
 template <
@@ -470,44 +470,44 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageCopyAssign<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ResultStorageMoveConstruct<SelfT, T, E>
 {
-    ResultStorageCopyAssign() noexcept = default;
+    constexpr ResultStorageCopyAssign() noexcept = default;
 
-    ResultStorageCopyAssign(const ResultStorageCopyAssign&) noexcept = default;
+    constexpr ResultStorageCopyAssign(const ResultStorageCopyAssign&) noexcept = default;
     ResultStorageCopyAssign& operator=(const ResultStorageCopyAssign&) noexcept = delete;
 
-    ResultStorageCopyAssign(ResultStorageCopyAssign&&) noexcept = default;
-    ResultStorageCopyAssign& operator=(ResultStorageCopyAssign&&) noexcept = default;
+    constexpr ResultStorageCopyAssign(ResultStorageCopyAssign&&) noexcept = default;
+    constexpr ResultStorageCopyAssign& operator=(ResultStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, typename E>
 struct ResultStorageCopyAssign<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ResultStorageMoveConstruct<SelfT, T, E>
 {
-    ResultStorageCopyAssign() noexcept = default;
+    constexpr ResultStorageCopyAssign() noexcept = default;
 
-    ResultStorageCopyAssign(const ResultStorageCopyAssign&) noexcept = default;
-    ResultStorageCopyAssign& operator=(const ResultStorageCopyAssign&) noexcept = default;
+    constexpr ResultStorageCopyAssign(const ResultStorageCopyAssign&) noexcept = default;
+    constexpr ResultStorageCopyAssign& operator=(const ResultStorageCopyAssign&) noexcept = default;
 
-    ResultStorageCopyAssign(ResultStorageCopyAssign&&) noexcept = default;
-    ResultStorageCopyAssign& operator=(ResultStorageCopyAssign&&) noexcept = default;
+    constexpr ResultStorageCopyAssign(ResultStorageCopyAssign&&) noexcept = default;
+    constexpr ResultStorageCopyAssign& operator=(ResultStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, typename E>
 struct ResultStorageCopyAssign<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ResultStorageMoveConstruct<SelfT, T, E>
 {
-    ResultStorageCopyAssign() noexcept = default;
+    constexpr ResultStorageCopyAssign() noexcept = default;
 
-    ResultStorageCopyAssign(const ResultStorageCopyAssign&) noexcept = default;
+    constexpr ResultStorageCopyAssign(const ResultStorageCopyAssign&) noexcept = default;
 
-    ResultStorageCopyAssign& operator=(const ResultStorageCopyAssign& rhs) noexcept {
+    constexpr ResultStorageCopyAssign& operator=(const ResultStorageCopyAssign& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    ResultStorageCopyAssign(ResultStorageCopyAssign&&) noexcept = default;
-    ResultStorageCopyAssign& operator=(ResultStorageCopyAssign&&) noexcept = default;
+    constexpr ResultStorageCopyAssign(ResultStorageCopyAssign&&) noexcept = default;
+    constexpr ResultStorageCopyAssign& operator=(ResultStorageCopyAssign&&) noexcept = default;
 };
 
 template <
@@ -522,43 +522,43 @@ template <typename SelfT, typename T, typename E>
 struct ResultStorageCopyConstruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ResultStorageCopyAssign<SelfT, T, E>
 {
-    ResultStorageCopyConstruct() noexcept = default;
+    constexpr ResultStorageCopyConstruct() noexcept = default;
 
     ResultStorageCopyConstruct(const ResultStorageCopyConstruct&) noexcept = delete;
-    ResultStorageCopyConstruct& operator=(const ResultStorageCopyConstruct&) noexcept = default;
+    constexpr ResultStorageCopyConstruct& operator=(const ResultStorageCopyConstruct&) noexcept = default;
 
-    ResultStorageCopyConstruct(ResultStorageCopyConstruct&&) noexcept = default;
-    ResultStorageCopyConstruct& operator=(ResultStorageCopyConstruct&&) noexcept = default;
+    constexpr ResultStorageCopyConstruct(ResultStorageCopyConstruct&&) noexcept = default;
+    constexpr ResultStorageCopyConstruct& operator=(ResultStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, typename E>
 struct ResultStorageCopyConstruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ResultStorageCopyAssign<SelfT, T, E>
 {
-    ResultStorageCopyConstruct() noexcept = default;
+    constexpr ResultStorageCopyConstruct() noexcept = default;
 
-    ResultStorageCopyConstruct(const ResultStorageCopyConstruct&) noexcept = default;
-    ResultStorageCopyConstruct& operator=(const ResultStorageCopyConstruct&) noexcept = default;
+    constexpr ResultStorageCopyConstruct(const ResultStorageCopyConstruct&) noexcept = default;
+    constexpr ResultStorageCopyConstruct& operator=(const ResultStorageCopyConstruct&) noexcept = default;
 
-    ResultStorageCopyConstruct(ResultStorageCopyConstruct&&) noexcept = default;
-    ResultStorageCopyConstruct& operator=(ResultStorageCopyConstruct&&) noexcept = default;
+    constexpr ResultStorageCopyConstruct(ResultStorageCopyConstruct&&) noexcept = default;
+    constexpr ResultStorageCopyConstruct& operator=(ResultStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, typename E>
 struct ResultStorageCopyConstruct<SelfT, T, E, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ResultStorageCopyAssign<SelfT, T, E>
 {
-    ResultStorageCopyConstruct() noexcept = default;
+    constexpr ResultStorageCopyConstruct() noexcept = default;
 
-    ResultStorageCopyConstruct(const ResultStorageCopyConstruct& rhs) noexcept {
+    constexpr ResultStorageCopyConstruct(const ResultStorageCopyConstruct& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    ResultStorageCopyConstruct& operator=(const ResultStorageCopyConstruct&) noexcept = default;
+    constexpr ResultStorageCopyConstruct& operator=(const ResultStorageCopyConstruct&) noexcept = default;
 
-    ResultStorageCopyConstruct(ResultStorageCopyConstruct&&) noexcept = default;
-    ResultStorageCopyConstruct& operator=(ResultStorageCopyConstruct&&) noexcept = default;
+    constexpr ResultStorageCopyConstruct(ResultStorageCopyConstruct&&) noexcept = default;
+    constexpr ResultStorageCopyConstruct& operator=(ResultStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename T, typename E, ResultLayoutTrait = result_layout_trait_v<T, E>>
@@ -582,18 +582,18 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
     template <typename U>
     constexpr static bool is_assignable_inner_err_v = std::is_assignable_v<E&, U> && std::is_constructible_v<E, U>;
 
-    ResultStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr ResultStorage() noexcept = default;
 
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_unit_v<U>>* = nullptr>
-    ResultStorage(Ok_t) noexcept {
+    ALT_FORCE_INLINE constexpr ResultStorage(Ok_t) noexcept {
 
         this->m_IsOk = true;
     }
 
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_unit_v<U>>* = nullptr>
-    void Assign(Ok_t) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Ok_t) noexcept {
 
         if (!this->m_IsOk) {
 
@@ -604,12 +604,12 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename U = E,
         std::enable_if_t<TypeTraits::is_unit_v<U>>* = nullptr>
-    ResultStorage(Err_t) noexcept
+    ALT_FORCE_INLINE constexpr ResultStorage(Err_t) noexcept
     {}
 
     template <typename U = E,
         std::enable_if_t<TypeTraits::is_unit_v<U>>* = nullptr>
-    void Assign(Err_t) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Err_t) noexcept {
 
         if (this->m_IsOk) {
 
@@ -619,14 +619,14 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
     }
 
     template <typename U = T>
-    void Construct(InnerOk_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerOk_t, U&& val) noexcept {
 
         this->m_Val.template Construct<T>(std::forward<U>(val));
         this->m_IsOk = true;
     }
 
     template <typename U = T>
-    void Assign(InnerOk_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerOk_t, U&& rhs) noexcept {
 
         if (this->m_IsOk) {
 
@@ -642,7 +642,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
     }
 
     template <typename U = T>
-    bool ConstructCloneOrMove(InnerOk_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(InnerOk_t, U&& val) noexcept {
 
         const bool isOk = this->m_Val.template ConstructCloneOrMove<T>(std::forward<U>(val));
         this->m_IsOk = isOk;
@@ -651,14 +651,14 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
     }
 
     template <typename U = E>
-    void Construct(InnerErr_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerErr_t, U&& val) noexcept {
 
         this->m_Val.template Construct<E>(std::forward<U>(val));
         this->m_IsOk = false;
     }
 
     template <typename U = E>
-    void Assign(InnerErr_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerErr_t, U&& rhs) noexcept {
 
         if (this->m_IsOk) {
 
@@ -674,7 +674,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
     }
 
     template <typename U = T>
-    bool ConstructCloneOrMove(InnerErr_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(InnerErr_t, U&& val) noexcept {
 
         const bool isOk = this->m_Val.template ConstructCloneOrMove<E>(std::forward<U>(val));
         this->m_IsOk = false;
@@ -684,7 +684,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Construct(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
 
         const bool isOk = storage.IsOk();
         if (isOk) {
@@ -701,7 +701,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Construct(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
 
         const bool isOk = storage.IsOk();
         if (!isOk) {
@@ -714,7 +714,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Construct(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
 
         const bool isOk = storage.IsOk();
         if (isOk) {
@@ -727,7 +727,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Construct(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
 
         const bool isOk = storage.IsOk();
         if (isOk) {
@@ -744,7 +744,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Construct(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
 
         const bool isOk = storage.IsOk();
         if (!isOk) {
@@ -757,7 +757,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Construct(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
 
         const bool isOk = storage.IsOk();
         if (isOk) {
@@ -770,7 +770,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Assign(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -784,7 +784,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Assign(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -798,7 +798,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Assign(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -812,7 +812,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Assign(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -826,7 +826,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Assign(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -840,7 +840,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && TypeTraits::is_unit_v<E1>>* = nullptr>
-    void Assign(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -852,7 +852,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
         }
     }
 
-    void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         if (this->m_IsOk) {
 
@@ -866,7 +866,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    bool ConstructClone(const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructClone(const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -880,7 +880,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    bool ConstructClone(const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructClone(const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -895,7 +895,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && TypeTraits::is_unit_v<E1>>* = nullptr>
-    bool ConstructClone(const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructClone(const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -910,7 +910,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    bool AssignClone(const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignClone(const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -940,7 +940,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<TypeTraits::is_unit_v<T1> && !TypeTraits::is_unit_v<E1>>* = nullptr>
-    bool AssignClone(const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignClone(const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -963,7 +963,7 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
 
     template <typename T1 = T, typename E1 = E,
         std::enable_if_t<!TypeTraits::is_unit_v<T1> && TypeTraits::is_unit_v<E1>>* = nullptr>
-    bool AssignClone(const ResultStorage<T1, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignClone(const ResultStorage<T1, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -984,33 +984,33 @@ struct ResultStorage<T, E, ResultLayoutTrait::Value>
         return true;
     }
 
-    T& GetOk() & noexcept { return this->m_Val.template GetVal<T>(); }
-    const T& GetOk() const & noexcept { return this->m_Val.template GetVal<T>(); }
-    T&& GetOk() && noexcept { return std::move(this->m_Val.template GetVal<T>()); }
-    const T&& GetOk() const && noexcept { return std::move(this->m_Val.template GetVal<T>()); }
+    ALT_FORCE_INLINE constexpr T& GetOk() & noexcept { return this->m_Val.template GetVal<T>(); }
+    ALT_FORCE_INLINE constexpr const T& GetOk() const & noexcept { return this->m_Val.template GetVal<T>(); }
+    ALT_FORCE_INLINE constexpr T&& GetOk() && noexcept { return std::move(this->m_Val.template GetVal<T>()); }
+    ALT_FORCE_INLINE constexpr const T&& GetOk() const && noexcept { return std::move(this->m_Val.template GetVal<T>()); }
 
-    E& GetErr() & noexcept { return this->m_Val.template GetVal<E>(); }
-    const E& GetErr() const & noexcept { return this->m_Val.template GetVal<E>(); }
-    E&& GetErr() && noexcept { return std::move(this->m_Val.template GetVal<E>()); }
-    const E&& GetErr() const && noexcept { return std::move(this->m_Val.template GetVal<E>()); }
+    ALT_FORCE_INLINE constexpr E& GetErr() & noexcept { return this->m_Val.template GetVal<E>(); }
+    ALT_FORCE_INLINE constexpr const E& GetErr() const & noexcept { return this->m_Val.template GetVal<E>(); }
+    ALT_FORCE_INLINE constexpr E&& GetErr() && noexcept { return std::move(this->m_Val.template GetVal<E>()); }
+    ALT_FORCE_INLINE constexpr const E&& GetErr() const && noexcept { return std::move(this->m_Val.template GetVal<E>()); }
 
-    bool IsOk() const noexcept { return this->m_IsOk; }
-
-    template <typename U = T,
-        std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
-    DerefOkT* Deref() noexcept { return &*this->m_Val.template GetVal<T>(); }
-
-    template <typename U = T,
-        std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
-    DerefOkT* Deref() noexcept { return this->m_Val.template GetPtr<T>(); }
+    ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return this->m_IsOk; }
 
     template <typename U = T,
         std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
-    const DerefOkT* Deref() const noexcept { return &*this->m_Val.template GetVal<T>(); }
+    ALT_FORCE_INLINE constexpr DerefOkT* Deref() noexcept { return Addressof(*this->m_Val.template GetVal<T>()); }
 
     template <typename U = T,
         std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
-    const DerefOkT* Deref() const noexcept { return this->m_Val.template GetPtr<T>(); }
+    ALT_FORCE_INLINE constexpr DerefOkT* Deref() noexcept { return this->m_Val.template GetPtr<T>(); }
+
+    template <typename U = T,
+        std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
+    ALT_FORCE_INLINE constexpr const DerefOkT* Deref() const noexcept { return Addressof(*this->m_Val.template GetVal<T>()); }
+
+    template <typename U = T,
+        std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
+    ALT_FORCE_INLINE constexpr const DerefOkT* Deref() const noexcept { return this->m_Val.template GetPtr<T>(); }
 };
 
 template <typename T>
@@ -1025,44 +1025,44 @@ struct ResultStorage<T, Unit_t, ResultLayoutTrait::Ptr>
     template <typename U>
     constexpr static bool is_assignable_inner_ok_v = std::is_assignable_v<T&, U>;
 
-    ResultStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr ResultStorage() noexcept = default;
 
-    ResultStorage(Err_t) noexcept {
+    ALT_FORCE_INLINE constexpr ResultStorage(Err_t) noexcept {
 
         this->m_OkPtrVal.Construct(nullptr);
     }
 
-    void Assign(Err_t) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Err_t) noexcept {
 
         this->m_OkPtrVal.Assign(nullptr);
     }
 
     template <typename U = T>
-    void Construct(InnerOk_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerOk_t, U&& val) noexcept {
 
         this->m_OkPtrVal.Construct(std::forward<U>(val));
     }
 
     template <typename U = T>
-    void Assign(InnerOk_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerOk_t, U&& rhs) noexcept {
 
         this->m_OkPtrVal.Assign(std::forward<U>(rhs));
     }
 
     template <typename U = T>
-    bool ConstructCloneOrMove(InnerOk_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(InnerOk_t, U&& val) noexcept {
 
         return this->m_OkPtrVal.ConstructCloneOrMove(std::forward<U>(val));
     }
 
     template <typename U = T>
-    bool AssignCloneOrMove(InnerOk_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignCloneOrMove(InnerOk_t, U&& rhs) noexcept {
 
         return this->m_OkPtrVal.AssignCloneOrMove(std::forward<U>(rhs));
     }
 
     template <typename T1 = T>
-    void Construct(Rule5Move_t, ResultStorage<T1, Unit_t>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, ResultStorage<T1, Unit_t>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1075,7 +1075,7 @@ struct ResultStorage<T, Unit_t, ResultLayoutTrait::Ptr>
     }
 
     template <typename T1 = T>
-    void Construct(Rule5Copy_t, const ResultStorage<T1, Unit_t>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const ResultStorage<T1, Unit_t>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1088,7 +1088,7 @@ struct ResultStorage<T, Unit_t, ResultLayoutTrait::Ptr>
     }
 
     template <typename T1 = T>
-    void Assign(Rule5Move_t, ResultStorage<T1, Unit_t>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, ResultStorage<T1, Unit_t>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1101,7 +1101,7 @@ struct ResultStorage<T, Unit_t, ResultLayoutTrait::Ptr>
     }
 
     template <typename T1 = T>
-    void Assign(Rule5Copy_t, const ResultStorage<T1, Unit_t>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const ResultStorage<T1, Unit_t>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1113,13 +1113,13 @@ struct ResultStorage<T, Unit_t, ResultLayoutTrait::Ptr>
         }
     }
 
-    void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         this->m_OkPtrVal.Destroy();
     }
 
     template <typename T1 = T>
-    bool ConstructClone(const ResultStorage<T1, Unit_t>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructClone(const ResultStorage<T1, Unit_t>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1134,7 +1134,7 @@ struct ResultStorage<T, Unit_t, ResultLayoutTrait::Ptr>
     }
 
     template <typename T1 = T>
-    bool AssignClone(const ResultStorage<T1, Unit_t>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignClone(const ResultStorage<T1, Unit_t>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1148,28 +1148,28 @@ struct ResultStorage<T, Unit_t, ResultLayoutTrait::Ptr>
         return true;
     }
 
-    T& GetOk() & noexcept { return this->m_OkPtrVal.GetVal(); }
-    const T& GetOk() const & noexcept { return this->m_OkPtrVal.GetVal(); }
-    T&& GetOk() && noexcept { return std::move(this->m_OkPtrVal.GetVal()); }
-    const T&& GetOk() const && noexcept { return std::move(this->m_OkPtrVal.GetVal()); }
+    ALT_FORCE_INLINE constexpr T& GetOk() & noexcept { return this->m_OkPtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr const T& GetOk() const & noexcept { return this->m_OkPtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr T&& GetOk() && noexcept { return std::move(this->m_OkPtrVal.GetVal()); }
+    ALT_FORCE_INLINE constexpr const T&& GetOk() const && noexcept { return std::move(this->m_OkPtrVal.GetVal()); }
 
-    bool IsOk() const noexcept { return this->m_OkPtrVal.GetVal() != nullptr; }
-
-    template <typename U = T,
-        std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
-    DerefOkT* Deref() noexcept { return this->m_OkPtrVal.GetPtr(); }
-
-    template <typename U = T,
-        std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
-    DerefOkT* Deref() noexcept { return &*this->m_OkPtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return this->m_OkPtrVal.GetVal() != nullptr; }
 
     template <typename U = T,
         std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
-    const DerefOkT* Deref() const noexcept { return this->m_OkPtrVal.GetPtr(); }
+    ALT_FORCE_INLINE constexpr DerefOkT* Deref() noexcept { return this->m_OkPtrVal.GetPtr(); }
 
     template <typename U = T,
         std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
-    const DerefOkT* Deref() const noexcept { return &*this->m_OkPtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr DerefOkT* Deref() noexcept { return Addressof(*this->m_OkPtrVal.GetVal()); }
+
+    template <typename U = T,
+        std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
+    ALT_FORCE_INLINE constexpr const DerefOkT* Deref() const noexcept { return this->m_OkPtrVal.GetPtr(); }
+
+    template <typename U = T,
+        std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
+    ALT_FORCE_INLINE constexpr const DerefOkT* Deref() const noexcept { return Addressof(*this->m_OkPtrVal.GetVal()); }
 };
 
 template <typename E>
@@ -1184,44 +1184,44 @@ struct ResultStorage<Unit_t, E, ResultLayoutTrait::Ptr>
     template <typename U>
     constexpr static bool is_assignable_inner_err_v = std::is_assignable_v<E&, U>;
 
-    ResultStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr ResultStorage() noexcept = default;
 
-    ResultStorage(Ok_t) noexcept {
+    ALT_FORCE_INLINE constexpr ResultStorage(Ok_t) noexcept {
 
         this->m_ErrPtrVal.Construct(nullptr);
     }
 
-    void Assign(Ok_t) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Ok_t) noexcept {
 
         this->m_ErrPtrVal.Assign(nullptr);
     }
 
     template <typename U = E>
-    void Construct(InnerErr_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerErr_t, U&& val) noexcept {
 
         this->m_ErrPtrVal.Construct(std::forward<U>(val));
     }
 
     template <typename U = E>
-    void Assign(InnerErr_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerErr_t, U&& rhs) noexcept {
 
         this->m_ErrPtrVal.Assign(std::forward<U>(rhs));
     }
 
     template <typename U = E>
-    bool ConstructCloneOrMove(InnerErr_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(InnerErr_t, U&& val) noexcept {
 
         return this->m_ErrPtrVal.ConstructCloneOrMove(std::forward<U>(val));
     }
     
     template <typename U = E>
-    bool AssignCloneOrMove(InnerErr_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignCloneOrMove(InnerErr_t, U&& rhs) noexcept {
 
         return this->m_ErrPtrVal.AssignCloneOrMove(std::forward<U>(rhs));
     }
 
     template <typename E1 = E>
-    void Construct(Rule5Move_t, ResultStorage<Unit_t, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, ResultStorage<Unit_t, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1234,7 +1234,7 @@ struct ResultStorage<Unit_t, E, ResultLayoutTrait::Ptr>
     }
 
     template <typename E1 = E>
-    void Construct(Rule5Copy_t, const ResultStorage<Unit_t, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const ResultStorage<Unit_t, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1247,7 +1247,7 @@ struct ResultStorage<Unit_t, E, ResultLayoutTrait::Ptr>
     }
 
     template <typename E1 = E>
-    void Assign(Rule5Move_t, ResultStorage<Unit_t, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, ResultStorage<Unit_t, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1260,7 +1260,7 @@ struct ResultStorage<Unit_t, E, ResultLayoutTrait::Ptr>
     }
 
     template <typename E1 = E>
-    void Assign(Rule5Copy_t, const ResultStorage<Unit_t, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const ResultStorage<Unit_t, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1272,13 +1272,13 @@ struct ResultStorage<Unit_t, E, ResultLayoutTrait::Ptr>
         }
     }
 
-    void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         this->m_ErrPtrVal.Destroy();
     }
 
     template <typename E1 = E>
-    bool ConstructClone(const ResultStorage<Unit_t, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructClone(const ResultStorage<Unit_t, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1293,7 +1293,7 @@ struct ResultStorage<Unit_t, E, ResultLayoutTrait::Ptr>
     }
 
     template <typename E1 = E>
-    bool AssignClone(const ResultStorage<Unit_t, E1>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignClone(const ResultStorage<Unit_t, E1>& storage) noexcept {
 
         if (storage.IsOk()) {
 
@@ -1307,12 +1307,12 @@ struct ResultStorage<Unit_t, E, ResultLayoutTrait::Ptr>
         return true;
     }
 
-    E& GetErr() & noexcept { return this->m_ErrPtrVal.GetVal(); }
-    const E& GetErr() const & noexcept { return this->m_ErrPtrVal.GetVal(); }
-    E&& GetErr() && noexcept { return std::move(this->m_ErrPtrVal.GetVal()); }
-    const E&& GetErr() const && noexcept { return std::move(this->m_ErrPtrVal.GetVal()); }
+    ALT_FORCE_INLINE constexpr E& GetErr() & noexcept { return this->m_ErrPtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr const E& GetErr() const & noexcept { return this->m_ErrPtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr E&& GetErr() && noexcept { return std::move(this->m_ErrPtrVal.GetVal()); }
+    ALT_FORCE_INLINE constexpr const E&& GetErr() const && noexcept { return std::move(this->m_ErrPtrVal.GetVal()); }
 
-    bool IsOk() const noexcept { return this->m_ErrPtrVal.GetVal() == nullptr; }
+    ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return this->m_ErrPtrVal.GetVal() == nullptr; }
 };
 
 } // namespace _ResultDetails
@@ -1380,7 +1380,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_constructible_inner_ok_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE static Result Ok(U&& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Result Ok(U&& val) noexcept {
         return Result(std::forward<U>(val));
     }
 
@@ -1396,7 +1396,7 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE static Result Err(U&& err) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Result Err(U&& err) noexcept {
         return Result(ResultErr<E>{ std::forward<U>(err) });
     }
 
@@ -1411,11 +1411,11 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<!std::is_default_constructible_v<U>>* = nullptr>
-    Result() noexcept = delete;
+    constexpr Result() noexcept = delete;
 
     template <typename U = E,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    Result() noexcept {
+    constexpr Result() noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerErr, E{});
     }
@@ -1431,7 +1431,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_constructible_inner_ok_v<U&&>>* = nullptr>
-    Result(U&& val) noexcept {
+    constexpr Result(U&& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerOk, std::forward<U>(val));
     }
@@ -1450,7 +1450,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_assignable_inner_ok_v<U&&>>* = nullptr>
-    Result& operator=(U&& rhs) noexcept {
+    constexpr Result& operator=(U&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerOk, std::forward<U>(rhs));
         return *this;
@@ -1467,7 +1467,7 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<U&&> && !is_constructible_inner_ok_v<U&&>>* = nullptr>
-    Result(U&& val) noexcept {
+    constexpr Result(U&& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerErr, std::forward<U>(val));
     }
@@ -1486,7 +1486,7 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_assignable_inner_err_v<U&&> && !is_assignable_inner_ok_v<U&&>>* = nullptr>
-    Result& operator=(U&& rhs) noexcept {
+    constexpr Result& operator=(U&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerErr, std::forward<U>(rhs));
         return *this;
@@ -1503,14 +1503,14 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<U&&>>* = nullptr>
-    Result(ResultErr<U>&& err) noexcept {
+    constexpr Result(ResultErr<U>&& err) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerErr, std::move(err.err));
     }
 
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<const U&>>* = nullptr>
-    Result(const ResultErr<U>& err) noexcept {
+    constexpr Result(const ResultErr<U>& err) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerErr, err.err);
     }
@@ -1529,7 +1529,7 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_assignable_inner_err_v<U&&>>* = nullptr>
-    Result& operator=(ResultErr<U>&& rhs) noexcept {
+    constexpr Result& operator=(ResultErr<U>&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerErr, std::move(rhs.err));
         return *this;
@@ -1537,7 +1537,7 @@ public:
 
     template <typename U = E,
         std::enable_if_t<is_assignable_inner_err_v<const U&>>* = nullptr>
-    Result& operator=(const ResultErr<U>& rhs) noexcept {
+    constexpr Result& operator=(const ResultErr<U>& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerErr, rhs.err);
         return *this;
@@ -1559,7 +1559,7 @@ public:
             is_constructible_inner_ok_v<T1&&> &&
             is_constructible_inner_err_v<E1&&>
         >* = nullptr>
-    Result(Result<T1, E1>&& val) noexcept {
+    constexpr Result(Result<T1, E1>&& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::Rule5Move, val.m_Storage);
     }
@@ -1571,7 +1571,7 @@ public:
             is_constructible_inner_ok_v<const T1&> &&
             is_constructible_inner_err_v<const E1&>
         >* = nullptr>
-    Result(const Result<T1, E1>& val) noexcept {
+    constexpr Result(const Result<T1, E1>& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::Rule5Copy, val.m_Storage);
     }
@@ -1593,7 +1593,7 @@ public:
             is_assignable_inner_ok_v<T1&&> &&
             is_assignable_inner_err_v<E1&&>
         >* = nullptr>
-    Result& operator=(Result<T1, E1>&& rhs) noexcept {
+    constexpr Result& operator=(Result<T1, E1>&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::Rule5Move, rhs.m_Storage);
         return *this;
@@ -1606,7 +1606,7 @@ public:
             is_assignable_inner_ok_v<const T1&> &&
             is_assignable_inner_err_v<const E1&>
         >* = nullptr>
-    Result& operator=(const Result<T1, E1>& rhs) noexcept {
+    constexpr Result& operator=(const Result<T1, E1>& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::Rule5Copy, rhs.m_Storage);
         return *this;
@@ -1636,7 +1636,7 @@ public:
             (TypeTraits::is_only_clonable_to_from_v<T1, const T&> || is_assignable_inner_ok_v<const T1&>) &&
             (TypeTraits::is_only_clonable_to_from_v<E1, const E&> || is_assignable_inner_err_v<const E1&>)
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const Result<T1, E1>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const Result<T1, E1>& rhs) noexcept {
 
         return m_Storage.AssignClone(rhs.m_Storage);
     }
@@ -1646,7 +1646,7 @@ public:
             (TypeTraits::is_only_clonable_to_from_v<T1, const T&> || is_constructible_inner_ok_v<const T1&>) &&
             (TypeTraits::is_only_clonable_to_from_v<E1, const E&> || is_constructible_inner_err_v<const E1&>)
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const Result<T1, E1>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const Result<T1, E1>& rhs) noexcept {
 
         return m_Storage.ConstructClone(rhs.m_Storage);
     }
@@ -1694,8 +1694,8 @@ public:
      * 
      * assert(result == Alt::Ok);
      */
-    ALT_FORCE_INLINE bool operator==(Ok_t) const noexcept { return IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Ok_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Ok_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Ok_t) const noexcept { return !IsOk(); }
 
     /**
      * @brief Equality comparison against an Err state.
@@ -1707,8 +1707,8 @@ public:
      * 
      * assert(result == Alt::Err);
      */
-    ALT_FORCE_INLINE bool operator==(Err_t) const noexcept { return !IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Err_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Err_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Err_t) const noexcept { return IsOk(); }
 
     /**
      * @brief Dereferences the Result to access the Ok value.
@@ -1721,16 +1721,16 @@ public:
      * assert(*result == 4);
      */
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE U& operator*() & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr U& operator*() & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
 
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE const U& operator*() const & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr const U& operator*() const & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
 
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE U&& operator*() && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
+    ALT_FORCE_INLINE constexpr U&& operator*() && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
 
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE const U&& operator*() const && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
+    ALT_FORCE_INLINE constexpr const U&& operator*() const && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
 
     /**
      * @brief Accesses the Ok value via member access.
@@ -1742,8 +1742,8 @@ public:
      * Alt::Result<Alt::String, usize> result = "Result"_salloc;
      * assert(result->size() == 6);
      */
-    ALT_FORCE_INLINE DerefOkT* operator->() noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
-    ALT_FORCE_INLINE const DerefOkT* operator->() const noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr DerefOkT* operator->() noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr const DerefOkT* operator->() const noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
 
     /**
      * @brief Accesses the Ok value throught pointer.
@@ -1758,11 +1758,11 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<_ResultDetails::is_layout_not_own_value_v<U>>* = nullptr>
-    ALT_FORCE_INLINE operator DerefOkT*() noexcept { return IsOk() ? m_Storage.Deref() : nullptr; }
+    ALT_FORCE_INLINE constexpr operator DerefOkT*() noexcept { return IsOk() ? m_Storage.Deref() : nullptr; }
 
     template <typename U = T,
         std::enable_if_t<_ResultDetails::is_layout_not_own_value_v<U>>* = nullptr>
-    ALT_FORCE_INLINE operator const DerefOkT*() const noexcept { return IsOk() ? m_Storage.Deref() : nullptr; }
+    ALT_FORCE_INLINE constexpr operator const DerefOkT*() const noexcept { return IsOk() ? m_Storage.Deref() : nullptr; }
 
     /**
      * @brief Checks if the Result is in the Ok state.
@@ -1772,7 +1772,7 @@ public:
      * Alt::Result<Alt::String, usize> result = "Result"_salloc;
      * assert(result.IsOk());
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsOk() const noexcept { return m_Storage.IsOk(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return m_Storage.IsOk(); }
 
     /**
      * @brief Checks if the Result is in the Err state.
@@ -1782,7 +1782,7 @@ public:
      * Alt::Result<Alt::String, usize> result = 4;
      * assert(result.IsErr());
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsErr() const noexcept { return !m_Storage.IsOk(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsErr() const noexcept { return !m_Storage.IsOk(); }
 
     /**
      * @brief Explicit conversion to boolean.
@@ -1792,7 +1792,7 @@ public:
      * Alt::Result<Alt::String, usize> result = "Result"_salloc;
      * assert(result);
      */
-    ALT_FORCE_INLINE explicit operator bool() const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr explicit operator bool() const noexcept { return IsOk(); }
 
     /**
      * @brief Retrieves the Ok value.
@@ -1804,19 +1804,19 @@ public:
      * assert(result.GetOk() == 4);
      */
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&>
         GetOk() & noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.GetOk(); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&>
         GetOk() const & noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.GetOk(); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&&>
         GetOk() && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(m_Storage.GetOk()); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&&>
         GetOk() const && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(m_Storage.GetOk()); }
 
     /**
@@ -1831,19 +1831,19 @@ public:
      */
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     /**
      * @brief Retrieves the Ok value or a default-constructed value.
@@ -1856,19 +1856,19 @@ public:
      */
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() & noexcept { return GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() & noexcept { return GetOkOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() const & noexcept { return GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() const & noexcept { return GetOkOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() const && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() const && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
 
     /**
      * @brief Retrieves the Ok value or executes a function to generate a fallback.
@@ -1882,19 +1882,19 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
 
     /**
      * @brief Map the Ok value using the function.
@@ -1921,7 +1921,7 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanT&> Map(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanT&> Map(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -1933,7 +1933,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, CleanT&>, CleanE> Map(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, CleanT&>, CleanE> Map(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -1945,7 +1945,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanT&> Map(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanT&> Map(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -1957,7 +1957,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, const CleanT&>, CleanE> Map(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, const CleanT&>, CleanE> Map(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -1969,7 +1969,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanT&&> Map(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanT&&> Map(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -1981,7 +1981,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, CleanT&&>, CleanE> Map(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, CleanT&&>, CleanE> Map(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -1993,7 +1993,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanT&&> Map(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanT&&> Map(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -2005,7 +2005,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, const CleanT&&>, CleanE> Map(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, const CleanT&&>, CleanE> Map(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -2025,19 +2025,19 @@ public:
      * assert(result.GetErr() == "Result");
      */
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&>
         GetErr() & noexcept { ALT_ASSERT(!m_Storage.IsOk()); return m_Storage.GetErr(); }
 
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&>
         GetErr() const & noexcept { ALT_ASSERT(!m_Storage.IsOk()); return m_Storage.GetErr(); }
 
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&&>
         GetErr() && noexcept { ALT_ASSERT(!m_Storage.IsOk()); return std::move(m_Storage.GetErr()); }
 
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&&>
         GetErr() const && noexcept { ALT_ASSERT(!m_Storage.IsOk()); return std::move(m_Storage.GetErr()); }
 
     /**
@@ -2052,19 +2052,19 @@ public:
      */
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     /**
      * @brief Retrieves the Err value or a default-constructed value.
@@ -2077,19 +2077,19 @@ public:
      */
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() & noexcept { return GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() & noexcept { return GetErrOrExec([]() { return U{}; }); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() const & noexcept { return GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() const & noexcept { return GetErrOrExec([]() { return U{}; }); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() const && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() const && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
 
     /**
      * @brief Retrieves the Err value or executes a function to generate a fallback.
@@ -2103,19 +2103,19 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
 
     /**
      * @brief Maps the error value using the function.
@@ -2144,7 +2144,7 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanE&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanE&> MapErr(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanE&> MapErr(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -2156,7 +2156,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanE&>>>* = nullptr>
-    ALT_NODISCARD Result<CleanT, std::invoke_result_t<FuncT, CleanE&>> MapErr(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr Result<CleanT, std::invoke_result_t<FuncT, CleanE&>> MapErr(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -2168,7 +2168,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanE&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanE&> MapErr(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanE&> MapErr(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -2180,7 +2180,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanE&>>>* = nullptr>
-    ALT_NODISCARD Result<CleanT, std::invoke_result_t<FuncT, const CleanE&>> MapErr(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr Result<CleanT, std::invoke_result_t<FuncT, const CleanE&>> MapErr(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -2192,7 +2192,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, E&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, E&&> MapErr(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, E&&> MapErr(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -2204,7 +2204,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, E&&>>>* = nullptr>
-    ALT_NODISCARD Result<CleanT, std::invoke_result_t<FuncT, E&&>> MapErr(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr Result<CleanT, std::invoke_result_t<FuncT, E&&>> MapErr(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -2216,7 +2216,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const E&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const E&&> MapErr(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const E&&> MapErr(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -2228,7 +2228,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const E&&>>>* = nullptr>
-    ALT_NODISCARD Result<CleanT, std::invoke_result_t<FuncT, const E&&>> MapErr(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr Result<CleanT, std::invoke_result_t<FuncT, const E&&>> MapErr(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -2281,7 +2281,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_constructible_inner_ok_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE static Result Ok(U&& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Result Ok(U&& val) noexcept {
         return Result(std::forward<U>(val));
     }
 
@@ -2295,7 +2295,7 @@ public:
      * Alt::Result<usize, voide> result = Alt::Result<usize, void>::Err();
      * assert(res.IsErr());
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static Result Err() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Result Err() noexcept {
         return Result(Alt::Err);
     }
 
@@ -2308,7 +2308,7 @@ public:
      * Alt::Result<usize, void> result;
      * assert(res.IsErr());
      */
-    ALT_FORCE_INLINE Result() noexcept
+    ALT_FORCE_INLINE constexpr Result() noexcept
         : m_Storage(Alt::Err)
     {}
 
@@ -2319,11 +2319,11 @@ public:
      * Alt::Result<usize, void> result(Alt::Err);
      * assert(result.IsErr());
      */
-    ALT_FORCE_INLINE Result(Err_t) noexcept
+    ALT_FORCE_INLINE constexpr Result(Err_t) noexcept
         : m_Storage(Alt::Err)
     {}
 
-    Result& operator=(Err_t) noexcept {
+    constexpr Result& operator=(Err_t) noexcept {
 
         m_Storage.Assign(Alt::Err);
         return *this;
@@ -2340,14 +2340,14 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_constructible_inner_ok_v<U&&>>* = nullptr>
-    Result(U&& val) noexcept {
+    constexpr Result(U&& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerOk, std::forward<U>(val));
     }
 
     template <typename U = T,
         std::enable_if_t<is_assignable_inner_ok_v<U&&>>* = nullptr>
-    Result& operator=(U&& rhs) noexcept {
+    constexpr Result& operator=(U&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerOk, std::forward<U>(rhs));
         return *this;
@@ -2364,14 +2364,14 @@ public:
      */
     template <typename T1 = T,
         std::enable_if_t<!std::is_constructible_v<T, Result<T1, void>&&> && is_constructible_inner_ok_v<T1&&>>* = nullptr>
-    Result(Result<T1, void>&& val) noexcept {
+    constexpr Result(Result<T1, void>&& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::Rule5Move, val.m_Storage);
     }
 
     template <typename T1 = T,
         std::enable_if_t<!std::is_constructible_v<T, const Result<T1, void>&> && is_constructible_inner_ok_v<const T1&>>* = nullptr>
-    Result(const Result<T1, void>& val) noexcept {
+    constexpr Result(const Result<T1, void>& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::Rule5Copy, val.m_Storage);
     }
@@ -2388,7 +2388,7 @@ public:
      */
     template <typename T1 = T,
         std::enable_if_t<!std::is_assignable_v<T&, Result<T1, void>&&> && is_assignable_inner_ok_v<T1&&>>* = nullptr>
-    Result& operator=(Result<T1, void>&& rhs) noexcept {
+    constexpr Result& operator=(Result<T1, void>&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::Rule5Move, rhs.m_Storage);
         return *this;
@@ -2396,7 +2396,7 @@ public:
 
     template <typename T1 = T,
         std::enable_if_t<!std::is_assignable_v<T&, const Result<T1, void>&> && is_assignable_inner_ok_v<const T1&>>* = nullptr>
-    Result& operator=(const Result<T1, void>& rhs) noexcept {
+    constexpr Result& operator=(const Result<T1, void>& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::Rule5Copy, rhs.m_Storage);
         return *this;
@@ -2425,7 +2425,7 @@ public:
         std::enable_if_t<
             TypeTraits::is_only_clonable_to_from_v<T1, const T&> || is_assignable_inner_ok_v<const T1&>
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const Result<T1, void>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const Result<T1, void>& rhs) noexcept {
 
         return m_Storage.AssignClone(rhs.m_Storage);
     }
@@ -2434,7 +2434,7 @@ public:
         std::enable_if_t<
             TypeTraits::is_only_clonable_to_from_v<T1, const T&> || is_constructible_inner_ok_v<const T1&>
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const Result<T1, void>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const Result<T1, void>& rhs) noexcept {
 
         return m_Storage.ConstructClone(rhs.m_Storage);
     }
@@ -2483,16 +2483,16 @@ public:
      * assert(*result == 4);
      */
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE U& operator*() & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr U& operator*() & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
 
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE const U& operator*() const & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr const U& operator*() const & noexcept { ALT_ASSERT(m_Storage.IsOk()); return *m_Storage.Deref(); }
 
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE U&& operator*() && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
+    ALT_FORCE_INLINE constexpr U&& operator*() && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
 
     template <typename U = DerefOkT>
-    ALT_FORCE_INLINE const U&& operator*() const && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
+    ALT_FORCE_INLINE constexpr const U&& operator*() const && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(*m_Storage.Deref()); }
 
     /**
      * @brief Accesses the Ok value via member access.
@@ -2504,8 +2504,8 @@ public:
      * Alt::Result<Alt::String, void> result = "Result"_salloc;
      * assert(result->size() == 6);
      */
-    ALT_FORCE_INLINE DerefOkT* operator->() noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
-    ALT_FORCE_INLINE const DerefOkT* operator->() const noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr DerefOkT* operator->() noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr const DerefOkT* operator->() const noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.Deref(); }
 
     /**
      * @brief Equality comparison against an Ok state.
@@ -2517,8 +2517,8 @@ public:
      * 
      * assert(result == Alt::Ok);
      */
-    ALT_FORCE_INLINE bool operator==(Ok_t) const noexcept { return IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Ok_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Ok_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Ok_t) const noexcept { return !IsOk(); }
 
     /**
      * @brief Equality comparison against an Err state.
@@ -2530,8 +2530,8 @@ public:
      * 
      * assert(result == Alt::Err);
      */
-    ALT_FORCE_INLINE bool operator==(Err_t) const noexcept { return !IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Err_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Err_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Err_t) const noexcept { return IsOk(); }
 
     /**
      * @brief Accesses the Ok value throught pointer.
@@ -2546,11 +2546,11 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<_ResultDetails::is_layout_not_own_value_v<U>>* = nullptr>
-    ALT_FORCE_INLINE operator DerefOkT*() noexcept { return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr operator DerefOkT*() noexcept { return m_Storage.Deref(); }
 
     template <typename U = T,
         std::enable_if_t<_ResultDetails::is_layout_not_own_value_v<U>>* = nullptr>
-    ALT_FORCE_INLINE operator const DerefOkT*() const noexcept { return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr operator const DerefOkT*() const noexcept { return m_Storage.Deref(); }
 
     /**
      * @brief Checks if the Result is in the Ok state.
@@ -2560,7 +2560,7 @@ public:
      * Alt::Result<Alt::String, void> result = "Result"_salloc;
      * assert(result.IsOk());
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsOk() const noexcept { return m_Storage.IsOk(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return m_Storage.IsOk(); }
 
     /**
      * @brief Checks if the Result is in the Err state.
@@ -2570,7 +2570,7 @@ public:
      * Alt::Result<Alt::String, void> result = Alt::Err;
      * assert(result.IsErr());
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsErr() const noexcept { return !m_Storage.IsOk(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsErr() const noexcept { return !m_Storage.IsOk(); }
 
     /**
      * @brief Explicit conversion to boolean.
@@ -2580,7 +2580,7 @@ public:
      * Alt::Result<Alt::String, void> result = "Result"_salloc;
      * assert(result);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE explicit operator bool() const noexcept { return IsOk(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr explicit operator bool() const noexcept { return IsOk(); }
 
     /**
      * @brief Retrieves the Ok value.
@@ -2592,19 +2592,19 @@ public:
      * assert(result.GetOk() == 4);
      */
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&>
         GetOk() & noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.GetOk(); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&>
         GetOk() const & noexcept { ALT_ASSERT(m_Storage.IsOk()); return m_Storage.GetOk(); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&&>
         GetOk() && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(m_Storage.GetOk()); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&&>
         GetOk() const && noexcept { ALT_ASSERT(m_Storage.IsOk()); return std::move(m_Storage.GetOk()); }
 
     /**
@@ -2619,19 +2619,19 @@ public:
      */
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOr(U&& v) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOr(U&& v) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>(std::forward<U>(v)); }
 
     /**
      * @brief Retrieves the Ok value or a default-constructed value.
@@ -2644,19 +2644,19 @@ public:
      */
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() & noexcept { return GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() & noexcept { return GetOkOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() const & noexcept { return GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() const & noexcept { return GetOkOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrDefault() const && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrDefault() const && noexcept { return std::move(*this).GetOkOrExec([]() { return U{}; }); }
 
     /**
      * @brief Retrieves the Ok value or executes a function to generate a fallback.
@@ -2670,19 +2670,19 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) const & noexcept { return m_Storage.IsOk() ? m_Storage.GetOk() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetOkOrExec(FuncT&& func) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetOkOrExec(FuncT&& func) const && noexcept { return m_Storage.IsOk() ? std::move(m_Storage).GetOk() : static_cast<T>((func)()); }
 
     /**
      * @brief Map the Ok value using the function.
@@ -2709,7 +2709,7 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanT&> Map(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanT&> Map(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -2721,7 +2721,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, CleanT&>, void> Map(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, CleanT&>, void> Map(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -2733,7 +2733,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanT&> Map(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanT&> Map(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -2745,7 +2745,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, const CleanT&>, void> Map(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, const CleanT&>, void> Map(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -2757,7 +2757,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanT&&> Map(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanT&&> Map(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -2769,7 +2769,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanT&&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, CleanT&&>, void> Map(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, CleanT&&>, void> Map(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -2781,7 +2781,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanT&&> Map(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanT&&> Map(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -2793,7 +2793,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanT&&>>>* = nullptr>
-    ALT_NODISCARD Result<std::invoke_result_t<FuncT, const CleanT&&>, void> Map(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr Result<std::invoke_result_t<FuncT, const CleanT&&>, void> Map(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -2842,7 +2842,7 @@ public:
      * Alt::Result<void, usize> result = Alt::Result<void, usize>::Ok();
      * assert(res.IsOk());
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static Result Ok() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Result Ok() noexcept {
         return Result(Alt::Ok);
     }
 
@@ -2858,7 +2858,7 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE static Result Err(E&& err) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Result Err(E&& err) noexcept {
         return Result(std::forward<U>(err));
     }
 
@@ -2871,7 +2871,7 @@ public:
      * Alt::Result<void, Alt::String> result;
      * assert(res.IsErr());
      */
-    ALT_FORCE_INLINE Result() noexcept
+    ALT_FORCE_INLINE constexpr Result() noexcept
         : m_Storage(Alt::Ok)
     {}
 
@@ -2882,11 +2882,11 @@ public:
      * Alt::Result<void, Alt::String> result = Alt::Ok;
      * assert(result.IsOk());
      */
-    ALT_FORCE_INLINE Result(Ok_t) noexcept
+    ALT_FORCE_INLINE constexpr Result(Ok_t) noexcept
         : m_Storage(Alt::Ok)
     {}
 
-    Result& operator=(Ok_t) noexcept {
+    constexpr Result& operator=(Ok_t) noexcept {
 
         m_Storage.Assign(Alt::Ok);
         return *this;
@@ -2903,14 +2903,14 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<U&&>>* = nullptr>
-    Result(U&& val) noexcept {
+    constexpr Result(U&& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerErr, std::forward<U>(val));
     }
 
     template <typename U = E,
         std::enable_if_t<is_assignable_inner_err_v<U&&>>* = nullptr>
-    Result& operator=(U&& rhs) noexcept {
+    constexpr Result& operator=(U&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerErr, std::forward<U>(rhs));
         return *this;
@@ -2927,21 +2927,21 @@ public:
      */
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<U&&>>* = nullptr>
-    Result(ResultErr<U>&& err) noexcept {
+    constexpr Result(ResultErr<U>&& err) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerErr, std::move(err.err));
     }
 
     template <typename U = E,
         std::enable_if_t<is_constructible_inner_err_v<const U&>>* = nullptr>
-    Result(const ResultErr<U>& err) noexcept {
+    constexpr Result(const ResultErr<U>& err) noexcept {
 
         m_Storage.Construct(_ResultDetails::InnerErr, err.err);
     }
 
     template <typename U = E,
         std::enable_if_t<is_assignable_inner_err_v<U&&>>* = nullptr>
-    Result& operator=(ResultErr<U>&& rhs) noexcept {
+    constexpr Result& operator=(ResultErr<U>&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerErr, std::move(rhs.err));
         return *this;
@@ -2949,7 +2949,7 @@ public:
 
     template <typename U = E,
         std::enable_if_t<is_assignable_inner_err_v<const U&>>* = nullptr>
-    Result& operator=(const ResultErr<U>& rhs) noexcept {
+    constexpr Result& operator=(const ResultErr<U>& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::InnerErr, rhs.err);
         return *this;
@@ -2966,14 +2966,14 @@ public:
      */
     template <typename E1 = E,
         std::enable_if_t<!std::is_constructible_v<E, Result<void, E1>&&> && is_constructible_inner_err_v<E1&&>>* = nullptr>
-    Result(Result<void, E1>&& val) noexcept {
+    constexpr Result(Result<void, E1>&& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::Rule5Move, val.m_Storage);
     }
 
     template <typename E1 = E,
         std::enable_if_t<!std::is_constructible_v<E, const Result<void, E1>&> && is_constructible_inner_err_v<const E1&>>* = nullptr>
-    Result(const Result<void, E1>& val) noexcept {
+    constexpr Result(const Result<void, E1>& val) noexcept {
 
         m_Storage.Construct(_ResultDetails::Rule5Copy, val.m_Storage);
     }
@@ -2990,7 +2990,7 @@ public:
      */
     template <typename E1 = E,
         std::enable_if_t<!std::is_assignable_v<E&, Result<void, E1>&&> && is_assignable_inner_err_v<E1&&>>* = nullptr>
-    Result& operator=(Result<void, E1>&& rhs) noexcept {
+    constexpr Result& operator=(Result<void, E1>&& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::Rule5Move, rhs.m_Storage);
         return *this;
@@ -2998,7 +2998,7 @@ public:
 
     template <typename E1 = E,
         std::enable_if_t<!std::is_assignable_v<E&, const Result<void, E1>&> && is_assignable_inner_err_v<const E1&>>* = nullptr>
-    Result& operator=(const Result<void, E1>& rhs) noexcept {
+    constexpr Result& operator=(const Result<void, E1>& rhs) noexcept {
 
         m_Storage.Assign(_ResultDetails::Rule5Copy, rhs.m_Storage);
         return *this;
@@ -3027,7 +3027,7 @@ public:
         std::enable_if_t<
             TypeTraits::is_only_clonable_to_from_v<E1, const E&> || is_assignable_inner_err_v<const E1&>
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const Result<void, E1>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const Result<void, E1>& rhs) noexcept {
 
         return m_Storage.AssignClone(rhs.m_Storage);
     }
@@ -3036,7 +3036,7 @@ public:
         std::enable_if_t<
             TypeTraits::is_only_clonable_to_from_v<E1, const E&> || is_constructible_inner_err_v<const E1&>
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const Result<void, E1>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const Result<void, E1>& rhs) noexcept {
 
         return m_Storage.ConstructClone(rhs.m_Storage);
     }
@@ -3084,8 +3084,8 @@ public:
      * 
      * assert(result == Alt::Ok);
      */
-    ALT_FORCE_INLINE bool operator==(Ok_t) const noexcept { return IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Ok_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Ok_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Ok_t) const noexcept { return !IsOk(); }
 
     /**
      * @brief Equality comparison against an Err state.
@@ -3097,8 +3097,8 @@ public:
      * 
      * assert(result == Alt::Err);
      */
-    ALT_FORCE_INLINE bool operator==(Err_t) const noexcept { return !IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Err_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Err_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Err_t) const noexcept { return IsOk(); }
 
     /**
      * @brief Checks if the Result is in the Ok state.
@@ -3108,7 +3108,7 @@ public:
      * Alt::Result<void, usize> result = Alt::Ok;
      * assert(result.IsOk());
      */
-    ALT_FORCE_INLINE bool IsOk() const noexcept { return m_Storage.IsOk(); }
+    ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return m_Storage.IsOk(); }
 
     /**
      * @brief Checks if the Result is in the Err state.
@@ -3118,7 +3118,7 @@ public:
      * Alt::Result<void, usize> result = 4;
      * assert(result.IsErr());
      */
-    ALT_FORCE_INLINE bool IsErr() const noexcept { return !m_Storage.IsOk(); }
+    ALT_FORCE_INLINE constexpr bool IsErr() const noexcept { return !m_Storage.IsOk(); }
 
     /**
      * @brief Explicit conversion to boolean.
@@ -3128,7 +3128,7 @@ public:
      * Alt::Result<void, usize> result = Alt::Ok;
      * assert(result);
      */
-    ALT_FORCE_INLINE explicit operator bool() const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr explicit operator bool() const noexcept { return IsOk(); }
 
     /**
      * @brief Retrieves the Err value.
@@ -3140,19 +3140,19 @@ public:
      * assert(result.GetErr() == "Result");
      */
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&>
         GetErr() & noexcept { ALT_ASSERT(!m_Storage.IsOk()); return m_Storage.GetErr(); }
 
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&>
         GetErr() const & noexcept { ALT_ASSERT(!m_Storage.IsOk()); return m_Storage.GetErr(); }
 
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanE>&, CleanE&&>
         GetErr() && noexcept { ALT_ASSERT(!m_Storage.IsOk()); return std::move(m_Storage.GetErr()); }
 
     template <typename U = CleanE>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanE>&, const CleanE&&>
         GetErr() const && noexcept { ALT_ASSERT(!m_Storage.IsOk()); return std::move(m_Storage.GetErr()); }
 
     /**
@@ -3167,19 +3167,19 @@ public:
      */
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_convertible_v<U, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOr(U&& v) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOr(U&& v) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>(std::forward<U>(v)); }
 
     /**
      * @brief Retrieves the Err value or a default-constructed value.
@@ -3192,19 +3192,19 @@ public:
      */
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() & noexcept { return GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() & noexcept { return GetErrOrExec([]() { return U{}; }); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() const & noexcept { return GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() const & noexcept { return GetErrOrExec([]() { return U{}; }); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
 
     template <typename U = CleanE,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrDefault() const && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrDefault() const && noexcept { return std::move(*this).GetErrOrExec([]() { return U{}; }); }
 
     /**
      * @brief Retrieves the Err value or executes a function to generate a fallback.
@@ -3218,19 +3218,19 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) const & noexcept { return !m_Storage.IsOk() ? m_Storage.GetErr() : static_cast<E>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanE>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanE GetErrOrExec(FuncT&& func) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanE GetErrOrExec(FuncT&& func) const && noexcept { return !m_Storage.IsOk() ? std::move(m_Storage).GetErr() : static_cast<E>((func)()); }
 
     /**
      * @brief Maps the error value using the function.
@@ -3259,7 +3259,7 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanE&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanE&> MapErr(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanE&> MapErr(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -3271,7 +3271,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, CleanE&>>>* = nullptr>
-    ALT_NODISCARD Result<void, std::invoke_result_t<FuncT, CleanE&>> MapErr(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr Result<void, std::invoke_result_t<FuncT, CleanE&>> MapErr(FuncT&& func) & noexcept {
 
         if (IsOk()) {
 
@@ -3283,7 +3283,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanE&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanE&> MapErr(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanE&> MapErr(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -3295,7 +3295,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const CleanE&>>>* = nullptr>
-    ALT_NODISCARD Result<void, std::invoke_result_t<FuncT, const CleanE&>> MapErr(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr Result<void, std::invoke_result_t<FuncT, const CleanE&>> MapErr(FuncT&& func) const & noexcept {
 
         if (IsOk()) {
 
@@ -3307,7 +3307,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, E&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, E&&> MapErr(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, E&&> MapErr(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -3319,7 +3319,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, E&&>>>* = nullptr>
-    ALT_NODISCARD Result<void, std::invoke_result_t<FuncT, E&&>> MapErr(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr Result<void, std::invoke_result_t<FuncT, E&&>> MapErr(FuncT&& func) && noexcept {
 
         if (IsOk()) {
 
@@ -3331,7 +3331,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_result_v<std::invoke_result_t<FuncT, const E&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const E&&> MapErr(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const E&&> MapErr(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -3343,7 +3343,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_result_v<std::invoke_result_t<FuncT, const E&&>>>* = nullptr>
-    ALT_NODISCARD Result<void, std::invoke_result_t<FuncT, const E&&>> MapErr(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr Result<void, std::invoke_result_t<FuncT, const E&&>> MapErr(FuncT&& func) const && noexcept {
 
         if (IsOk()) {
 
@@ -3368,37 +3368,37 @@ public:
     using OkT = void;
     using ErrT = void;
 
-    ALT_FORCE_INLINE Result() noexcept = default;
+    ALT_FORCE_INLINE constexpr Result() noexcept = default;
 
-    ALT_FORCE_INLINE Result(Ok_t) noexcept
+    ALT_FORCE_INLINE constexpr Result(Ok_t) noexcept
         : m_IsOk(true)
     {}
 
-    ALT_FORCE_INLINE Result& operator=(Ok_t) noexcept {
+    ALT_FORCE_INLINE constexpr Result& operator=(Ok_t) noexcept {
 
         m_IsOk = true;
         return *this;
     }
 
-    ALT_FORCE_INLINE Result(Err_t) noexcept
+    ALT_FORCE_INLINE constexpr Result(Err_t) noexcept
         : m_IsOk(false)
     {}
 
-    ALT_FORCE_INLINE Result& operator=(Err_t) noexcept {
+    ALT_FORCE_INLINE constexpr Result& operator=(Err_t) noexcept {
 
         m_IsOk = false;
         return *this;
     }
 
-    ALT_FORCE_INLINE bool operator==(Ok_t) const noexcept { return IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Ok_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Ok_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Ok_t) const noexcept { return !IsOk(); }
 
-    ALT_FORCE_INLINE bool operator==(Err_t) const noexcept { return !IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Err_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Err_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Err_t) const noexcept { return IsOk(); }
 
-    ALT_FORCE_INLINE bool IsOk() const noexcept { return m_IsOk; }
-    ALT_FORCE_INLINE bool IsErr() const noexcept { return !m_IsOk; }
-    ALT_FORCE_INLINE explicit operator bool() const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return m_IsOk; }
+    ALT_FORCE_INLINE constexpr bool IsErr() const noexcept { return !m_IsOk; }
+    ALT_FORCE_INLINE constexpr explicit operator bool() const noexcept { return IsOk(); }
 
 private:
 

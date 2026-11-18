@@ -21,6 +21,43 @@ ALT_NODISCARD ALT_FORCE_INLINE f64 fmod(const f64 x, const f64 y) noexcept {
     return ::fmod(x, y);
 }
 
+template <typename T,
+    std::enable_if_t<Desc<T>::IsFloat()>* = nullptr>
+ALT_NODISCARD ALT_FORCE_INLINE static T SqrtConstexpr(const T a) noexcept {
+
+    const bool isNan = a != a;
+    const bool isInf = a == Desc<T>::Inf();
+
+    if (isNan || isInf) {
+        return a;
+    }
+
+    if (a == static_cast<T>(0.0) || a == static_cast<T>(-0.0)) {
+        return a;
+    }
+
+    if (!IsSignPositive(a)) {
+        return -Desc<T>::QuietNaN();
+    }
+
+    T x = Max(a, static_cast<T>(1.0)) * static_cast<T>(0.5);
+    T prevErr = static_cast<T>(0.0);
+
+    for (;;) {
+
+        const T prevX = x;
+        x = static_cast<T>(0.5) * (x + (a / x));
+
+        const T err = Abs(x - prevX);
+
+        if (IsEqFuzzy(err, prevErr)) {
+            return x;
+        }
+
+        prevErr = err;
+    }
+}
+
 } // namespace _MathDetails
 
 namespace Math {
@@ -28,26 +65,8 @@ namespace Math {
 #define ALT_MATH_E 2.71828182845904523536 // e
 #define ALT_MATH_PI 3.14159265358979323846 // pi
 
-template <typename T,
-    std::enable_if_t<std::is_scalar_v<T>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsSignPositive(const T x) noexcept {
-    return Num::IsSignPositive(x);
-}
-
-template <typename T,
-    std::enable_if_t<std::is_scalar_v<T>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE constexpr T Abs(const T x) noexcept {
-    return Num::Abs(x);
-}
-
 template <typename T, typename U,
-    std::enable_if_t<std::is_scalar_v<T> && std::is_convertible_v<U, T> && !Num::Desc<T>::IsFloat()>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE constexpr T Mod(const T x, const U y) noexcept {
-    return Num::Mod(x, y);
-}
-
-template <typename T, typename U,
-    std::enable_if_t<std::is_scalar_v<T> && std::is_convertible_v<U, T> && Num::Desc<T>::IsFloat()>* = nullptr>
+    std::enable_if_t<TypeTraits::is_number_v<T> && std::is_convertible_v<U, T> && Desc<T>::IsFloat()>* = nullptr>
 ALT_NODISCARD ALT_FORCE_INLINE constexpr T Mod(const T x, const U y_) noexcept {
 
     const T y = static_cast<T>(y_);
@@ -57,37 +76,19 @@ ALT_NODISCARD ALT_FORCE_INLINE constexpr T Mod(const T x, const U y_) noexcept {
     // return IsSignPositive(x) ? c : -c;
 }
 
-template <typename T, typename ...ArgsT,
-    std::enable_if_t<std::is_scalar_v<T> && std::conjunction_v<std::is_convertible<ArgsT, T>...>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE constexpr T Max(const T x, const ArgsT... args) noexcept {
-    return Num::Max(x, args...);
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f32 x, const f32 y, const f32 eps = Desc<f32>::Eps()) noexcept {
+
+    const f32 norm = Min(Abs(x) + Abs(y), Desc<f32>::Max());
+    return Abs(x - y) <= Max(Desc<f32>::Min(), eps * norm);
 }
 
-template <typename T, typename ...ArgsT,
-    std::enable_if_t<std::is_scalar_v<T> && std::conjunction_v<std::is_convertible<ArgsT, T>...>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE constexpr T Min(const T x, const ArgsT... args) noexcept {
-    return Num::Min(x, args...);
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f64 x, const f64 y, const f64 eps = Desc<f64>::Eps()) noexcept {
+
+    const f64 norm = Min(Abs(x) + Abs(y), Desc<f64>::Max());
+    return Abs(x - y) <= Max(Desc<f64>::Min(), eps * norm);
 }
 
-template <typename T0, typename T1, typename T2,
-    std::enable_if_t<std::is_scalar_v<T0> && std::is_convertible_v<T1, T0> && std::is_convertible_v<T2, T0>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE constexpr T0 Clamp(const T0 val, const T1 from, const T2 to) noexcept {
-    return Num::Clamp(val, from, to);
-}
-
-ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f32 x, const f32 y, const f32 eps = Num::Desc<f32>::Eps()) noexcept {
-
-    const f32 norm = Min(Abs(x) + Abs(y), Num::Desc<f32>::Max());
-    return Abs(x - y) <= Max(Num::Desc<f32>::Min(), eps * norm);
-}
-
-ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f64 x, const f64 y, const f64 eps = Num::Desc<f64>::Eps()) noexcept {
-
-    const f64 norm = Min(Abs(x) + Abs(y), Num::Desc<f64>::Max());
-    return Abs(x - y) <= Max(Num::Desc<f64>::Min(), eps * norm);
-}
-
-ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize CompareFuzzy(const f32 x, const f32 y, const f32 eps = Num::Desc<f32>::Eps()) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize CompareFuzzy(const f32 x, const f32 y, const f32 eps = Desc<f32>::Eps()) noexcept {
 
     if (IsEqFuzzy(x, y, eps)) {
         return 0;
@@ -96,7 +97,7 @@ ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize CompareFuzzy(const f32 x, const f
     return x < y ? -1 : 1;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize CompareFuzzy(const f64 x, const f64 y, const f64 eps = Num::Desc<f64>::Eps()) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize CompareFuzzy(const f64 x, const f64 y, const f64 eps = Desc<f64>::Eps()) noexcept {
 
     if (IsEqFuzzy(x, y, eps)) {
         return 0;
@@ -148,13 +149,13 @@ ALT_NODISCARD ALT_FORCE_INLINE constexpr f64 Lerp(const f64 from, const f64 to, 
 
 ALT_NODISCARD ALT_FORCE_INLINE constexpr f32 Smoothstep(const f32 from, const f32 to, const f32 x) noexcept {
 
-    const f32 t = Num::Clamp((x - from) / (to - from), 0.0f, 1.0f);
+    const f32 t = Clamp((x - from) / (to - from), 0.0f, 1.0f);
     return t * t * (3.0f - 2.0f * t);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE constexpr f64 Smoothstep(const f64 from, const f64 to, const f64 x) noexcept {
 
-    const f64 t = Num::Clamp((x - from) / (to - from), 0.0, 1.0);
+    const f64 t = Clamp((x - from) / (to - from), 0.0, 1.0);
     return t * t * (3.0 - 2.0 * t);
 }
 
@@ -198,17 +199,29 @@ ALT_NODISCARD ALT_FORCE_INLINE f64 Round(const f64 x) noexcept {
     return ::round(x);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE f32 Sqrt(const f32 x) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr f32 Sqrt(const f32 x) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _MathDetails::SqrtConstexpr(x);
+    }
+
     return sqrtf(x);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE f64 Sqrt(const f64 x) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr f64 Sqrt(const f64 x) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _MathDetails::SqrtConstexpr(x);
+    }
+
     return ::sqrt(x);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE f32 Rsqrt(f32 x, const f32 defaultVal = 0.0f) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr f32 Rsqrt(f32 x, const f32 defaultVal = 0.0f) noexcept {
 
-    return SafeInv(sqrtf(x), defaultVal);
+    return SafeInv(Sqrt(x), defaultVal);
 
 //#ifndef ALT_USE_CUSTOM_FAST_MATH
 //
@@ -228,9 +241,9 @@ ALT_NODISCARD ALT_FORCE_INLINE f32 Rsqrt(f32 x, const f32 defaultVal = 0.0f) noe
 //#endif // ALT_USE_CUSTOM_FAST_MATH
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE f64 Rsqrt(f64 x, const f64 defaultVal = 0.0) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr f64 Rsqrt(f64 x, const f64 defaultVal = 0.0) noexcept {
 
-    return SafeInv(::sqrt(x), defaultVal);
+    return SafeInv(Sqrt(x), defaultVal);
 
 //#ifndef ALT_USE_CUSTOM_FAST_MATH
 //
@@ -275,10 +288,10 @@ ALT_NODISCARD ALT_FORCE_INLINE f32 Asin(f32 x) noexcept {
     // https://developer.download.nvidia.com/cg/Cg_3.1/Cg-3.1_April2012_ReferenceManual.pdf
     // p. 689
 
-    using U = typename Num::Desc<f32>::Unsigned;
+    using U = typename Desc<f32>::Unsigned;
 
     const U signBit = IsSignPositive(x) ? 0 : 1;
-    const U mask = signBit << (Num::Desc<U>::Bits() - 1);
+    const U mask = signBit << (Desc<U>::Bits() - 1);
 
     x = Abs(x);
 
@@ -304,10 +317,10 @@ ALT_NODISCARD ALT_FORCE_INLINE f64 Asin(f64 x) noexcept {
     // https://developer.download.nvidia.com/cg/Cg_3.1/Cg-3.1_April2012_ReferenceManual.pdf
     // p. 689
 
-    using U = typename Num::Desc<f64>::Unsigned;
+    using U = typename Desc<f64>::Unsigned;
 
     const U signBit = IsSignPositive(x) ? 0 : 1;
-    const U mask = signBit << (Num::Desc<U>::Bits() - 1);
+    const U mask = signBit << (Desc<U>::Bits() - 1);
 
     x = Abs(x);
 

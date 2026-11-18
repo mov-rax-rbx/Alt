@@ -1,6 +1,6 @@
 ﻿#include "../IteratorTrait.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter{
  *     []() {
  *         static usize cnt = 0;
@@ -32,7 +32,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = TakeWhile_<PrevIterT, FuncT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_IsFinished) {
             return Nullopt;
@@ -48,7 +48,7 @@ public:
         return Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -66,7 +66,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -96,12 +96,12 @@ public:
           _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorForwardTrait<Type>, PrevIterT, IIteratorForwardTrait>
     >;
 
-    ALT_FORCE_INLINE TakeWhile_(const PrevIterT& iter, FuncT&& pred) noexcept
+    ALT_FORCE_INLINE constexpr TakeWhile_(const PrevIterT& iter, FuncT&& pred) noexcept
         : m_Iter(iter)
         , m_Pred(std::forward<FuncT>(pred))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return 0;
     }
 

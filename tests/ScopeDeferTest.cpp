@@ -4,28 +4,28 @@
 
 TEST(ScopeDefer, ScopeDefer) {
 
-	bool isDeferred = false;
+    bool isDeferred = false;
 
-	{
-		defer {
-			isDeferred = true;
-		};
-	}
+    {
+        defer {
+            isDeferred = true;
+        };
+    }
 
-	EXPECT_TRUE(isDeferred);
+    EXPECT_TRUE(isDeferred);
 }
 
 TEST(ScopeDefer, ScopeDeferDisable) {
 
-	bool isDeferred = false;
+    bool isDeferred = false;
 
-	{
-		auto cleanup = defer_disable {
-			isDeferred = true;
-		};
+    {
+        auto cleanup = defer_disable {
+            isDeferred = true;
+        };
 
-		cleanup.Disable();
-	}
+        cleanup.Disable();
+    }
 
-	EXPECT_FALSE(isDeferred);
+    EXPECT_FALSE(isDeferred);
 }

@@ -2,30 +2,30 @@
 
 #include "../../Utils/Pair.h"
 
-/*
-* Alt::IteratorForwardFromFunc iter{
-*     []() {
-*         return static_cast<usize>(0);
-*     }
-* };
-*
-* Alt::Vector<Alt::Pair<usize, usize>> vec = iter
-*     .Take(4)
-*     .Enumerate()
-*     .CollectOrDefault<Alt::Vector<Alt::Pair<usize, usize>>>();
-*
-* assert(vec[0].f == 0);
-* assert(vec[0].s == 0);
-*
-* assert(vec[1].f == 1);
-* assert(vec[1].s == 0);
-*
-* assert(vec[2].f == 2);
-* assert(vec[2].s == 0);
-*
-* assert(vec[3].f == 3);
-* assert(vec[3].s == 0);
-*/
+/**
+ * Alt::IteratorForwardFromFunc iter{
+ *     []() {
+ *         return static_cast<usize>(0);
+ *     }
+ * };
+ *
+ * Alt::Vector<Alt::Pair<usize, usize>> vec = iter
+ *     .Take(4)
+ *     .Enumerate()
+ *     .CollectOrDefault<Alt::Vector<Alt::Pair<usize, usize>>>();
+ *
+ * assert(vec[0].f == 0);
+ * assert(vec[0].s == 0);
+ *
+ * assert(vec[1].f == 1);
+ * assert(vec[1].s == 0);
+ *
+ * assert(vec[2].f == 2);
+ * assert(vec[2].s == 0);
+ *
+ * assert(vec[3].f == 3);
+ * assert(vec[3].s == 0);
+ */
 namespace Alt {
 namespace _IterDetails {
 namespace Adapters {
@@ -41,7 +41,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Enumerate_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Pair<usize, T>> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Pair<usize, T>> Next() noexcept {
 
         if (Optional<T> val = Self().m_Iter.Next()) {
 
@@ -54,7 +54,7 @@ public:
         return Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         const usize size = Self().m_Iter.Advance(advance);
         Self().m_Cnt += size;
@@ -64,7 +64,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -80,7 +80,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Enumerate_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Pair<usize, T>> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Pair<usize, T>> NextBack() noexcept {
 
         if (Optional<T> val = Self().m_Iter.NextBack()) {
 
@@ -91,14 +91,14 @@ public:
         return Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         return Self().m_Iter.AdvanceBack(advance);
     }
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -114,17 +114,17 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Enumerate_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return Self().m_Iter.GetSize();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return Self().m_Iter.IsEmpty();
     }
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -169,11 +169,11 @@ public:
         , _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorExactSizeTrait<Type>, PrevIterT, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Enumerate_(const PrevIterT& iter) noexcept
+    ALT_FORCE_INLINE constexpr Enumerate_(const PrevIterT& iter) noexcept
         : m_Iter(iter)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_Iter.GetSizeHint();
     }
 

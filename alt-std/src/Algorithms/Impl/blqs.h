@@ -16,7 +16,7 @@ namespace Alt {
 namespace Algorithms {
 namespace _SortDetails {
 
-#if defined(__arm64__)
+#if ALT_PLATFORM_ARM
     #define __ALT_STD_INTERNAL_SORT_PREFER_IF__ 1
 #else
     #define __ALT_STD_INTERNAL_SORT_PREFER_IF__ 0
@@ -350,7 +350,7 @@ ALT_FORCE_INLINE T* partition_large(T* left, T* right, Compare comp) noexcept {
     T *lwr = left, *rwr = right, *sw = swbuf;
 
     while (UNROLL < SWSZ - (sw - swbuf) && left < right - UNROLL) {
-        sptr avail = Num::Min(right - left, SWSZ - (sw - swbuf));
+        sptr avail = Min(right - left, SWSZ - (sw - swbuf));
         T* endp = right - avail;
         while (right > endp + UNROLL) {
             for (ssize i = UNROLL; i--;) {
@@ -527,7 +527,7 @@ inline void block_qsort(T* left0, T* right0, Compare comp) noexcept {
         ssize left_offs = 0, right_offs = 0;	// Initialization to satisfy sanitizers
 
         while (right >= left) {
-            ssize blsz = Num::Min(BLSZ, right - left + 1);
+            ssize blsz = Min(BLSZ, right - left + 1);
             if (nleft == 0) {
                 for (T* endl = left + blsz; left < endl; left++) {
                     left_p[nleft] = left;
@@ -542,7 +542,7 @@ inline void block_qsort(T* left0, T* right0, Compare comp) noexcept {
                 }
                 right_offs = 0;
             }
-            ssize nswaps = Num::Min(nleft, nright);
+            ssize nswaps = Min(nleft, nright);
             for (ssize k = 0; k < nswaps; k++) {
                 Swap(*left_p[left_offs], *right_p[right_offs]);
                 left_offs++;

@@ -73,7 +73,7 @@ ALT_ENUM_CLASS_BIT_FLAGS_IMPL(ArenaAllocatorBits);
  */
 template <
     usize MIN_SIZE_IN_BYTES = Memory::KB(4),
-    usize MAX_SIZE_IN_BYTES = ALT_PLATFORM_32BIT_BOOL ? Memory::GB(2) : Num::Desc<usize>::Max(),
+    usize MAX_SIZE_IN_BYTES = ALT_PLATFORM_32BIT_BOOL ? Memory::GB(2) : Desc<usize>::Max(),
     ArenaAllocatorBits BITS = ArenaAllocatorBits::None
 >
 class ArenaAllocator;
@@ -178,7 +178,7 @@ protected:
 
         ALT_FORCE_INLINE void CalculateNextBlockSize(usize& sizeInBytesBlock, const usize maxSizeInBytes) const noexcept {
 
-            sizeInBytesBlock = Num::MulWrap(GetSizeInBytesPerfectForNextGrow(), GetGrowFactor(), maxSizeInBytes);
+            sizeInBytesBlock = MulWrap(GetSizeInBytesPerfectForNextGrow(), GetGrowFactor(), maxSizeInBytes);
         }
     };
 };
@@ -395,7 +395,7 @@ public:
      * @return A pointer to the allocated memory, or `nullptr` if allocation fails.
      */
     ALT_NODISCARD u8* AllocateBytes(const usize sizeInBytes, const usize alignment) noexcept {
-        ALT_ASSERT(Num::IsPowerOf2(alignment));
+        ALT_ASSERT(IsPowerOf2(alignment));
 
         usize alignmentOffset = 0;
         usize sizeInBytesBlock = GetMinSizeInBytes();
@@ -405,7 +405,7 @@ public:
         }
 
         alignmentOffset = Memory::Align(m_pLastBlock->pMemory, alignment);
-        ALT_ASSERT(!Num::IsOverflowCheckAdd(alignment, sizeInBytes));
+        ALT_ASSERT(!IsOverflowCheckAdd(alignment, sizeInBytes));
 
         if (alignmentOffset + sizeInBytes <= m_pLastBlock->availableSizeInBytes) {
 
@@ -637,11 +637,11 @@ private:
             : (defaultBlockAlignmentMalloc - 1) + sizeof(Block) + (alignment - 1);
 
         usize size;
-        if (Num::IsOverflowCheckAdd(extraSizeInBytes, sizeInBytes, &size)) {
+        if (IsOverflowCheckAdd(extraSizeInBytes, sizeInBytes, &size)) {
             return nullptr;
         }
 
-        size = Num::Max(size, sizeInBytesBlock);
+        size = Max(size, sizeInBytesBlock);
 
         u8* pMemory = Memory::Malloc<u8>(size);
         if (!pMemory) {
@@ -806,7 +806,7 @@ public:
      * @return A pointer to the allocated memory, or `nullptr` if allocation fails.
      */
     ALT_NODISCARD u8* AllocateBytes(const usize sizeInBytes, const usize alignment) noexcept {
-        ALT_ASSERT(Num::IsPowerOf2(alignment));
+        ALT_ASSERT(IsPowerOf2(alignment));
 
         usize alignmentOffset = 0;
         usize sizeInBytesBlock = GetMinSizeInBytes();
@@ -816,7 +816,7 @@ public:
         }
 
         alignmentOffset = Memory::Align(m_pLastBlock->pMemory, alignment);
-        ALT_ASSERT(!Num::IsOverflowCheckAdd(alignment, sizeInBytes));
+        ALT_ASSERT(!IsOverflowCheckAdd(alignment, sizeInBytes));
 
         if (alignmentOffset + sizeInBytes <= m_pLastBlock->availableSizeInBytes) {
 
@@ -1088,11 +1088,11 @@ private:
             : (defaultBlockAlignmentMalloc - 1) + sizeof(Block) + (alignment - 1);
 
         usize size;
-        if (Num::IsOverflowCheckAdd(extraSizeInBytes, sizeInBytes, &size)) {
+        if (IsOverflowCheckAdd(extraSizeInBytes, sizeInBytes, &size)) {
             return nullptr;
         }
 
-        size = Num::Max(size, sizeInBytesBlock);
+        size = Max(size, sizeInBytesBlock);
 
         u8* pMemory = Memory::Malloc<u8>(size);
         if (!pMemory) {
@@ -1143,11 +1143,11 @@ private:
             : (defaultBlockAlignmentMalloc - 1) + sizeof(Block) + (alignment - 1);
 
         usize size;
-        if (Num::IsOverflowCheckAdd(extraSizeInBytes, sizeInBytes, &size)) {
+        if (IsOverflowCheckAdd(extraSizeInBytes, sizeInBytes, &size)) {
             return nullptr;
         }
 
-        size = Num::Max(size, sizeInBytesBlock);
+        size = Max(size, sizeInBytesBlock);
 
         while (m_pLastBlockPool) {
 
@@ -1360,13 +1360,13 @@ public:
     struct MemoryDesc {
 
         usize minSizeInBytes = Memory::KB(4);
-        usize maxSizeInBytes = ALT_PLATFORM_32BIT_BOOL ? Memory::GB(2) : Num::Desc<usize>::Max();
+        usize maxSizeInBytes = ALT_PLATFORM_32BIT_BOOL ? Memory::GB(2) : Desc<usize>::Max();
     };
 
     ALT_FORCE_INLINE ArenaAllocatorDynamic CreateFromPreciseMemoryDesc(const MemoryDesc& desc) noexcept {
 
-        const usize minSizeInBytes = Num::Min(desc.minSizeInBytes, desc.maxSizeInBytes);
-        const usize maxSizeInBytes = Num::Max(desc.minSizeInBytes, desc.maxSizeInBytes);
+        const usize minSizeInBytes = Min(desc.minSizeInBytes, desc.maxSizeInBytes);
+        const usize maxSizeInBytes = Max(desc.minSizeInBytes, desc.maxSizeInBytes);
 
         ArenaAllocatorDynamic self{ IgnoreInitialization };
         self.m_Desc.minSizeInBytes = minSizeInBytes;
@@ -1377,8 +1377,8 @@ public:
 
     ALT_FORCE_INLINE ArenaAllocatorDynamic(const MemoryDesc& desc) noexcept {
 
-        const usize minSizeInBytes = Num::Min(desc.minSizeInBytes, desc.maxSizeInBytes);
-        const usize maxSizeInBytes = Num::Max(desc.minSizeInBytes, desc.maxSizeInBytes);
+        const usize minSizeInBytes = Min(desc.minSizeInBytes, desc.maxSizeInBytes);
+        const usize maxSizeInBytes = Max(desc.minSizeInBytes, desc.maxSizeInBytes);
 
         m_Desc.minSizeInBytes = Memory::RoundUpToPageSizeWrap(minSizeInBytes);
         m_Desc.maxSizeInBytes = Memory::RoundUpToPageSizeWrap(maxSizeInBytes);

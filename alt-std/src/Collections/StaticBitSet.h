@@ -31,19 +31,19 @@ namespace _StaticBitSetDetails {
 
 template <usize SIZE_IN_BITS>
 using size_in_bits_to_type_t = std::conditional_t<
-    SIZE_IN_BITS <= Num::Desc<u8>::Bits(),
+    SIZE_IN_BITS <= Desc<u8>::Bits(),
     u8,
 
     std::conditional_t<
-        SIZE_IN_BITS <= Num::Desc<u16>::Bits(),
+        SIZE_IN_BITS <= Desc<u16>::Bits(),
         u16,
 
         std::conditional_t<
-            SIZE_IN_BITS <= Num::Desc<u32>::Bits(),
+            SIZE_IN_BITS <= Desc<u32>::Bits(),
             u32,
 
             std::conditional_t<
-                SIZE_IN_BITS <= Num::Desc<u64>::Bits(),
+                SIZE_IN_BITS <= Desc<u64>::Bits(),
                 u64,
                 umax
             >
@@ -57,7 +57,7 @@ template <usize SIZE_IN_BITS, typename Usize = _StaticBitSetDetails::size_in_bit
 class StaticBitSet {
 private:
 
-    static_assert(std::is_scalar_v<Usize> && std::is_unsigned_v<Usize>, "");
+    static_assert(Desc<Usize>::IsUnsigned(), "");
 
     template <usize, typename>
     class Entry;
@@ -74,14 +74,21 @@ public:
      * 
      * Alt::StaticBitSet<64> bs = Alt::StaticBitSet<64>::Create(true);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static StaticBitSet Create(const bool val = false) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static StaticBitSet Create(const bool val = false) noexcept {
 
         return StaticBitSet{ val };
     }
 
-    ALT_FORCE_INLINE StaticBitSet(const bool val = false) noexcept {
+    ALT_FORCE_INLINE constexpr StaticBitSet(const bool val = false) noexcept {
 
-        std::memset(m_Words, val ? Num::Desc<s32>::Max() : 0, SIZE * sizeof(Usize));
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            Memory::FillCopyConstructObjects(m_Words, m_Words + SIZE, val ? Desc<Usize>::Max() : static_cast<Usize>(0));
+        }
+        else {
+
+            std::memset(m_Words, val ? Desc<s32>::Max() : 0, SIZE * sizeof(Usize));
+        }
     }
 
     /**
@@ -92,9 +99,16 @@ public:
      * Alt::StaticBitSet<64> bs;
      * bs.SetAll(true);
      */
-    ALT_FORCE_INLINE void SetAll(const bool val = true) noexcept {
+    ALT_FORCE_INLINE constexpr void SetAll(const bool val = true) noexcept {
 
-        std::memset(m_Words, val ? Num::Desc<s32>::Max() : 0, SIZE * sizeof(Usize));
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            Memory::FillCopyObjects(m_Words, m_Words + SIZE, val ? Desc<Usize>::Max() : static_cast<Usize>(0));
+        }
+        else {
+
+            std::memset(m_Words, val ? Desc<s32>::Max() : 0, SIZE * sizeof(Usize));
+        }
     }
 
     /**
@@ -108,7 +122,7 @@ public:
      * 
      * assert(bs[10]);
      */
-    ALT_FORCE_INLINE void Set(const usize i, const bool val = true) noexcept {
+    ALT_FORCE_INLINE constexpr void Set(const usize i, const bool val = true) noexcept {
 
         if (val) {
 
@@ -133,19 +147,19 @@ public:
      * assert(bs.Get(0));
      * assert(bs[0]);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool Get(const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool Get(const usize i) const noexcept {
         ALT_ASSERT(i < GetSize());
 
         return ((m_Words[i >> BITS_TO_WORDID_RIGHT_SHIFT] >> (i & BITS_TO_BITIDX_IN_WORD_MASK)) & 0b1) == 1;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Entry<SIZE_IN_BITS, Usize> operator[](const usize i) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Entry<SIZE_IN_BITS, Usize> operator[](const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         return Entry<SIZE_IN_BITS, Usize>{ *this, i };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE EntryConst<SIZE_IN_BITS, Usize> operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr EntryConst<SIZE_IN_BITS, Usize> operator[](const usize i) const noexcept {
         ALT_ASSERT(i < GetSize());
 
         return EntryConst<SIZE_IN_BITS, Usize>{ *this, i };
@@ -163,7 +177,7 @@ public:
      * assert(bs.FindFirstSet());
      * assert(*bs.FindFirstSet() == 0);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<usize> FindFirstSet(const usize bitsOffset) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<usize> FindFirstSet(const usize bitsOffset) const noexcept {
         ALT_ASSERT(bitsOffset <= GetSize());
 
         const usize wordOffset = bitsOffset >> BITS_TO_WORDID_RIGHT_SHIFT;
@@ -188,14 +202,14 @@ public:
         }
 
         const usize correction = pBegin == pBeginOld ? offset : 0;
-        const usize bitIdx = correction + (pBegin - Data()) * DIGITS + Num::Count0BitsRight(*pBegin >> correction);
+        const usize bitIdx = correction + (pBegin - Data()) * DIGITS + Count0BitsRight(*pBegin >> correction);
 
         return bitIdx < GetSize()
             ? MakeOptional(bitIdx)
             : Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<usize> FindFirstSet() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<usize> FindFirstSet() const noexcept {
 
         const Usize* pBegin = Data();
         const Usize* pEnd = DataEnd();
@@ -209,7 +223,7 @@ public:
             return Nullopt;
         }
 
-        const usize bitIdx = (pBegin - Data()) * DIGITS + Num::Count0BitsRight(*pBegin);
+        const usize bitIdx = (pBegin - Data()) * DIGITS + Count0BitsRight(*pBegin);
 
         return bitIdx < GetSize()
             ? MakeOptional(bitIdx)
@@ -227,10 +241,10 @@ public:
      * Alt::BitSet bs = Alt::BitSet::Allocate(4, true) iferr_return;
      * assert(bs.FindFirstNonSet() == Alt::Nullopt);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<usize> FindFirstNonSet(const usize bitsOffset) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<usize> FindFirstNonSet(const usize bitsOffset) const noexcept {
         ALT_ASSERT(bitsOffset <= GetSize());
 
-        constexpr static Usize WORD_MAX = Num::Desc<Usize>::Max();
+        constexpr Usize WORD_MAX = Desc<Usize>::Max();
 
         const usize wordOffset = bitsOffset >> BITS_TO_WORDID_RIGHT_SHIFT;
         const usize offset = bitsOffset & BITS_TO_BITIDX_IN_WORD_MASK;
@@ -254,16 +268,16 @@ public:
         }
 
         const usize correction = pBegin == pBeginOld ? offset : 0;
-        const usize bitIdx = correction + (pBegin - Data()) * DIGITS + Num::Count0BitsRight(~*pBegin >> offset);
+        const usize bitIdx = correction + (pBegin - Data()) * DIGITS + Count0BitsRight(~*pBegin >> offset);
 
         return bitIdx < GetSize()
             ? MakeOptional(bitIdx)
             : Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<usize> FindFirstNonSet() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<usize> FindFirstNonSet() const noexcept {
 
-        constexpr static Usize WORD_MAX = Num::Desc<Usize>::Max();
+        constexpr Usize WORD_MAX = Desc<Usize>::Max();
 
         const Usize* pBegin = Data();
         const Usize* pEnd = DataEnd();
@@ -277,7 +291,7 @@ public:
             return Nullopt;
         }
 
-        const usize bitIdx = (pBegin - Data()) * DIGITS + Num::Count0BitsRight(~*pBegin);
+        const usize bitIdx = (pBegin - Data()) * DIGITS + Count0BitsRight(~*pBegin);
 
         return bitIdx < GetSize()
             ? MakeOptional(bitIdx)
@@ -306,7 +320,7 @@ public:
      */
     template <usize RHS_SIZE_IN_BITS = SIZE_IN_BITS, typename U = Usize,
         std::enable_if_t<RHS_SIZE_IN_BITS == SIZE_IN_BITS>* = nullptr>
-    ALT_NODISCARD bool operator==(const StaticBitSet<RHS_SIZE_IN_BITS, U>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(const StaticBitSet<RHS_SIZE_IN_BITS, U>& rhs) const noexcept {
 
         if (SIZE > 1) {
 
@@ -323,13 +337,13 @@ public:
 
     template <usize RHS_SIZE_IN_BITS = SIZE_IN_BITS, typename U = Usize,
         std::enable_if_t<RHS_SIZE_IN_BITS != SIZE_IN_BITS>* = nullptr>
-    ALT_NODISCARD bool operator==(const StaticBitSet<RHS_SIZE_IN_BITS, U>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(const StaticBitSet<RHS_SIZE_IN_BITS, U>&) const noexcept {
 
         return false;
     }
 
     template <usize RHS_SIZE_IN_BITS = SIZE_IN_BITS, typename U = Usize>
-    ALT_NODISCARD bool operator!=(const StaticBitSet<RHS_SIZE_IN_BITS, U>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(const StaticBitSet<RHS_SIZE_IN_BITS, U>& rhs) const noexcept {
 
         return !(*this == rhs);
     }
@@ -338,7 +352,7 @@ public:
      * @brief Returns a immutable iterator for all bits.
      * @return An `BitSetIterator`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE BitSetIterator<Usize> GetIterator() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr BitSetIterator<Usize> GetIterator() const noexcept {
 
         return BitSetIterator<Usize>{ *this };
     }
@@ -347,18 +361,18 @@ public:
      * @brief Returns a immutable iterator only for ranges of '1' bits.
      * @return An `BitSetIteratorActiveRange`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE BitSetIteratorActiveRange<Usize> GetIteratorActiveRange() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange<Usize> GetIteratorActiveRange() const noexcept {
 
         return BitSetIteratorActiveRange<Usize>{ *this };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE BitSetIteratorActiveRange<Usize> GetIteratorActiveRange(const usize bitOffset) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange<Usize> GetIteratorActiveRange(const usize bitOffset) const noexcept {
         ALT_ASSERT(bitOffset <= GetSize());
 
         return BitSetIteratorActiveRange<Usize>{ *this, bitOffset };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE BitSetIteratorActiveRange<Usize> GetIteratorActiveRange(const usize bitOffset, const usize bitSize) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange<Usize> GetIteratorActiveRange(const usize bitOffset, const usize bitSize) const noexcept {
         ALT_ASSERT(bitOffset <= GetSize() && bitSize < GetSize() - bitOffset);
 
         return BitSetIteratorActiveRange<Usize>{ *this, bitOffset, bitSize };
@@ -368,18 +382,18 @@ public:
      * @brief Returns a immutable iterator only for ranges of '0' bits.
      * @return An `BitSetIteratorInactiveRange`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE BitSetIteratorInactiveRange<Usize> GetIteratorInactiveRange() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange<Usize> GetIteratorInactiveRange() const noexcept {
 
         return BitSetIteratorInactiveRange<Usize>{ *this };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE BitSetIteratorInactiveRange<Usize> GetIteratorInactiveRange(const usize bitOffset) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange<Usize> GetIteratorInactiveRange(const usize bitOffset) const noexcept {
         ALT_ASSERT(bitOffset <= GetSize());
 
         return BitSetIteratorInactiveRange<Usize>{ *this, bitOffset };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE BitSetIteratorInactiveRange<Usize> GetIteratorInactiveRange(const usize bitOffset, const usize bitSize) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange<Usize> GetIteratorInactiveRange(const usize bitOffset, const usize bitSize) const noexcept {
         ALT_ASSERT(bitOffset <= GetSize() && bitSize < GetSize() - bitOffset);
 
         return BitSetIteratorInactiveRange<Usize>{ *this, bitOffset, bitSize };
@@ -387,28 +401,28 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE Usize* Data() noexcept { return m_Words; }
-    ALT_FORCE_INLINE const Usize* Data() const noexcept { return m_Words; }
+    ALT_FORCE_INLINE constexpr Usize* Data() noexcept { return m_Words; }
+    ALT_FORCE_INLINE constexpr const Usize* Data() const noexcept { return m_Words; }
 
-    ALT_FORCE_INLINE Usize* DataEnd() noexcept { return m_Words + SIZE; }
-    ALT_FORCE_INLINE const Usize* DataEnd() const noexcept { return m_Words + SIZE; }
+    ALT_FORCE_INLINE constexpr Usize* DataEnd() noexcept { return m_Words + SIZE; }
+    ALT_FORCE_INLINE constexpr const Usize* DataEnd() const noexcept { return m_Words + SIZE; }
 
     template <usize SIZE_IN_BITS_, typename Usize_>
     class Entry {
     public:
 
-        ALT_FORCE_INLINE Entry(StaticBitSet<SIZE_IN_BITS_, Usize_>& bs, const usize idx) noexcept
-            : m_pBitSet(&bs)
+        ALT_FORCE_INLINE constexpr Entry(StaticBitSet<SIZE_IN_BITS_, Usize_>& bs, const usize idx) noexcept
+            : m_pBitSet(Addressof(bs))
             , m_Idx(idx)
         {}
 
-        ALT_FORCE_INLINE Entry& operator=(const bool val) noexcept {
+        ALT_FORCE_INLINE constexpr Entry& operator=(const bool val) noexcept {
 
             m_pBitSet->Set(m_Idx, val);
             return *this;
         }
 
-        ALT_FORCE_INLINE operator bool() const noexcept {
+        ALT_FORCE_INLINE constexpr operator bool() const noexcept {
             return m_pBitSet->Get(m_Idx);
         } 
 
@@ -422,12 +436,12 @@ private:
     class EntryConst {
     public:
 
-        ALT_FORCE_INLINE EntryConst(const StaticBitSet<SIZE_IN_BITS_, Usize_>& bs, const usize idx) noexcept
-            : m_pBitSet(&bs)
+        ALT_FORCE_INLINE constexpr EntryConst(const StaticBitSet<SIZE_IN_BITS_, Usize_>& bs, const usize idx) noexcept
+            : m_pBitSet(Addressof(bs))
             , m_Idx(idx)
         {}
 
-        ALT_FORCE_INLINE operator bool() const noexcept {
+        ALT_FORCE_INLINE constexpr operator bool() const noexcept {
             return m_pBitSet->Get(m_Idx);
         } 
 
@@ -451,14 +465,14 @@ private:
     template <typename>
     friend class BitSetIteratorInactiveRange;
 
-    constexpr static usize DIGITS = Num::Desc<Usize>::Bits();
-    static_assert(Num::IsPowerOf2(DIGITS), "");
+    constexpr static usize DIGITS = Desc<Usize>::Bits();
+    static_assert(IsPowerOf2(DIGITS), "");
 
-    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Num::Count0BitsRightConstexpr(DIGITS);
+    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Count0BitsRight(DIGITS);
     constexpr static usize BITS_TO_BITIDX_IN_WORD_MASK = DIGITS - 1;
 
     constexpr static usize SIZE =
-        Num::Max((SIZE_IN_BITS >> BITS_TO_WORDID_RIGHT_SHIFT) + ((SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1), 1);
+        Max((SIZE_IN_BITS >> BITS_TO_WORDID_RIGHT_SHIFT) + ((SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1), 1);
 
     Usize m_Words[SIZE];
 };
@@ -470,10 +484,9 @@ template <usize SIZE_IN_BITS, typename Usize>
 class Format<StaticBitSet<SIZE_IN_BITS, Usize>> {
 public:
 
-    ALT_FORCE_INLINE static Optional<EstimateExactSizeResult> EstimateExactSize(
+    ALT_FORCE_INLINE constexpr static Optional<EstimateExactSizeResult> EstimateExactSize(
         FormatEstimator& estimator, const Slice<const char> parameters, const StaticBitSet<SIZE_IN_BITS, Usize>& vals
     ) noexcept {
-        iferr_scope;
 
         bool isAllInOneLine = true;
         bool isBits = true;
@@ -521,14 +534,14 @@ public:
                 result.size += size;
 
                 // ', '
-                result.size += Num::SubWrap(size, 1) * 2;
+                result.size += SubWrap(size, 1) * 2;
             }
             else {
 
                 // Don't calculate precise size of numbers
 
                 // ', '
-                result.size += Num::SubWrap(size, 1) * 2;
+                result.size += SubWrap(size, 1) * 2;
             }
 
             result.size += 1;
@@ -555,7 +568,7 @@ public:
                 result.size += size;
 
                 // ','
-                result.size += Num::SubWrap(size, 1);
+                result.size += SubWrap(size, 1);
             }
             else {
 
@@ -565,7 +578,7 @@ public:
                 // Don't calculate precise size of numbers
 
                 // ','
-                result.size += Num::SubWrap(size, 1);
+                result.size += SubWrap(size, 1);
             }
 
             estimator.PopIndent();
@@ -579,7 +592,7 @@ public:
     }
 
     template <typename FormatWriterT>
-    ALT_FORCE_INLINE static bool WriteAppend(
+    ALT_FORCE_INLINE constexpr static bool WriteAppend(
         FormatWriter<FormatWriterT>& writer, const Slice<const char> parameters, const StaticBitSet<SIZE_IN_BITS, Usize>& vals
     ) noexcept {
         iferr_scope;

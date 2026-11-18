@@ -1,6 +1,6 @@
 ﻿#include "../IteratorTrait.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter{
  *     []() {
  *         static usize cnt = 0;
@@ -30,7 +30,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Take_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_TakeCnt == 0) {
             return Nullopt;
@@ -40,9 +40,9 @@ public:
         return Self().m_Iter.Next();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, Self().m_TakeCnt);
+        const usize advance = Min(advance_, Self().m_TakeCnt);
         Self().m_TakeCnt -= advance;
 
         return Self().m_Iter.Advance(advance);
@@ -50,7 +50,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -59,7 +59,7 @@ template <bool IS_NEED_IMPL, typename PrevIterT>
 class TakeBackwardTraitImpl {
 public:
 
-    ALT_FORCE_INLINE TakeBackwardTraitImpl(const PrevIterT&, const usize) noexcept
+    ALT_FORCE_INLINE constexpr TakeBackwardTraitImpl(const PrevIterT&, const usize) noexcept
     {}
 };
 
@@ -70,11 +70,11 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Take_<PrevIterT>;
 
-    ALT_FORCE_INLINE TakeBackwardTraitImpl(const PrevIterT& iter, const usize takeCnt) noexcept
-        : m_SkipN(Num::SubWrap(iter.GetSize(), takeCnt))
+    ALT_FORCE_INLINE constexpr TakeBackwardTraitImpl(const PrevIterT& iter, const usize takeCnt) noexcept
+        : m_SkipN(SubWrap(iter.GetSize(), takeCnt))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         if (m_SkipN != 0) {
 
@@ -85,7 +85,7 @@ public:
         return Self().m_Iter.NextBack();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         if (m_SkipN != 0) {
 
@@ -98,7 +98,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 
@@ -118,18 +118,18 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Take_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
-        return Num::Min(Self().m_TakeCnt, Self().m_Iter.GetSize());
+        return Min(Self().m_TakeCnt, Self().m_Iter.GetSize());
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return GetSize() == 0;
     }
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -182,14 +182,14 @@ public:
         , _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorExactSizeTrait<Type>, PrevIterT, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Take_(const PrevIterT& iter, const usize takeCnt) noexcept
+    ALT_FORCE_INLINE constexpr Take_(const PrevIterT& iter, const usize takeCnt) noexcept
         : SuperTakeBackwardTraitImpl(iter, takeCnt)
         , m_Iter(iter)
         , m_TakeCnt(takeCnt)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
-        return Num::Min(m_Iter.GetSizeHint(), m_TakeCnt);
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
+        return Min(m_Iter.GetSizeHint(), m_TakeCnt);
     }
 
 private:

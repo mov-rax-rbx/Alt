@@ -18,7 +18,7 @@ public:
 
     using Vec3<T>::Vec3;
 
-    ALT_FORCE_INLINE Point3(const Vec3<T>& vec) noexcept
+    ALT_FORCE_INLINE constexpr Point3(const Vec3<T>& vec) noexcept
         : Vec3<T>(vec)
     {}
 };

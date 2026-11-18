@@ -444,6 +444,15 @@
     <ClInclude Include="src\String\Impl\FormatPreInclude.h">
       <Filter>src\String\Impl</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\Impl\u128.h">
+      <Filter>src\Utils\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Impl\s128.h">
+      <Filter>src\Utils\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\String\Impl\StringDetailsPreInclude.h">
+      <Filter>src\String\Impl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Algorithms\xxHash-0.8.3\xxhash.c">
@@ -513,6 +522,9 @@
     </None>
     <None Include="src\Math\Impl\Vec4.inl">
       <Filter>src\Math\Impl</Filter>
+    </None>
+    <None Include="src\Utils\Impl\u128.inl">
+      <Filter>src\Utils\Impl</Filter>
     </None>
   </ItemGroup>
 </Project>

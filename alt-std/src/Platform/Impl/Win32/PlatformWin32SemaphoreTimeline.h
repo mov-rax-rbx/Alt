@@ -81,7 +81,7 @@ public:
      * const u64 maxLen = Alt::SemaphoreTimeline::GetTimelineLength();
      */
     ALT_NODISCARD ALT_FORCE_INLINE constexpr static u64 GetTimelineLength() noexcept {
-        return static_cast<u64>(Num::Desc<u32>::Max());
+        return static_cast<u64>(Desc<u32>::Max());
     }
 
     /**
@@ -93,7 +93,7 @@ public:
      * 
      * Alt::SemaphoreTimeline sem = Alt::SemaphoreTimeline::Create() iferr_return;
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static Optional<IfErrInjectionMove<SemaphoreTimeline>> Create(const u64 initVal = Num::Desc<u64>::Max()) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE static Optional<IfErrInjectionMove<SemaphoreTimeline>> Create(const u64 initVal = Desc<u64>::Max()) noexcept {
 
         /*
          * >= Windows 8 or >= Windows Server 2012
@@ -237,7 +237,7 @@ private:
 
 private:
 
-    alignas(ALT_PLATFORM_DESTRUCTIVE_CACHE_SIZE_GUARD) u64 m_Value = Num::Desc<u64>::Max();
+    alignas(ALT_PLATFORM_DESTRUCTIVE_CACHE_SIZE_GUARD) u64 m_Value = Desc<u64>::Max();
 };
 
 } // namespace _PlatformDetails

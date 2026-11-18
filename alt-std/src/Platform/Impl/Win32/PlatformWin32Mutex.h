@@ -97,9 +97,9 @@ public:
     ALT_NODISCARD ALT_FORCE_INLINE bool Lock() noexcept {
         iferr_scope;
 
-        u8 state = 0;
+        u8 state = _PlatformAtomicDetails::AtomicCompareExchangeAcquireRelaxed(&m_State, 0, 1);
 
-        if (_PlatformAtomicDetails::AtomicCompareExchangeAcquireRelaxed(&m_State, 0, 1) == 0) {
+        if (state == 0) {
             return true;
         }
 

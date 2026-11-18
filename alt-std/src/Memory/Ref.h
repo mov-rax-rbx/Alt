@@ -90,11 +90,11 @@ public:
     Ref(const _RefDetails::Ptr<T>&) noexcept = delete;
     Ref& operator=(const _RefDetails::Ptr<T>&) noexcept = delete;
 
-    ALT_FORCE_INLINE Ref(Ref&&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(Ref&&) noexcept = default;
 
-    ALT_FORCE_INLINE Ref(const Ref&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(const Ref&) noexcept = default;
 
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T*, U*>>* = nullptr>
@@ -114,8 +114,8 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T*, U*>>* = nullptr>
-    ALT_FORCE_INLINE Ref(U& val) noexcept
-        : m_Ptr(&val)
+    ALT_FORCE_INLINE constexpr Ref(U& val) noexcept
+        : m_Ptr(Addressof(val))
     {}
 
     /**
@@ -135,7 +135,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_assignable_v<T&, U&&>>* = nullptr>
-    ALT_FORCE_INLINE Ref& operator=(U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr Ref& operator=(U&& val) noexcept {
 
         *m_Ptr = std::forward<U>(val);
         return *this;
@@ -157,8 +157,8 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T*, U*>>* = nullptr>
-    ALT_FORCE_INLINE Ref(const Ref<U>& ref) noexcept
-        : m_Ptr(&ref.GetRef())
+    ALT_FORCE_INLINE constexpr Ref(const Ref<U>& ref) noexcept
+        : m_Ptr(Addressof(ref.GetRef()))
     {}
 
     /**
@@ -180,7 +180,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Ref& operator=(const Ref<U>& ref) noexcept {
+    ALT_FORCE_INLINE constexpr Ref& operator=(const Ref<U>& ref) noexcept {
 
         m_Ptr = &ref.GetRef();
         return *this;
@@ -199,11 +199,11 @@ public:
      * usize& val = ref; 
      * assert(val == 4);
      */
-    ALT_FORCE_INLINE operator T&() noexcept {
+    ALT_FORCE_INLINE constexpr operator T&() noexcept {
         return *m_Ptr;
     }
 
-    ALT_FORCE_INLINE operator const T&() const noexcept {
+    ALT_FORCE_INLINE constexpr operator const T&() const noexcept {
         return *m_Ptr;
     }
 
@@ -218,8 +218,8 @@ public:
      * assert(ref == 4);
      * assert(*ref == 4);
      */
-    ALT_FORCE_INLINE T& operator*() noexcept { return *m_Ptr; }
-    ALT_FORCE_INLINE const T& operator*() const noexcept { return *m_Ptr; }
+    ALT_FORCE_INLINE constexpr T& operator*() noexcept { return *m_Ptr; }
+    ALT_FORCE_INLINE constexpr const T& operator*() const noexcept { return *m_Ptr; }
 
     /**
      * @brief Accesses members of the underlying object.
@@ -232,8 +232,8 @@ public:
      * 
      * assert(ref->size() == 3);
      */
-    ALT_FORCE_INLINE T* operator->() noexcept { return m_Ptr; }
-    ALT_FORCE_INLINE const T* operator->() const noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr T* operator->() noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr const T* operator->() const noexcept { return m_Ptr; }
 
     /**
      * @brief Retrieves the underlying object as a reference.
@@ -249,11 +249,11 @@ public:
      * assert(ref.GetRef() == 4);
      * assert(&ref.GetRef() == &x);
      */
-    ALT_FORCE_INLINE T& GetRef() noexcept {
+    ALT_FORCE_INLINE constexpr T& GetRef() noexcept {
         return *m_Ptr;
     }
 
-    ALT_FORCE_INLINE const T& GetRef() const noexcept {
+    ALT_FORCE_INLINE constexpr const T& GetRef() const noexcept {
         return *m_Ptr;
     }
 
@@ -262,7 +262,7 @@ private:
     template <typename>
     friend class _RefDetails::Ptr;
 
-    Ref(T* ptr) noexcept
+    ALT_FORCE_INLINE constexpr Ref(T* ptr) noexcept
         : m_Ptr(ptr)
     {}
 
@@ -283,21 +283,21 @@ public:
     Ref(const _RefDetails::Ptr<void>&) noexcept = delete;
     Ref& operator=(const _RefDetails::Ptr<void>&) noexcept = delete;
 
-    ALT_FORCE_INLINE Ref(Ref&&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(Ref&&) noexcept = default;
 
-    ALT_FORCE_INLINE Ref(const Ref&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(const Ref&) noexcept = default;
 
-    ALT_FORCE_INLINE void* operator->() noexcept { return m_Ptr; }
-    ALT_FORCE_INLINE const void* operator->() const noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr void* operator->() noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr const void* operator->() const noexcept { return m_Ptr; }
 
 private:
 
     template <typename>
     friend class _RefDetails::Ptr;
 
-    Ref(void* ptr) noexcept
+    ALT_FORCE_INLINE constexpr Ref(void* ptr) noexcept
         : m_Ptr(ptr)
     {}
 
@@ -315,20 +315,20 @@ public:
     Ref(const _RefDetails::Ptr<const void>&) noexcept = delete;
     Ref& operator=(const _RefDetails::Ptr<const void>&) noexcept = delete;
 
-    ALT_FORCE_INLINE Ref(Ref&&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(Ref&&) noexcept = default;
 
-    ALT_FORCE_INLINE Ref(const Ref&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(const Ref&) noexcept = default;
 
-    ALT_FORCE_INLINE const void* operator->() const noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr const void* operator->() const noexcept { return m_Ptr; }
 
 private:
 
     template <typename>
     friend class _RefDetails::Ptr;
 
-    Ref(const void* ptr) noexcept
+    ALT_FORCE_INLINE constexpr Ref(const void* ptr) noexcept
         : m_Ptr(ptr)
     {}
 
@@ -346,21 +346,21 @@ public:
     Ref(const _RefDetails::Ptr<volatile void>&) noexcept = delete;
     Ref& operator=(const _RefDetails::Ptr<volatile void>&) noexcept = delete;
 
-    ALT_FORCE_INLINE Ref(Ref&&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(Ref&&) noexcept = default;
 
-    ALT_FORCE_INLINE Ref(const Ref&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(const Ref&) noexcept = default;
 
-    ALT_FORCE_INLINE volatile void* operator->() noexcept { return m_Ptr; }
-    ALT_FORCE_INLINE const volatile void* operator->() const noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr volatile void* operator->() noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr const volatile void* operator->() const noexcept { return m_Ptr; }
 
 private:
 
     template <typename>
     friend class _RefDetails::Ptr;
 
-    Ref(volatile void* ptr) noexcept
+    ALT_FORCE_INLINE constexpr Ref(volatile void* ptr) noexcept
         : m_Ptr(ptr)
     {}
 
@@ -378,20 +378,20 @@ public:
     Ref(const _RefDetails::Ptr<const volatile void>&) noexcept = delete;
     Ref& operator=(const _RefDetails::Ptr<const volatile void>&) noexcept = delete;
 
-    ALT_FORCE_INLINE Ref(Ref&&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(Ref&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(Ref&&) noexcept = default;
 
-    ALT_FORCE_INLINE Ref(const Ref&) noexcept = default;
-    ALT_FORCE_INLINE Ref& operator=(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref(const Ref&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Ref& operator=(const Ref&) noexcept = default;
 
-    ALT_FORCE_INLINE const volatile void* operator->() noexcept { return m_Ptr; }
+    ALT_FORCE_INLINE constexpr const volatile void* operator->() noexcept { return m_Ptr; }
 
 private:
 
     template <typename>
     friend class _RefDetails::Ptr;
 
-    Ref(const volatile void* ptr) noexcept
+    ALT_FORCE_INLINE constexpr Ref(const volatile void* ptr) noexcept
         : m_Ptr(ptr)
     {}
 

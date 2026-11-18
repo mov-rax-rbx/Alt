@@ -112,17 +112,17 @@ constexpr static bool is_format_estimatable_v = is_format_estimatable_t<T>::valu
 class FormatEstimator {
 public:
 
-    ALT_FORCE_INLINE void PushIndent() noexcept {
+    ALT_FORCE_INLINE constexpr void PushIndent() noexcept {
         m_IndentScope += 1;
     }
 
-    ALT_FORCE_INLINE void PopIndent() noexcept {
+    ALT_FORCE_INLINE constexpr void PopIndent() noexcept {
         m_IndentScope -= 1;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetIndentEstimatedSize(const ssize additionalIndent = 0) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetIndentEstimatedSize(const ssize additionalIndent = 0) const noexcept {
 
-        const usize indentScope = static_cast<usize>(Num::Max(m_IndentScope + additionalIndent, 0));
+        const usize indentScope = static_cast<usize>(Max(m_IndentScope + additionalIndent, 0));
         return indentScope * 4;
     }
 

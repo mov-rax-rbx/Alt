@@ -12,6 +12,7 @@
  *    - `ALT_USE_CUSTOM_FAST_MATH` - use approximations for some math function
  *    - `ALT_USE_UTF_NON_BRANCHLESS` - use non-branchless Utf encoding/decoding (by default branchless)
  *    - `ALT_USE_FORMAT_WITHOUT_SIZE_ESTIMATION` - disables size estimation and reservation for formatting (has 2 stages: calculate estimated size and reserve; write to buffer;)
+ *    - `ALT_USE_CUSTOM_128` - use custom u128/s128 (without __uint128_t/__int128)
  * 
  * 2. Helper defines:
  * 
@@ -52,6 +53,9 @@
     #define ALT_PLATFORM_X86
     #define ALT_PLATFORM_32BIT
     #define ALT_PLATFORM_X86_32
+#elif defined(__aarch64__) || defined(_M_ARM64)
+    #define ALT_PLATFORM_ARM
+    #define ALT_PLATFORM_64BIT
 #else
     #error undefined platform
 #endif

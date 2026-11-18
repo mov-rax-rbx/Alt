@@ -29,7 +29,7 @@ public:
      * @param self The String object to copy boundaries from.
      */
     template <usize MIN_BYTES_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE StringUTF8Iterator(const StringUTF8<MIN_BYTES_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr StringUTF8Iterator(const StringUTF8<MIN_BYTES_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -39,7 +39,7 @@ public:
      * @param self The String object to copy boundaries from.
      */
     template <usize SIZE_IN_BYTES_MINUS_ONE, typename Usize>
-    ALT_FORCE_INLINE StringUTF8Iterator(const StaticStringUTF8<SIZE_IN_BYTES_MINUS_ONE, Usize>& self) noexcept
+    ALT_FORCE_INLINE constexpr StringUTF8Iterator(const StaticStringUTF8<SIZE_IN_BYTES_MINUS_ONE, Usize>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -48,7 +48,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return 0 - mean no hint.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -64,7 +64,7 @@ public:
      * assert(*it.Next() == U't');
      * assert(it.Next() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<chara> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
@@ -77,7 +77,7 @@ public:
             m_pBegin + 3 < m_pEnd ? *(m_pBegin + 3) : static_cast<u8>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_8::Utf8ToUtf32IgnoreErrors(utf8, utf32);
 
         m_pBegin += result.advance;
@@ -100,7 +100,7 @@ public:
      * assert(skipped == 3);
      * assert(it.Count() == 3);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
@@ -135,7 +135,7 @@ public:
      * assert(*it.NextBack() == 'n');
      * assert(it.NextBack() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<chara> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
@@ -148,7 +148,7 @@ public:
             *(m_pEnd - 1),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_8::Utf8ToUtf32IgnoreErrorsBackward(utf8, utf32);
 
         m_pEnd -= result.advance;
@@ -171,7 +171,7 @@ public:
      * assert(skipped == 1);
      * assert(it.Count() == 5);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
@@ -198,7 +198,7 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no charas (UTF-32) left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 

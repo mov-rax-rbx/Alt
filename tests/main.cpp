@@ -2,9 +2,9 @@
 
 int main(int argc, char** argv) {
 
-	::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 
-	::testing::GTEST_FLAG(filter) = "BoundedMPMC.*";
+    ::testing::GTEST_FLAG(filter) = "Math.Sqrtf64Constexpr";
 
-	return RUN_ALL_TESTS();
+    return RUN_ALL_TESTS();
 }

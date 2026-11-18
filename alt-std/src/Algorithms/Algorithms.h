@@ -6,22 +6,22 @@
 #include "../TypeTraits.h"
 
 #include "../Memory/Impl/MemoryPreInclude.h"
+#include "../String/Impl/StringDetailsPreInclude.h"
 
 #include "Impl/xxHashConstexpr-0.8.3.h"
 #include "Impl/blqs.h"
 
 namespace Alt {
 
-#define ALT_HASH_CONST(strSlice_) Alt::Algorithms::HashConstexpr(strSlice_.Data(), strSlice_.GetSize());
-#define ALT_HASH_SEED_CONST(strSlice_, seed) Alt::Algorithms::HashConstexpr(strSlice_.Data(), strSlice_.GetSize(), seed);
+#define ALT_HASH(strSlice_) Alt::Algorithms::Hash(strSlice_.Data(), strSlice_.DataEnd());
+#define ALT_HASH_SEED(strSlice_, seed) Alt::Algorithms::Hash(strSlice_.Data(), strSlice_.DataEnd(), seed);
 
-#define ALT_HASH32_CONST(strSlice_) Alt::Algorithms::Hash32Constexpr(strSlice_.Data(), strSlice_.GetSize());
-#define ALT_HASH32_SEED_CONST(strSlice_, seed) Alt::Algorithms::Hash32Constexpr(strSlice_.Data(), strSlice_.GetSize(), seed);
+#define ALT_HASH32(strSlice_) Alt::Algorithms::Hash32(strSlice_.Data(), strSlice_.DataEnd());
+#define ALT_HASH32_SEED(strSlice_, seed) Alt::Algorithms::Hash32(strSlice_.Data(), strSlice_.DataEnd(), seed);
 
-#define ALT_HASH64_CONST(strSlice_) Alt::Algorithms::Hash64Constexpr(strSlice_.Data(), strSlice_.GetSize());
-#define ALT_HASH64_SEED_CONST(strSlice_, seed) Alt::Algorithms::Hash64Constexpr(strSlice_.Data(), strSlice_.GetSize(), seed);
+#define ALT_HASH64(strSlice_) Alt::Algorithms::Hash64(strSlice_.Data(), strSlice_.DataEnd());
+#define ALT_HASH64_SEED(strSlice_, seed) Alt::Algorithms::Hash64(strSlice_.Data(), strSlice_.DataEnd(), seed);
 
-namespace Algorithms {
 namespace _AlgorithmsDetails {
 
 enum class PlatformTrait {
@@ -35,23 +35,13 @@ using Platform = std::integral_constant<PlatformTrait, TRAIT>;
 
 template <
     typename T = void,
-    PlatformTrait PLATFORM =
-        std::conditional_t<
-            sizeof(usize) == sizeof(u64),
-            Platform<PlatformTrait::x64>,
-            Platform<PlatformTrait::x32>
-        >::value
+    PlatformTrait PLATFORM = ALT_PLATFORM_64BIT_BOOL ? PlatformTrait::x64 : PlatformTrait::x32
 >
 struct HashImpl;
 
 template <
     typename T = void,
-    PlatformTrait PLATFORM =
-        std::conditional_t<
-            sizeof(usize) == sizeof(u64),
-            Platform<PlatformTrait::x64>,
-            Platform<PlatformTrait::x32>
-        >::value
+    PlatformTrait PLATFORM = ALT_PLATFORM_64BIT_BOOL ? PlatformTrait::x64 : PlatformTrait::x32
 >
 struct HashConstexprImpl;
 
@@ -60,8 +50,7 @@ struct is_allow_memcmp_comparison
     : std::conditional_t<
 
         std::has_unique_object_representations_v<T> &&
-        std::is_scalar_v<T> &&
-        std::is_unsigned_v<T> &&
+        TypeTraits::is_scalar_v<T> &&
         sizeof(T) == sizeof(u8),
 
         std::true_type,
@@ -77,7 +66,7 @@ struct is_allow_memcmp_comparison_eq
     : std::conditional_t<
 
         std::has_unique_object_representations_v<T> &&
-        std::is_scalar_v<T>,
+        TypeTraits::is_scalar_v<T>,
 
         std::true_type,
         std::false_type
@@ -92,8 +81,7 @@ struct is_allow_wmemcmp_comparison
     : std::conditional_t<
 
         std::has_unique_object_representations_v<T> &&
-        std::is_scalar_v<T> &&
-        std::is_unsigned_v<T> &&
+        TypeTraits::is_scalar_v<T> &&
         sizeof(T) == sizeof(wchar_t),
 
         std::true_type,
@@ -174,110 +162,160 @@ struct FindFirstTraitImpl;
 
 } // namespace _AlgorithmsDetails
 
-template <typename T = void>
-ALT_NODISCARD ALT_FORCE_INLINE usize Hash(const void* pBegin, const void* pEnd, const usize seed = 0) noexcept {
+namespace Algorithms {
+
+template <typename T = void,
+    std::enable_if_t<sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr usize Hash(const T* pBegin, const T* pEnd, const usize seed = 0) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T>::Hash(pBegin, static_cast<usize>(pEnd - pBegin), seed);
+    }
 
     return _AlgorithmsDetails::HashImpl<T>::Hash(pBegin, pEnd, seed);
 }
 
-template <typename T = void>
-ALT_NODISCARD ALT_FORCE_INLINE u32 Hash32(const void* pBegin, const void* pEnd, const u32 seed = 0) noexcept {
+template <typename T = void, usize N,
+    std::enable_if_t<TypeTraits::is_character_v<T> && sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr usize Hash(const T (&str)[N], const usize seed = 0) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T>::Hash(str, N - 1, seed);
+    }
+
+    return _AlgorithmsDetails::HashImpl<T>::Hash(str, str + N - 1, seed);
+}
+
+template <typename T = void, usize N,
+    std::enable_if_t<!TypeTraits::is_character_v<T> && sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr usize Hash(const T (&str)[N], const usize seed = 0) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T>::Hash(str, N, seed);
+    }
+
+    return _AlgorithmsDetails::HashImpl<T>::Hash(str, str + N, seed);
+}
+
+template <typename T = void,
+    std::enable_if_t<sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr u32 Hash32(const T* pBegin, const T* pEnd, const u32 seed = 0) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(pBegin, static_cast<usize>(pEnd - pBegin), seed);
+    }
 
     return _AlgorithmsDetails::HashImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(pBegin, pEnd, seed);
 }
 
-template <typename T = void>
-ALT_NODISCARD ALT_FORCE_INLINE u64 Hash64(const void* pBegin, const void* pEnd, const u64 seed = 0) noexcept {
+template <typename T = void, usize N,
+    std::enable_if_t<TypeTraits::is_character_v<T> && sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr u32 Hash32(const T (&str)[N], const u32 seed = 0) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(str, N - 1, seed);
+    }
+
+    return _AlgorithmsDetails::HashImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(str, str + N - 1, seed);
+}
+
+template <typename T = void, usize N,
+    std::enable_if_t<!TypeTraits::is_character_v<T> && sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr u32 Hash32(const T (&str)[N], const u32 seed = 0) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(str, N, seed);
+    }
+
+    return _AlgorithmsDetails::HashImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(str, str + N, seed);
+}
+
+template <typename T = void,
+    std::enable_if_t<sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr u64 Hash64(const T* pBegin, const T* pEnd, const u64 seed = 0) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(pBegin, static_cast<usize>(pEnd - pBegin), seed);
+    }
 
     return _AlgorithmsDetails::HashImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(pBegin, pEnd, seed);
 }
 
-template <typename T = void,
-    std::enable_if_t<sizeof(T) == 1>* = nullptr>
-ALT_NODISCARD ALT_NOINLINE constexpr usize HashConstexpr(const T* pBegin, const usize size, const usize seed = 0) noexcept {
+template <typename T = void, usize N,
+    std::enable_if_t<TypeTraits::is_character_v<T> && sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr u64 Hash64(const T (&str)[N], const u64 seed = 0) noexcept {
 
-    return _AlgorithmsDetails::HashConstexprImpl<T>::Hash(pBegin, size, seed);
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(str, N - 1, seed);
+    }
+
+    return _AlgorithmsDetails::HashImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(str, str + N - 1, seed);
 }
 
 template <typename T = void, usize N,
-    std::enable_if_t<sizeof(T) == 1>* = nullptr>
-ALT_NODISCARD ALT_NOINLINE constexpr usize HashConstexpr(const T (&str)[N], const usize seed = 0) noexcept {
+    std::enable_if_t<!TypeTraits::is_character_v<T> && sizeof(T) == 1>* = nullptr>
+ALT_NODISCARD ALT_NOINLINE constexpr u64 Hash64(const T (&str)[N], const u64 seed = 0) noexcept {
 
-    return _AlgorithmsDetails::HashConstexprImpl<T>::Hash(str, N, seed);
-}
+    ALT_IF_IS_CONSTANT_EVALUATED {
 
-template <typename T = void,
-    std::enable_if_t<sizeof(T) == 1>* = nullptr>
-ALT_NODISCARD ALT_NOINLINE constexpr u32 Hash32Constexpr(const T* pBegin, const usize size, const u32 seed = 0) noexcept {
+        return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(str, N, seed);
+    }
 
-    return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(pBegin, size, seed);
-}
-
-template <typename T = void, usize N,
-    std::enable_if_t<sizeof(T) == 1>* = nullptr>
-ALT_NODISCARD ALT_NOINLINE constexpr u32 Hash32Constexpr(const T (&str)[N], const u32 seed = 0) noexcept {
-
-    return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x32>::Hash(str, N, seed);
-}
-
-template <typename T = void,
-    std::enable_if_t<sizeof(T) == 1>* = nullptr>
-ALT_NODISCARD ALT_NOINLINE constexpr u64 Hash64Constexpr(const T* pBegin, const usize size, const u64 seed = 0) noexcept {
-
-    return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(pBegin, size, seed);
-}
-
-template <typename T = void, usize N,
-    std::enable_if_t<sizeof(T) == 1>* = nullptr>
-ALT_NODISCARD ALT_NOINLINE constexpr u64 Hash64Constexpr(const T (&str)[N], const u64 seed = 0) noexcept {
-
-    return _AlgorithmsDetails::HashConstexprImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(str, N, seed);
+    return _AlgorithmsDetails::HashImpl<T, _AlgorithmsDetails::PlatformTrait::x64>::Hash(str, str + N, seed);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
     return _AlgorithmsDetails::CompareImpl<T>::Compare(pBegin0, pEnd0, pBegin1, pEnd1);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE bool CompareEQ(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool CompareEQ(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
     return _AlgorithmsDetails::CompareEQImpl<T>::CompareEQ(pBegin0, pEnd0, pBegin1, pEnd1);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE bool CompareNE(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool CompareNE(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
     return !CompareEQ(pBegin0, pEnd0, pBegin1, pEnd1);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE bool CompareLT(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool CompareLT(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
     return Compare(pBegin0, pEnd0, pBegin1, pEnd1) == -1;
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE bool CompareGT(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool CompareGT(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
     return CompareLT(pBegin1, pEnd1, pBegin0, pEnd0);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE bool CompareLE(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool CompareLE(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
     return !CompareGT(pBegin0, pEnd0, pBegin1, pEnd1);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE bool CompareGE(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool CompareGE(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
     return !CompareLT(pBegin0, pEnd0, pBegin1, pEnd1);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE T Remove(ALT_MAYBE_UNUSED T* pBegin, T* pEnd, T* pValToRemove) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T Remove(ALT_MAYBE_UNUSED T* pBegin, T* pEnd, T* pValToRemove) noexcept {
     ALT_ASSERT(pValToRemove >= pBegin && pValToRemove < pEnd);
 
     if (pValToRemove + 1 == pEnd) {
@@ -285,7 +323,7 @@ ALT_NODISCARD ALT_FORCE_INLINE T Remove(ALT_MAYBE_UNUSED T* pBegin, T* pEnd, T* 
         return Memory::MoveDestructibleObject(*pValToRemove);
     }
 
-    if (TypeTraits::is_trivially_reallocatable_v<T>) {
+    if (!ALT_IS_CONSTANT_EVALUATED && TypeTraits::is_trivially_reallocatable_v<T>) {
 
         alignas(T) u8 memory[sizeof(T)];
         std::memcpy(memory, pValToRemove, sizeof(T));
@@ -305,7 +343,7 @@ ALT_NODISCARD ALT_FORCE_INLINE T Remove(ALT_MAYBE_UNUSED T* pBegin, T* pEnd, T* 
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE T RemoveShiftRight(T* pBegin, ALT_MAYBE_UNUSED T* pEnd, T* pValToRemove) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T RemoveShiftRight(T* pBegin, ALT_MAYBE_UNUSED T* pEnd, T* pValToRemove) noexcept {
     ALT_ASSERT(pValToRemove >= pBegin && pValToRemove < pEnd);
 
     if (pValToRemove == pBegin) {
@@ -313,7 +351,7 @@ ALT_NODISCARD ALT_FORCE_INLINE T RemoveShiftRight(T* pBegin, ALT_MAYBE_UNUSED T*
         return Memory::MoveDestructibleObject(*pValToRemove);
     }
 
-    if (TypeTraits::is_trivially_reallocatable_v<T>) {
+    if (!ALT_IS_CONSTANT_EVALUATED && TypeTraits::is_trivially_reallocatable_v<T>) {
 
         alignas(T) u8 memory[sizeof(T)];
         std::memcpy(memory, pValToRemove, sizeof(T));
@@ -333,7 +371,7 @@ ALT_NODISCARD ALT_FORCE_INLINE T RemoveShiftRight(T* pBegin, ALT_MAYBE_UNUSED T*
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE T RemoveSwapLast(ALT_MAYBE_UNUSED T* pBegin, T* pEnd, T* pValToRemove) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T RemoveSwapLast(ALT_MAYBE_UNUSED T* pBegin, T* pEnd, T* pValToRemove) noexcept {
     ALT_ASSERT(pValToRemove >= pBegin && pValToRemove < pEnd);
 
     T* pLast = pEnd - 1;
@@ -346,13 +384,13 @@ ALT_NODISCARD ALT_FORCE_INLINE T RemoveSwapLast(ALT_MAYBE_UNUSED T* pBegin, T* p
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE const T* FindFirst(const T* pBegin, const T* pEnd, const T& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* FindFirst(const T* pBegin, const T* pEnd, const T& val) noexcept {
 
     return _AlgorithmsDetails::FindFirstTraitImpl<T>::Find(pBegin, pEnd, val);
 }
 
 template <typename T>
-ALT_NODISCARD ALT_FORCE_INLINE const T* FindLast(const T* pBegin, const T* pEnd, const T& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* FindLast(const T* pBegin, const T* pEnd, const T& val) noexcept {
 
     bool isEq = false;
     const T* pVal = pEnd;
@@ -365,6 +403,11 @@ ALT_NODISCARD ALT_FORCE_INLINE const T* FindLast(const T* pBegin, const T* pEnd,
 
     return isEq ? pVal : pEnd;
 }
+
+#ifdef ALT_COMPILER_CLANG
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++20-extensions" // use of this statement in a constexpr function is a C++20 extension - expanded from macro '__ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__'
+#endif // ALT_COMPILER_CLANG
 
 #ifdef ALT_COMPILER_MSVC
 #include <xmmintrin.h>
@@ -389,7 +432,7 @@ ALT_NODISCARD ALT_FORCE_INLINE const T* FindLast(const T* pBegin, const T* pEnd,
 // none needed for CLANG < 5
 #else
 // __asm() workaround
-#define __ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__(size, flag)                  \
+#define __ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__(size, flag)              \
   do                                                                           \
     __asm __volatile(""                                                        \
                      : "+r"(size)                                              \
@@ -401,13 +444,13 @@ ALT_NODISCARD ALT_FORCE_INLINE const T* FindLast(const T* pBegin, const T* pEnd,
 #endif
 
 #ifndef __ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__
-#define __ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__(size, flag)                  \
+#define __ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__(size, flag)              \
   do                                                                           \
     /* nope for non-clang or non-x86 */;                                       \
   while (0)
 #endif /* __ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__ */
 
-/*
+/**
  * @brief A binary search algorithm.
  * @return Returns pointer to actual value or 'pEnd' for next match for upper bound case.
  * @example
@@ -423,7 +466,26 @@ ALT_NODISCARD ALT_FORCE_INLINE const T* FindLast(const T* pBegin, const T* pEnd,
  * });
  */
 template <typename T, typename FuncT>
-ALT_NODISCARD ALT_FORCE_INLINE T* BinarySearch(T* pBegin, T* pEnd, FuncT&& cmp) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T* BinarySearch(T* pBegin, T* pEnd, FuncT&& cmp) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        T* pVal = pBegin;
+        usize len = static_cast<usize>(pEnd - pBegin);
+
+        while (len > 1) {
+
+            const usize half = len >> 1;
+            len -= half;
+
+            const bool isGreater = (cmp)(pVal[half - 1]);
+            pVal += isGreater ? half : 0;
+        }
+
+        pVal += len != 0 ? (cmp)(*pVal) : 0;
+
+        return pVal;
+    }
 
     T* pVal = pBegin;
     usize len = static_cast<usize>(pEnd - pBegin);
@@ -448,7 +510,7 @@ ALT_NODISCARD ALT_FORCE_INLINE T* BinarySearch(T* pBegin, T* pEnd, FuncT&& cmp) 
 
 template <typename T, typename U,
     std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE T* BinarySearchLowerBound(T* pBegin, T* pEnd, U&& x) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T* BinarySearchLowerBound(T* pBegin, T* pEnd, U&& x) noexcept {
 
     return BinarySearch(pBegin, pEnd, [&x](const T& y) noexcept -> bool {
         return x > y;
@@ -457,7 +519,7 @@ ALT_NODISCARD ALT_FORCE_INLINE T* BinarySearchLowerBound(T* pBegin, T* pEnd, U&&
 
 template <typename T, typename U,
     std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE T* BinarySearchUpperBound(T* pBegin, T* pEnd, U&& x) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T* BinarySearchUpperBound(T* pBegin, T* pEnd, U&& x) noexcept {
 
     return BinarySearch(pBegin, pEnd, [&x](const T& y) noexcept -> bool {
         return x >= y;
@@ -466,6 +528,10 @@ ALT_NODISCARD ALT_FORCE_INLINE T* BinarySearchUpperBound(T* pBegin, T* pEnd, U&&
 
 #undef __ALT_STD_INTERNAL_PREFETCH__
 #undef __ALT_STD_INTERNAL_CLANG_X86CMOV_WORKAROUND__
+
+#ifdef ALT_COMPILER_CLANG
+#pragma clang diagnostic pop
+#endif // ALT_COMPILER_CLANG
 
 template <typename T, typename FuncT>
 ALT_FORCE_INLINE void Sort(T* pBegin, T* pEnd, FuncT&& cmp) noexcept {
@@ -478,6 +544,8 @@ ALT_FORCE_INLINE void Sort(T* pBegin, T* pEnd) noexcept {
 
     _SortDetails::sort(pBegin, pEnd, [](const T& x, const T& y) noexcept { return x < y; });
 }
+
+} // namespace Algorithms
 
 namespace _AlgorithmsDetails {
 
@@ -526,7 +594,12 @@ struct HashConstexprImpl<T, PlatformTrait::x64> {
 template <typename T>
 struct CompareImpl<T, ComparisonTrait::Memcmp> {
 
-    ALT_FORCE_INLINE static ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+    ALT_FORCE_INLINE constexpr static ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CompareImpl<T, ComparisonTrait::Operator>::Compare(pBegin0, pEnd0, pBegin1, pEnd1);
+        }
 
         const usize size0 = static_cast<usize>(pEnd0 - pBegin0);
         const usize size1 = static_cast<usize>(pEnd1 - pBegin1);
@@ -579,7 +652,12 @@ struct CompareImpl<T, ComparisonTrait::Memcmp> {
 template <typename T>
 struct CompareImpl<T, ComparisonTrait::Wmemcmp> {
 
-    ALT_FORCE_INLINE static ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+    ALT_FORCE_INLINE constexpr static ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CompareImpl<T, ComparisonTrait::Operator>::Compare(pBegin0, pEnd0, pBegin1, pEnd1);
+        }
 
         const usize size0 = static_cast<usize>(pEnd0 - pBegin0);
         const usize size1 = static_cast<usize>(pEnd1 - pBegin1);
@@ -637,7 +715,7 @@ struct CompareImpl<T, ComparisonTrait::Wmemcmp> {
 template <typename T>
 struct CompareImpl<T, ComparisonTrait::Operator> {
 
-    ALT_FORCE_INLINE static ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+    ALT_FORCE_INLINE constexpr static ssize Compare(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
         const usize size0 = static_cast<usize>(pEnd0 - pBegin0);
         const usize size1 = static_cast<usize>(pEnd1 - pBegin1);
@@ -679,7 +757,12 @@ struct CompareImpl<T, ComparisonTrait::Operator> {
 template <typename T>
 struct CompareEQImpl<T, ComparisonTrait::Memcmp> {
 
-    ALT_FORCE_INLINE static bool CompareEQ(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+    ALT_FORCE_INLINE constexpr static bool CompareEQ(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CompareEQImpl<T, ComparisonTrait::Operator>::CompareEQ(pBegin0, pEnd0, pBegin1, pEnd1);
+        }
 
         const usize size0 = static_cast<usize>(pEnd0 - pBegin0);
         const usize size1 = static_cast<usize>(pEnd1 - pBegin1);
@@ -715,7 +798,7 @@ struct CompareEQImpl<T, ComparisonTrait::Memcmp> {
 template <typename T>
 struct CompareEQImpl<T, ComparisonTrait::Operator> {
 
-    ALT_FORCE_INLINE static bool CompareEQ(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
+    ALT_FORCE_INLINE constexpr static bool CompareEQ(const T* pBegin0, const T* pEnd0, const T* pBegin1, const T* pEnd1) noexcept {
 
         const usize size0 = static_cast<usize>(pEnd0 - pBegin0);
         const usize size1 = static_cast<usize>(pEnd1 - pBegin1);
@@ -746,7 +829,12 @@ struct CompareEQImpl<T, ComparisonTrait::Operator> {
 template <typename T>
 struct FindFirstTraitImpl<T, FindTrait::Memchr> {
 
-    ALT_FORCE_INLINE static const T* Find(const T* pBegin, const T* pEnd, const T& val_) noexcept {
+    ALT_FORCE_INLINE constexpr static const T* Find(const T* pBegin, const T* pEnd, const T& val_) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return FindFirstTraitImpl<T, FindTrait::Operator>::Find(pBegin, pEnd, val_);
+        }
 
         if ((pEnd - pBegin) * sizeof(T) <= 8 * sizeof(usize)) {
 
@@ -774,7 +862,12 @@ struct FindFirstTraitImpl<T, FindTrait::Memchr> {
 template <typename T>
 struct FindFirstTraitImpl<T, FindTrait::Wmemchr> {
 
-    ALT_FORCE_INLINE static const T* Find(const T* pBegin, const T* pEnd, const T& val_) noexcept {
+    ALT_FORCE_INLINE constexpr static const T* Find(const T* pBegin, const T* pEnd, const T& val_) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return FindFirstTraitImpl<T, FindTrait::Operator>::Find(pBegin, pEnd, val_);
+        }
 
         if ((pEnd - pBegin) * sizeof(T) <= 8 * sizeof(usize)) {
 
@@ -806,7 +899,7 @@ struct FindFirstTraitImpl<T, FindTrait::Wmemchr> {
 template <typename T>
 struct FindFirstTraitImpl<T, FindTrait::Operator> {
 
-    ALT_FORCE_INLINE static const T* Find(const T* pBegin, const T* pEnd, const T& val) noexcept {
+    ALT_FORCE_INLINE constexpr static const T* Find(const T* pBegin, const T* pEnd, const T& val) noexcept {
 
         bool isEq = false;
         const T* pVal = pBegin;
@@ -822,8 +915,6 @@ struct FindFirstTraitImpl<T, FindTrait::Operator> {
 };
 
 } // namespace _AlgorithmsDetails
-
-} // namespace Algorithms
 } // namespace Alt
 
 #endif // __ALT_STD_ALGORITHMS__
