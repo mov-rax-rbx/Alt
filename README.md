@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     primes[0] = false;
     primes[1] = false;
 
-    const usize numIters = (usize)Alt::Math::Sqrt((f32)primes.GetSize());
+    const usize numIters = (usize)Alt::Sqrt((f32)primes.GetSize());
     for (usize i = 2; i <= numIters; ++i) {
 
         if (!primes[i]) {
@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 
         for (usize k = 2;; ++k) {
 
-            const usize num = Alt::Num::MulOverflowCheck(i, k) iferr {
+            const usize num = Alt::MulOverflowCheck(i, k) iferr {
                 break;
             }
 
