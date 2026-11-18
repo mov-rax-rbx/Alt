@@ -28,7 +28,7 @@ enum class ReallocBits : usize {
     FillZero = static_cast<usize>(Platform::MemoryReallocateBytesBits::FillZero),
     InPlace = static_cast<usize>(Platform::MemoryReallocateBytesBits::InPlace),
 
-    /*
+    /**
      * If specified means we are using internal system routine for reallocation and fully 'memcpy' the whole
      * old region on grow - used as optimization hint (for example for shrink operation can reduce code generation,
      * applied on is_trivially_reallocatable_v<T> types).
@@ -40,6 +40,40 @@ enum class ReallocBits : usize {
 ALT_ENUM_CLASS_BIT_FLAGS_IMPL(ReallocBits);
 
 namespace _MemoryDetails {
+
+template <typename T>
+struct TransmuteIntoIntermediate1 {
+
+    T val{};
+};
+
+template <typename T>
+struct TransmuteIntoIntermediate2 {
+
+    constexpr TransmuteIntoIntermediate2& operator=(const TransmuteIntoIntermediate1<T>& val) noexcept {
+
+        Assign(val.val);
+        return *this;
+    }
+
+    template <typename U, usize N>
+    constexpr void Assign(const U (&val)[N]) noexcept {
+
+        for (usize i = 0; i < N; ++i) {
+
+            (*pTo)[i] = val[i];
+        }
+    }
+
+    template <typename U>
+    constexpr void Assign(const U& val) noexcept {
+
+        *pTo = val;
+        return *this;
+    }
+
+    T* pTo = nullptr;
+};
 
 template <typename T, bool IS_WITH_OVERLFOW_CHECK = (sizeof(T) > 1)>
 struct MallocImpl;
@@ -97,7 +131,7 @@ ALT_FORCE_INLINE void AlignedFree(void* ptr) noexcept {
     Platform::MemoryAlignedDeallocateBytes(ptr);
 }
 
-/*
+/**
  * 'Choose...Malloc...(...)' - version in which we choose between default malloc and aligned malloc
  * based on type alignment. Malloc by default has alignment, so for better code generation we can
  * use 'Choose...Malloc...(...)' version if exact type known on deallocation and need to use <= MallocDefaultAlignment().
@@ -148,6 +182,40 @@ template <typename T,
     std::enable_if_t<(alignof(T) > MallocDefaultAlignment())>* = nullptr>
 ALT_FORCE_INLINE void ChooseAlignedFree(void* ptr) noexcept {
     Platform::MemoryAlignedDeallocateBytes(ptr);
+}
+
+template <typename FromT, typename ToT,
+    std::enable_if_t<
+        std::is_trivially_copyable_v<FromT> &&
+        std::is_trivially_copyable_v<ToT> &&
+        sizeof(FromT) == sizeof(ToT)
+    >* = nullptr
+>
+ALT_NODISCARD ALT_FORCE_INLINE constexpr ToT Transmute(const FromT& from) noexcept {
+
+    return __builtin_bit_cast(ToT, from);
+
+    //ToT to;
+    //std::memcpy(Addressof(to), &from, sizeof(ToT));
+
+    //return to;
+}
+
+template <typename FromT, typename ToT,
+    std::enable_if_t<
+        std::is_trivially_copyable_v<FromT> &&
+        std::is_trivially_copyable_v<ToT> &&
+        sizeof(FromT) == sizeof(ToT)
+    >* = nullptr
+>
+ALT_FORCE_INLINE constexpr void TransmuteInto(const FromT& from, ToT& to) noexcept {
+
+    _MemoryDetails::TransmuteIntoIntermediate2<ToT> intermediate;
+    intermediate.pTo = Addressof(to);
+
+    intermediate = __builtin_bit_cast(_MemoryDetails::TransmuteIntoIntermediate1<ToT>, from);
+
+    //std::memcpy(Addressof(to), &from, sizeof(ToT));
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE usize Align(const void* ptr_, const usize alignment) noexcept {
@@ -218,36 +286,14 @@ ALT_NODISCARD ALT_FORCE_INLINE u64 RoundDownToPageSize(const u64 sizeInBytes) no
     return Platform::MemoryRoundDownToPageSize(sizeInBytes);
 }
 
-template <typename FromT, typename ToT,
-    std::enable_if_t<
-        std::is_trivially_copyable_v<FromT> &&
-        std::is_trivially_copyable_v<ToT> &&
-        sizeof(FromT) == sizeof(ToT)
-    >* = nullptr
->
-ALT_NODISCARD ALT_FORCE_INLINE ToT Transmute(const FromT& from) noexcept {
-
-    ToT to;
-    std::memcpy(&to, &from, sizeof(ToT));
-
-    return to;
-}
-
-template <typename FromT, typename ToT,
-    std::enable_if_t<
-        std::is_trivially_copyable_v<FromT> &&
-        std::is_trivially_copyable_v<ToT> &&
-        sizeof(FromT) == sizeof(ToT)
-    >* = nullptr
->
-ALT_FORCE_INLINE void TransmuteInto(const FromT& from, ToT& to) noexcept {
-
-    std::memcpy(&to, &from, sizeof(ToT));
-}
-
 template <typename T,
-    std::enable_if_t<std::is_scalar_v<T> && sizeof(T) == 2>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE T ByteSwap(const T num_) noexcept {
+    std::enable_if_t<TypeTraits::is_number_v<T> && sizeof(T) == 2>* = nullptr>
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T ByteSwap(const T num_) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return (num_ << 8) | (num_ >> 8);
+    }
 
     using U = typename Num::Desc<T>::Unsigned;
     const U num = Transmute<T, U>(num_);
@@ -266,8 +312,13 @@ ALT_NODISCARD ALT_FORCE_INLINE T ByteSwap(const T num_) noexcept {
 }
 
 template <typename T,
-    std::enable_if_t<std::is_scalar_v<T> && sizeof(T) == 4>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE T ByteSwap(const T num_) noexcept {
+    std::enable_if_t<TypeTraits::is_number_v<T> && sizeof(T) == 4>* = nullptr>
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T ByteSwap(const T num_) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return (num_ << 24) | (num_ >> 24) | ((num_ << 8) & 0x00FF'0000) | ((num_ >> 8) & 0x0000'FF00);
+    }
 
     using U = typename Num::Desc<T>::Unsigned;
     const U num = Transmute<T, U>(num_);
@@ -286,8 +337,19 @@ ALT_NODISCARD ALT_FORCE_INLINE T ByteSwap(const T num_) noexcept {
 }
 
 template <typename T,
-    std::enable_if_t<std::is_scalar_v<T> && sizeof(T) == 8>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE T ByteSwap(const T num_) noexcept {
+    std::enable_if_t<TypeTraits::is_number_v<T> && sizeof(T) == 8>* = nullptr>
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T ByteSwap(const T num_) noexcept {
+
+    ALT_IF_IS_CONSTANT_EVALUATED {
+
+        return
+
+            (num_ << 56) | (num_ >> 56) |
+
+            ((num_ << 40) & 0x00FF'0000'0000'0000) | ((num_ << 24) & 0x0000'FF00'0000'0000) |
+            ((num_ << 8 ) & 0x0000'00FF'0000'0000) | ((num_ >> 8 ) & 0x0000'0000'FF00'0000) |
+            ((num_ >> 24) & 0x0000'0000'00FF'0000) | ((num_ >> 40) & 0x0000'0000'0000'FF00);
+    }
 
     using U = typename Num::Desc<T>::Unsigned;
     const U num = Transmute<T, U>(num_);
@@ -305,14 +367,20 @@ ALT_NODISCARD ALT_FORCE_INLINE T ByteSwap(const T num_) noexcept {
 #endif
 }
 
+template <typename T,
+    std::enable_if_t<TypeTraits::is_number_v<T> && sizeof(T) == 16>* = nullptr>
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T ByteSwap(const T num) noexcept {
+    return num.ByteSwap();
+}
+
 /*
  * @example
  * 
  * const usize littleEndianX = ByteSwapIf(x, ALT_PLATFORM_BIG_ENDIAN_BOOL)
  */
 template <typename T,
-    std::enable_if_t<std::is_scalar_v<T> && sizeof(T) >= 2 && sizeof(T) <= 8>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE T ByteSwapIf(const T num, const bool cond) noexcept {
+    std::enable_if_t<TypeTraits::is_number_v<T> && sizeof(T) >= 2 && sizeof(T) <= 8>* = nullptr>
+ALT_NODISCARD ALT_FORCE_INLINE constexpr T ByteSwapIf(const T num, const bool cond) noexcept {
 
     return cond ? ByteSwap(num) : num;
 }
@@ -335,7 +403,7 @@ ALT_NODISCARD ALT_FORCE_INLINE constexpr usize TB(const usize tb) noexcept {
 
 template <typename T, typename ...ArgsT,
     std::enable_if_t<std::is_constructible_v<T, ArgsT&&...>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructObject(T* ptr, ArgsT&&... val) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructObject(T* ptr, ArgsT&&... val) noexcept {
 
     new (ptr) T(std::forward<ArgsT>(val)...);
     return std::launder(ptr);
@@ -343,7 +411,7 @@ ALT_FORCE_INLINE T* ConstructObject(T* ptr, ArgsT&&... val) noexcept {
 
 template <typename T, typename U = T,
     std::enable_if_t<std::is_constructible_v<T, U&&>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructObject(T* ptr, U&& val) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructObject(T* ptr, U&& val) noexcept {
 
     new (ptr) T(std::forward<U>(val));
     return std::launder(ptr);
@@ -351,35 +419,35 @@ ALT_FORCE_INLINE T* ConstructObject(T* ptr, U&& val) noexcept {
 
 template <typename T, typename ...ArgsT,
     std::enable_if_t<std::is_constructible_v<T, ArgsT&&...>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructObject(void* ptr, ArgsT&&... val) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructObject(void* ptr, ArgsT&&... val) noexcept {
 
-    return ConstructObject(reinterpret_cast<T*>(ptr), std::forward<ArgsT>(val)...);
+    return ConstructObject(static_cast<T*>(ptr), std::forward<ArgsT>(val)...);
 }
 
 template <typename T, typename U = T,
     std::enable_if_t<std::is_constructible_v<T, U&&>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructObject(void* ptr, U&& val) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructObject(void* ptr, U&& val) noexcept {
 
-    return ConstructObject(reinterpret_cast<T*>(ptr), std::forward<U>(val));
+    return ConstructObject(static_cast<T*>(ptr), std::forward<U>(val));
 }
 
 template <typename T, typename ...ArgsT,
     std::enable_if_t<std::is_constructible_v<T, ArgsT&&...>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructObject(T& obj, ArgsT&&... val) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructObject(T& obj, ArgsT&&... val) noexcept {
 
-    return ConstructObject<T>(&obj, std::forward<ArgsT>(val)...);
+    return ConstructObject<T>(Addressof(obj), std::forward<ArgsT>(val)...);
 }
 
 template <typename T, typename U = T,
     std::enable_if_t<std::is_constructible_v<T, U&&>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructObject(T& obj, U&& val) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructObject(T& obj, U&& val) noexcept {
 
-    return ConstructObject<T>(&obj, std::forward<U>(val));
+    return ConstructObject<T>(Addressof(obj), std::forward<U>(val));
 }
 
 template <typename T,
     std::enable_if_t<std::is_default_constructible_v<T>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructDefaultObject(T* ptr) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructDefaultObject(T* ptr) noexcept {
 
     new (ptr) T{};
     return std::launder(ptr);
@@ -387,7 +455,7 @@ ALT_FORCE_INLINE T* ConstructDefaultObject(T* ptr) noexcept {
 
 template <typename T,
     std::enable_if_t<std::is_default_constructible_v<T>>* = nullptr>
-ALT_FORCE_INLINE T* ConstructDefaultObject(void* ptr) noexcept {
+ALT_FORCE_INLINE constexpr T* ConstructDefaultObject(void* ptr) noexcept {
 
     return ConstructDefaultObject(static_cast<T*>(ptr));
 }
@@ -426,7 +494,7 @@ struct MoveFromLastElementResult {
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<std::is_constructible_v<DstT, SrcT&&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(DstT* ptr_, SrcT&& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneConstructOrMoveConstructObject(DstT* ptr_, SrcT&& val) noexcept {
 
     DstT* ptr = ConstructObject(ptr_, std::forward<SrcT>(val));
     return ptr + 1;
@@ -434,7 +502,7 @@ ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(DstT* p
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> && !std::is_constructible_v<DstT, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(DstT* ptr, const SrcT& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneConstructOrMoveConstructObject(DstT* ptr, const SrcT& val) noexcept {
 
     const bool isOk = ptr->CloneConstructFrom(val);
 
@@ -444,7 +512,7 @@ ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(DstT* p
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<std::is_constructible_v<DstT, SrcT&&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(void* ptr_, SrcT&& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneConstructOrMoveConstructObject(void* ptr_, SrcT&& val) noexcept {
 
     DstT* ptr = ConstructObject<DstT>(ptr_, std::forward<SrcT>(val));
     return ptr + 1;
@@ -452,14 +520,14 @@ ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(void* p
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> && !std::is_constructible_v<DstT, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(void* ptr, const SrcT& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneConstructOrMoveConstructObject(void* ptr, const SrcT& val) noexcept {
 
-    return CloneConstructOrMoveConstructObject(static_cast<DstT*>(ptr), std::forward<SrcT>(val));
+    return CloneConstructOrMoveConstructObject(static_cast<DstT*>(ptr), val);
 }
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<std::is_constructible_v<DstT, SrcT&&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(DstT& obj, SrcT&& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneConstructOrMoveConstructObject(DstT& obj, SrcT&& val) noexcept {
 
     DstT* ptr = ConstructObject(obj, std::forward<SrcT>(val));
     return ptr + 1;
@@ -467,32 +535,32 @@ ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(DstT& o
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> && !std::is_constructible_v<DstT, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneConstructOrMoveConstructObject(DstT& obj, const SrcT& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneConstructOrMoveConstructObject(DstT& obj, const SrcT& val) noexcept {
 
-    return CloneConstructOrMoveConstructObject<DstT>(&obj, val);
+    return CloneConstructOrMoveConstructObject<DstT>(Addressof(obj), val);
 }
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<std::is_assignable_v<DstT&, SrcT&&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneOrMoveObject(DstT& obj, SrcT&& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneOrMoveObject(DstT& obj, SrcT&& val) noexcept {
 
     obj = std::forward<SrcT>(val);
-    return &obj + 1;
+    return Addressof(obj) + 1;
 }
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> && !std::is_assignable_v<DstT&, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE DstT* CloneOrMoveObject(DstT& obj, const SrcT& val) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DstT* CloneOrMoveObject(DstT& obj, const SrcT& val) noexcept {
 
     const bool isOk = obj.CloneFrom(val);
 
-    DstT* ptr = &obj;
+    DstT* ptr = Addressof(obj);
     ptr += isOk ? 1 : 0;
     return ptr;
 }
 
 template <typename T>
-ALT_FORCE_INLINE void DestroyObject(T& obj) noexcept;
+ALT_FORCE_INLINE constexpr void DestroyObject(T& obj) noexcept;
 
 template <typename T,
     std::enable_if_t<!std::is_array_v<T>>* = nullptr>
@@ -579,7 +647,7 @@ ALT_FORCE_INLINE void DeallocateArrayObject(T*& pMemory, const usize cnt) noexce
 
 namespace _MemoryDetails {
 
-/*
+/**
  * `Alt` assumes that move construction/assign is a cheap operation which
  * never fails. Same for destructors - there are exists cases where destructors
  * can fail, but this should be handled separately maybe with some global state
@@ -660,7 +728,7 @@ struct DestroyObjectsImpl;
 template <typename T>
 constexpr static FillTrait fill_construct_clone_objects_copy_v =
     std::conditional_t<
-        std::is_trivially_constructible_v<T> && std::is_trivially_copyable_v<T> && std::is_scalar_v<T> && sizeof(T) == sizeof(u8),
+        std::is_trivially_constructible_v<T> && std::is_trivially_copyable_v<T> && TypeTraits::is_scalar_v<T> && sizeof(T) == sizeof(u8),
         Fill<FillTrait::Memset>,
         Fill<FillTrait::CppCopy>
     >::value;
@@ -669,7 +737,7 @@ template <typename T>
 constexpr static FillTrait fill_construct_clone_objects_clone_v =
     std::conditional_t<
 
-        std::is_trivially_constructible_v<T> && std::is_trivially_copyable_v<T> && std::is_scalar_v<T> && sizeof(T) == sizeof(u8),
+        std::is_trivially_constructible_v<T> && std::is_trivially_copyable_v<T> && TypeTraits::is_scalar_v<T> && sizeof(T) == sizeof(u8),
         Fill<FillTrait::Memset>,
 
         std::conditional_t<
@@ -679,11 +747,19 @@ constexpr static FillTrait fill_construct_clone_objects_clone_v =
         >
     >::value;
 
+template <typename T>
+constexpr static FillTrait fill_construct_clone_objects_constexpr_v =
+    std::conditional_t<
+        TypeTraits::is_clonable_v<T>,
+        Fill<FillTrait::AltClone>,
+        Fill<FillTrait::CppCopy>
+    >::value;
+
 template <
     typename T,
     FillDefaultTrait TRAIT = 
         std::conditional_t<
-            std::is_trivially_copyable_v<T> && std::is_scalar_v<T>,
+            std::is_trivially_copyable_v<T> && TypeTraits::is_scalar_v<T>,
             FillDefault<FillDefaultTrait::Memset>,
             FillDefault<FillDefaultTrait::DefaultByElement>
         >::value
@@ -699,7 +775,7 @@ struct FillCloneConstructObjectsFromLastElementImpl;
 template <typename T>
 constexpr static FillTrait fill_clone_objects_copy_v =
     std::conditional_t<
-        std::is_trivially_copyable_v<T> && std::is_scalar_v<T> && sizeof(T) == sizeof(u8),
+        std::is_trivially_copyable_v<T> && TypeTraits::is_scalar_v<T> && sizeof(T) == sizeof(u8),
         Fill<FillTrait::Memset>,
         Fill<FillTrait::CppCopy>
     >::value;
@@ -708,7 +784,7 @@ template <typename T>
 constexpr static FillTrait fill_clone_objects_clone_v =
     std::conditional_t<
 
-        std::is_trivially_copyable_v<T> && std::is_scalar_v<T> && sizeof(T) == sizeof(u8),
+        std::is_trivially_copyable_v<T> && TypeTraits::is_scalar_v<T> && sizeof(T) == sizeof(u8),
         Fill<FillTrait::Memset>,
 
         std::conditional_t<
@@ -718,11 +794,19 @@ constexpr static FillTrait fill_clone_objects_clone_v =
         >
     >::value;
 
+template <typename T>
+constexpr static FillTrait fill_clone_objects_constexpr_v =
+    std::conditional_t<
+        TypeTraits::is_clonable_v<T>,
+        Fill<FillTrait::AltClone>,
+        Fill<FillTrait::CppCopy>
+    >::value;
+
 template <
     typename T,
     FillDefaultTrait TRAIT = 
         std::conditional_t<
-            std::is_trivially_copyable_v<T> && std::is_scalar_v<T>,
+            std::is_trivially_copyable_v<T> && TypeTraits::is_scalar_v<T>,
             FillDefault<FillDefaultTrait::Memset>,
             FillDefault<FillDefaultTrait::DefaultByElement>
         >::value
@@ -738,7 +822,7 @@ struct FillCloneObjectsFromLastElementImpl;
 template <typename T>
 constexpr static CopyTrait clone_objects_copy_v =
     std::conditional_t<
-        std::is_trivially_copyable_v<T>,
+        std::is_trivially_copy_assignable_v<T> && std::is_trivially_copyable_v<T>,
         Copy<CopyTrait::MemcpyOrMemmove>,
         Copy<CopyTrait::CppCopy>
     >::value;
@@ -747,7 +831,7 @@ template <typename T>
 constexpr static CopyTrait clone_objects_clone_v =
     std::conditional_t<
 
-        std::is_trivially_copyable_v<T>,
+        std::is_trivially_copy_assignable_v<T> && std::is_trivially_copyable_v<T>,
         Copy<CopyTrait::MemcpyOrMemmove>,
 
         std::conditional_t<
@@ -755,6 +839,14 @@ constexpr static CopyTrait clone_objects_clone_v =
             Copy<CopyTrait::AltClone>,
             Copy<CopyTrait::CppCopy>
         >
+    >::value;
+
+template <typename T>
+constexpr static CopyTrait clone_objects_constexpr_v =
+    std::conditional_t<
+        TypeTraits::is_clonable_v<T>,
+        Copy<CopyTrait::AltClone>,
+        Copy<CopyTrait::CppCopy>
     >::value;
 
 template <typename T, CopyTrait TRAIT>
@@ -895,6 +987,14 @@ constexpr static CopyTrait construct_clone_objects_clone_v =
         >
     >::value;
 
+template <typename T>
+constexpr static CopyTrait construct_clone_objects_constexpr_v =
+    std::conditional_t<
+        TypeTraits::is_clonable_v<T>,
+        Copy<CopyTrait::AltClone>,
+        Copy<CopyTrait::CppCopy>
+    >::value;
+
 template <typename T, CopyTrait TRAIT>
 struct CloneConstructObjectsFromFirstElementNonOverlapImpl;
 
@@ -1017,26 +1117,26 @@ struct MemcpyOrMoveDestructibleConstructObjectsNonOverlapImpl;
 } // namespace _MemoryDetails
 
 template <typename T>
-ALT_FORCE_INLINE void DestroyObject(T& obj) noexcept {
+ALT_FORCE_INLINE constexpr void DestroyObject(T& obj) noexcept {
 
     _MemoryDetails::DestroyObjectImpl<T>::Destroy(obj);
 }
 
 template <typename T>
-ALT_FORCE_INLINE void DestroyObjects(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+ALT_FORCE_INLINE constexpr void DestroyObjects(T* __restrict pBegin, T* __restrict pEnd) noexcept {
 
     _MemoryDetails::DestroyObjectsImpl<T>::Destroy(pBegin, pEnd);
 }
 
 template <typename T>
-ALT_FORCE_INLINE void FillConstructDefaultObjects(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+ALT_FORCE_INLINE constexpr void FillConstructDefaultObjects(T* __restrict pBegin, T* __restrict pEnd) noexcept {
 
     _MemoryDetails::FillConstructDefaultObjectsImpl<T>::FillConstructDefault(pBegin, pEnd);
 }
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<std::is_constructible_v<DstT, const SrcT&>>* = nullptr>
-ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCopyConstructObjects(
+ALT_FORCE_INLINE constexpr CloneFromFirstElementResult<DstT> FillCopyConstructObjects(
     DstT* __restrict pDstBegin, DstT* __restrict pDstEnd, const SrcT& val
 ) noexcept {
 
@@ -1047,7 +1147,7 @@ ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCopyConstructObjects(
 
     CloneFromFirstElementResult<DstT> result;
     result.pDstObjectWhereCloneFailedOrEnd = pResult;
-    result.pSrcObjectWhereCloneFailedOrEnd = reinterpret_cast<const DstT*>(&val + 1);
+    result.pSrcObjectWhereCloneFailedOrEnd = reinterpret_cast<const DstT*>(Addressof(val) + 1);
     result.isOk = true;
 
     return result;
@@ -1055,7 +1155,7 @@ ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCopyConstructObjects(
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> || std::is_constructible_v<DstT, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCloneConstructObjectsFromFirstElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromFirstElementResult<DstT> FillCloneConstructObjectsFromFirstElement(
     DstT* __restrict pDstBegin, DstT* __restrict pDstEnd, const SrcT& val
 ) noexcept {
 
@@ -1066,7 +1166,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCloneConstr
 
     CloneFromFirstElementResult<DstT> result;
     result.pDstObjectWhereCloneFailedOrEnd = pResult;
-    result.pSrcObjectWhereCloneFailedOrEnd = reinterpret_cast<const DstT*>(&val + 1);
+    result.pSrcObjectWhereCloneFailedOrEnd = reinterpret_cast<const DstT*>(Addressof(val) + 1);
     result.isOk = pResult == pDstEnd;
 
     return result;
@@ -1074,7 +1174,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCloneConstr
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> || std::is_constructible_v<DstT, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<DstT> FillCloneConstructObjectsFromLastElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromLastElementResult<DstT> FillCloneConstructObjectsFromLastElement(
     DstT* __restrict pDstBegin, DstT* __restrict pDstEnd, const SrcT& val
 ) noexcept {
 
@@ -1085,7 +1185,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<DstT> FillCloneConstru
 
     CloneFromLastElementResult<DstT> result;
     result.pDstObjectWhereCloneFailedOrBeginMinusOne = pResult;
-    result.pSrcObjectWhereCloneFailedOrBeginMinusOne = reinterpret_cast<const DstT*>(&val - 1);
+    result.pSrcObjectWhereCloneFailedOrBeginMinusOne = reinterpret_cast<const DstT*>(Addressof(val) - 1);
     result.isOk = pResult + 1 == pDstBegin;
 
     return result;
@@ -1093,14 +1193,14 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<DstT> FillCloneConstru
 
 template <typename T,
     std::enable_if_t<std::is_default_constructible_v<T> && std::is_assignable_v<T&, T&&>>* = nullptr>
-ALT_FORCE_INLINE void FillDefaultObjects(T* __restrict pDstBegin, T* __restrict pDstEnd) noexcept {
+ALT_FORCE_INLINE constexpr void FillDefaultObjects(T* __restrict pDstBegin, T* __restrict pDstEnd) noexcept {
 
     _MemoryDetails::FillDefaultObjectsImpl<T>::FillDefault(pDstBegin, pDstEnd);
 }
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<std::is_assignable_v<DstT&, const SrcT&>>* = nullptr>
-ALT_FORCE_INLINE DstT* FillCopyObjects(
+ALT_FORCE_INLINE constexpr DstT* FillCopyObjects(
     DstT* __restrict pDstBegin, DstT* __restrict pDstEnd, const SrcT& val
 ) noexcept {
 
@@ -1112,7 +1212,7 @@ ALT_FORCE_INLINE DstT* FillCopyObjects(
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> || std::is_assignable_v<DstT, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCloneObjectsFromFirstElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromFirstElementResult<DstT> FillCloneObjectsFromFirstElement(
     DstT* __restrict pDstBegin, DstT* __restrict pDstEnd, const SrcT& val
 ) noexcept {
 
@@ -1123,7 +1223,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCloneObject
 
     CloneFromFirstElementResult<DstT> result;
     result.pDstObjectWhereCloneFailedOrEnd = pResult;
-    result.pSrcObjectWhereCloneFailedOrEnd = reinterpret_cast<const DstT*>(&val + 1);
+    result.pSrcObjectWhereCloneFailedOrEnd = reinterpret_cast<const DstT*>(Addressof(val) + 1);
     result.isOk = pResult == pDstEnd;
 
     return result;
@@ -1131,7 +1231,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<DstT> FillCloneObject
 
 template <typename DstT, typename SrcT,
     std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<DstT, const SrcT&> || std::is_assignable_v<DstT, const SrcT&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<DstT> FillCloneObjectsFromLastElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromLastElementResult<DstT> FillCloneObjectsFromLastElement(
     DstT* __restrict pDstBegin, DstT* __restrict pDstEnd, const SrcT& val
 ) noexcept {
 
@@ -1142,7 +1242,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<DstT> FillCloneObjects
 
     CloneFromLastElementResult<DstT> result;
     result.pDstObjectWhereCloneFailedOrBeginMinusOne = pResult;
-    result.pSrcObjectWhereCloneFailedOrBeginMinusOne = reinterpret_cast<const DstT*>(&val - 1);
+    result.pSrcObjectWhereCloneFailedOrBeginMinusOne = reinterpret_cast<const DstT*>(Addressof(val) - 1);
     result.isOk = pResult + 1 == pDstBegin;
 
     return result;
@@ -1150,7 +1250,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<DstT> FillCloneObjects
 
 template <typename T,
     std::enable_if_t<std::is_assignable_v<T&, const T&>>* = nullptr>
-ALT_FORCE_INLINE T* CopyObjectsNonOverlap(T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd) noexcept {
+ALT_FORCE_INLINE constexpr T* CopyObjectsNonOverlap(T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
 
     _MemoryDetails::CloneResult<T> result = _MemoryDetails::CloneObjectsFromFirstElementNonOverlapImpl<
@@ -1163,7 +1263,7 @@ ALT_FORCE_INLINE T* CopyObjectsNonOverlap(T* __restrict pDstBegin, const T* __re
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_assignable_v<T&, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneObjectsFromFirstElementNonOverlap(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromFirstElementResult<T> CloneObjectsFromFirstElementNonOverlap(
     T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1183,7 +1283,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneObjectsFromFi
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_assignable_v<T&, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneObjectsFromLastElementNonOverlap(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromLastElementResult<T> CloneObjectsFromLastElementNonOverlap(
     T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1203,7 +1303,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneObjectsFromLas
 
 template <typename T,
     std::enable_if_t<std::is_assignable_v<T&, const T&>>* = nullptr>
-ALT_FORCE_INLINE T* CopyObjectsFromFirstElement(T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd) noexcept {
+ALT_FORCE_INLINE constexpr T* CopyObjectsFromFirstElement(T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
 
     _MemoryDetails::CloneResult<T> result = _MemoryDetails::CloneObjectsFromFirstElementImpl<
@@ -1216,7 +1316,7 @@ ALT_FORCE_INLINE T* CopyObjectsFromFirstElement(T* pDstBegin, const T* __restric
 
 template <typename T,
     std::enable_if_t<std::is_assignable_v<T&, const T&>>* = nullptr>
-ALT_FORCE_INLINE T* CopyObjectsFromLastElement(T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd) noexcept {
+ALT_FORCE_INLINE constexpr T* CopyObjectsFromLastElement(T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
 
     _MemoryDetails::CloneResult<T> result = _MemoryDetails::CloneObjectsFromLastElementImpl<
@@ -1229,7 +1329,7 @@ ALT_FORCE_INLINE T* CopyObjectsFromLastElement(T* pDstBegin, const T* __restrict
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_assignable_v<T&, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneObjectsFromFirstElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromFirstElementResult<T> CloneObjectsFromFirstElement(
     T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
@@ -1249,7 +1349,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneObjectsFromFi
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_assignable_v<T&, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneObjectsFromLastElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromLastElementResult<T> CloneObjectsFromLastElement(
     T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
@@ -1268,7 +1368,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneObjectsFromLas
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveObjectsFromFirstElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveObjectsFromFirstElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1285,7 +1385,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveObjectsFromFirstElementNonOve
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveObjectsFromLastElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveObjectsFromLastElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1302,7 +1402,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveObjectsFromLastElementNonOverl
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveObjectsFromFirstElement(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveObjectsFromFirstElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
@@ -1319,7 +1419,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveObjectsFromFirstElement(
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveObjectsFromLastElement(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveObjectsFromLastElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
@@ -1336,7 +1436,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveObjectsFromLastElement(
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleObjectsFromFirstElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveDestructibleObjectsFromFirstElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1353,7 +1453,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleObjectsFromFirstE
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleObjectsFromLastElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveDestructibleObjectsFromLastElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1370,7 +1470,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleObjectsFromLastEle
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleObjectsFromFirstElement(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveDestructibleObjectsFromFirstElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
@@ -1387,7 +1487,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleObjectsFromFirstE
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleObjectsFromLastElement(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveDestructibleObjectsFromLastElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
@@ -1405,7 +1505,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleObjectsFromLastEle
 
 template <typename T,
     std::enable_if_t<std::is_constructible_v<T, const T&>>* = nullptr>
-ALT_FORCE_INLINE T* CopyConstructObjectsNonOverlap(
+ALT_FORCE_INLINE constexpr T* CopyConstructObjectsNonOverlap(
     T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1420,7 +1520,7 @@ ALT_FORCE_INLINE T* CopyConstructObjectsNonOverlap(
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_constructible_v<T, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneConstructObjectsFromFirstElementNonOverlap(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromFirstElementResult<T> CloneConstructObjectsFromFirstElementNonOverlap(
     T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1440,7 +1540,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneConstructObje
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_constructible_v<T, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneConstructObjectsFromLastElementNonOverlap(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromLastElementResult<T> CloneConstructObjectsFromLastElementNonOverlap(
     T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1460,7 +1560,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneConstructObjec
 
 template <typename T,
     std::enable_if_t<std::is_constructible_v<T, const T&>>* = nullptr>
-ALT_FORCE_INLINE T* CopyConstructObjectsFromFirstElement(
+ALT_FORCE_INLINE constexpr T* CopyConstructObjectsFromFirstElement(
     T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
@@ -1475,7 +1575,7 @@ ALT_FORCE_INLINE T* CopyConstructObjectsFromFirstElement(
 
 template <typename T,
     std::enable_if_t<std::is_constructible_v<T, const T&>>* = nullptr>
-ALT_FORCE_INLINE T* CopyConstructObjectsFromLastElement(
+ALT_FORCE_INLINE constexpr T* CopyConstructObjectsFromLastElement(
     T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
@@ -1490,7 +1590,7 @@ ALT_FORCE_INLINE T* CopyConstructObjectsFromLastElement(
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_constructible_v<T, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneConstructObjectsFromFirstElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromFirstElementResult<T> CloneConstructObjectsFromFirstElement(
     T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
@@ -1510,7 +1610,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromFirstElementResult<T> CloneConstructObje
 
 template <typename T,
     std::enable_if_t<TypeTraits::is_clonable_v<T> || std::is_constructible_v<T, const T&>>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneConstructObjectsFromLastElement(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr CloneFromLastElementResult<T> CloneConstructObjectsFromLastElement(
     T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
@@ -1529,7 +1629,7 @@ ALT_NODISCARD ALT_FORCE_INLINE CloneFromLastElementResult<T> CloneConstructObjec
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveConstructObjectsFromFirstElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveConstructObjectsFromFirstElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1546,7 +1646,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveConstructObjectsFromFirstElem
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveConstructObjectsFromLastElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveConstructObjectsFromLastElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1563,7 +1663,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveConstructObjectsFromLastElemen
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveConstructObjectsFromFirstElement(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveConstructObjectsFromFirstElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
@@ -1580,7 +1680,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveConstructObjectsFromFirstElem
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveConstructObjectsFromLastElement(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveConstructObjectsFromLastElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
@@ -1597,7 +1697,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveConstructObjectsFromLastElemen
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleConstructObjectsFromFirstElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveDestructibleConstructObjectsFromFirstElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1614,7 +1714,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleConstructObjectsF
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleConstructObjectsFromLastElementNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveDestructibleConstructObjectsFromLastElementNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1631,7 +1731,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleConstructObjectsFr
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleConstructObjectsFromFirstElement(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MoveDestructibleConstructObjectsFromFirstElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin >= pDstBegin);
@@ -1648,7 +1748,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MoveDestructibleConstructObjectsF
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleConstructObjectsFromLastElement(
+ALT_FORCE_INLINE constexpr MoveFromLastElementResult<T> MoveDestructibleConstructObjectsFromLastElement(
     T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(pSrcBegin <= pDstBegin);
@@ -1665,7 +1765,7 @@ ALT_FORCE_INLINE MoveFromLastElementResult<T> MoveDestructibleConstructObjectsFr
 }
 
 template <typename T>
-ALT_FORCE_INLINE MoveFromFirstElementResult<T> MemcpyOrMoveDestructibleConstructObjectsNonOverlap(
+ALT_FORCE_INLINE constexpr MoveFromFirstElementResult<T> MemcpyOrMoveDestructibleConstructObjectsNonOverlap(
     T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
 ) noexcept {
     ALT_ASSERT(!IsOverlap(pSrcBegin, pSrcEnd, pDstBegin, pDstBegin + (pSrcEnd - pSrcBegin)));
@@ -1682,7 +1782,7 @@ ALT_FORCE_INLINE MoveFromFirstElementResult<T> MemcpyOrMoveDestructibleConstruct
 }
 
 template <typename T>
-ALT_FORCE_INLINE T MoveDestructibleObject(T& obj) noexcept {
+ALT_FORCE_INLINE constexpr T MoveDestructibleObject(T& obj) noexcept {
 
     T result = std::move(obj);
     DestroyObject(obj);
@@ -1823,7 +1923,7 @@ struct ReallocImpl<T, true> {
 
         if (BitFlag::IsSetEnumFlags(bits, ReallocBits::AllowWholeMemcpyOnReallocateAndMightIgnoreInPlace)) {
 
-            bits &= ~ReallocBits::AllowWholeMemcpyOnReallocateAndMightIgnoreInPlace;
+            bits &= ~(ReallocBits::AllowWholeMemcpyOnReallocateAndMightIgnoreInPlace | ReallocBits::InPlace);
             u8* pMemory = Platform::MemoryReallocateBytes(pMemoryOld, sizeInBytesNew, static_cast<Platform::MemoryReallocateBytesBits>(bits));
 
             return reinterpret_cast<T*>(pMemory);
@@ -2053,6 +2153,12 @@ struct AlignedReallocImpl {
             static_cast<Platform::MemoryReallocateBytesBits>(bits) | Platform::MemoryReallocateBytesBits::InPlace
         );
 
+        /*
+         * Previouse call of 'MemoryReallocateBytes' must always fail on first allocation, because of
+         * 'MemoryReallocateBytesBits::InPlace'
+         */
+        ALT_ASSERT(!pMemoryOld && !pMemory || pMemoryOld);
+
         if (pMemory) {
             return reinterpret_cast<T*>(pMemory);
         }
@@ -2086,14 +2192,14 @@ struct AlignedReallocImpl {
 template <typename T>
 struct DestroyObjectImpl<T, true> {
 
-    ALT_FORCE_INLINE static void Destroy(T&) noexcept {}
+    ALT_FORCE_INLINE constexpr static void Destroy(T&) noexcept {}
 };
 
 template <typename T>
 struct DestroyObjectImpl<T, false> {
 public:
 
-    ALT_FORCE_INLINE static void Destroy(T& obj) noexcept {
+    ALT_FORCE_INLINE constexpr static void Destroy(T& obj) noexcept {
 
         DestroyImpl(obj);
     }
@@ -2101,7 +2207,7 @@ public:
 private:
 
     template <typename U>
-    ALT_FORCE_INLINE static void DestroyImpl(U& obj) noexcept {
+    ALT_FORCE_INLINE constexpr static void DestroyImpl(U& obj) noexcept {
         obj.~U();
     }
 };
@@ -2109,13 +2215,13 @@ private:
 template <typename T>
 struct DestroyObjectsImpl<T, true> {
 
-    ALT_FORCE_INLINE static void Destroy(T* __restrict, T* __restrict) noexcept {}
+    ALT_FORCE_INLINE constexpr static void Destroy(T* __restrict, T* __restrict) noexcept {}
 };
 
 template <typename T>
 struct DestroyObjectsImpl<T, false> {
 
-    ALT_FORCE_INLINE static void Destroy(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static void Destroy(T* __restrict pBegin, T* __restrict pEnd) noexcept {
 
         for (T* ptr = pBegin; ptr != pEnd; ++ptr) {
 
@@ -2127,7 +2233,12 @@ struct DestroyObjectsImpl<T, false> {
 template <typename T>
 struct FillConstructDefaultObjectsImpl<T, FillDefaultTrait::Memset> {
 
-    ALT_FORCE_INLINE static void FillConstructDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static void FillConstructDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            FillConstructDefaultObjectsImpl<T, FillDefaultTrait::DefaultByElement>::FillConstructDefault(pBegin, pEnd);
+        }
 
         std::memset(pBegin, 0, (pEnd - pBegin) * sizeof(T));
     }
@@ -2136,7 +2247,7 @@ struct FillConstructDefaultObjectsImpl<T, FillDefaultTrait::Memset> {
 template <typename T>
 struct FillConstructDefaultObjectsImpl<T, FillDefaultTrait::DefaultByElement> {
 
-    ALT_FORCE_INLINE static void FillConstructDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static void FillConstructDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
 
         for (T* ptr = pBegin; ptr != pEnd; ++ptr) {
 
@@ -2149,7 +2260,12 @@ template <typename T>
 struct FillCloneConstructObjectsFromFirstElementImpl<T, FillTrait::Memset> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return FillCloneConstructObjectsFromFirstElementImpl<T, fill_construct_clone_objects_constexpr_v<T>>::FillCloneConstruct(pBegin, pEnd, val_);
+        }
 
         const s32 val = static_cast<s32>(val_);
         std::memset(pBegin, val, (pEnd - pBegin) * sizeof(T));
@@ -2162,7 +2278,7 @@ template <typename T>
 struct FillCloneConstructObjectsFromFirstElementImpl<T, FillTrait::CppCopy> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         for (T* ptr = pBegin; ptr != pEnd; ++ptr) {
 
@@ -2177,7 +2293,7 @@ template <typename T>
 struct FillCloneConstructObjectsFromFirstElementImpl<T, FillTrait::AltClone> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         T* ptr = pBegin;
 
@@ -2197,7 +2313,12 @@ template <typename T>
 struct FillCloneConstructObjectsFromLastElementImpl<T, FillTrait::Memset> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return FillCloneConstructObjectsFromLastElementImpl<T, fill_construct_clone_objects_constexpr_v<T>>::FillCloneConstruct(pBegin, pEnd, val_);
+        }
 
         const s32 val = static_cast<s32>(val_);
         std::memset(pBegin, val, (pEnd - pBegin) * sizeof(T));
@@ -2210,7 +2331,7 @@ template <typename T>
 struct FillCloneConstructObjectsFromLastElementImpl<T, FillTrait::CppCopy> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         for (T* ptr = pBegin; ptr != pEnd; ++ptr) {
 
@@ -2225,7 +2346,7 @@ template <typename T>
 struct FillCloneConstructObjectsFromLastElementImpl<T, FillTrait::AltClone> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillCloneConstruct(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         T* ptr = pEnd;
 
@@ -2247,7 +2368,12 @@ template <typename T>
 struct FillCloneObjectsFromFirstElementImpl<T, FillTrait::Memset> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return FillCloneObjectsFromFirstElementImpl<T, fill_clone_objects_constexpr_v<T>>::FillClone(pBegin, pEnd, val_);
+        }
 
         const s32 val = static_cast<s32>(val_);
         std::memset(pBegin, val, (pEnd - pBegin) * sizeof(T));
@@ -2260,7 +2386,7 @@ template <typename T>
 struct FillCloneObjectsFromFirstElementImpl<T, FillTrait::CppCopy> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         T* ptr = pBegin;
         for (; ptr != pEnd; ++ptr) {
@@ -2276,7 +2402,7 @@ template <typename T>
 struct FillCloneObjectsFromFirstElementImpl<T, FillTrait::AltClone> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         T* ptr = pBegin;
         for (; ptr != pEnd; ++ptr) {
@@ -2295,7 +2421,12 @@ template <typename T>
 struct FillCloneObjectsFromLastElementImpl<T, FillTrait::Memset> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val_) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return FillCloneObjectsFromLastElementImpl<T, fill_clone_objects_constexpr_v<T>>::FillClone(pBegin, pEnd, val_);
+        }
 
         const s32 val = static_cast<s32>(val_);
         std::memset(pBegin, val, (pEnd - pBegin) * sizeof(T));
@@ -2308,7 +2439,7 @@ template <typename T>
 struct FillCloneObjectsFromLastElementImpl<T, FillTrait::CppCopy> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         T* ptr = pBegin;
         for (; ptr != pEnd; ++ptr) {
@@ -2324,7 +2455,7 @@ template <typename T>
 struct FillCloneObjectsFromLastElementImpl<T, FillTrait::AltClone> {
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static T* FillClone(T* __restrict pBegin, T* __restrict pEnd, const U& val) noexcept {
 
         T* ptr = pEnd;
         while (ptr != pBegin) {
@@ -2344,7 +2475,12 @@ struct FillCloneObjectsFromLastElementImpl<T, FillTrait::AltClone> {
 template <typename T>
 struct FillDefaultObjectsImpl<T, FillDefaultTrait::Memset> {
 
-    ALT_FORCE_INLINE static void FillDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static void FillDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return FillDefaultObjectsImpl<T, FillDefaultTrait::DefaultByElement>::FillDefault(pBegin, pEnd);
+        }
 
         std::memset(pBegin, 0, (pEnd - pBegin) * sizeof(T));
     }
@@ -2353,7 +2489,7 @@ struct FillDefaultObjectsImpl<T, FillDefaultTrait::Memset> {
 template <typename T>
 struct FillDefaultObjectsImpl<T, FillDefaultTrait::DefaultByElement> {
 
-    ALT_FORCE_INLINE static void FillDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static void FillDefault(T* __restrict pBegin, T* __restrict pEnd) noexcept {
 
         for (T* ptr = pBegin; ptr != pEnd; ++ptr) {
 
@@ -2365,9 +2501,14 @@ struct FillDefaultObjectsImpl<T, FillDefaultTrait::DefaultByElement> {
 template <typename T>
 struct CloneObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneObjectsFromFirstElementNonOverlapImpl<T, clone_objects_constexpr_v<T>>::Clone(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2384,7 +2525,7 @@ struct CloneObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::MemcpyOrMemmove>
 template <typename T>
 struct CloneObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2407,7 +2548,7 @@ struct CloneObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::CppCopy> {
 template <typename T>
 struct CloneObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2437,9 +2578,14 @@ struct CloneObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::AltClone> {
 template <typename T>
 struct CloneObjectsFromLastElementNonOverlapImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneObjectsFromLastElementNonOverlapImpl<T, clone_objects_constexpr_v<T>>::Clone(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2456,7 +2602,7 @@ struct CloneObjectsFromLastElementNonOverlapImpl<T, CopyTrait::MemcpyOrMemmove> 
 template <typename T>
 struct CloneObjectsFromLastElementNonOverlapImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2479,7 +2625,7 @@ struct CloneObjectsFromLastElementNonOverlapImpl<T, CopyTrait::CppCopy> {
 template <typename T>
 struct CloneObjectsFromLastElementNonOverlapImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2514,9 +2660,14 @@ struct CloneObjectsFromLastElementNonOverlapImpl<T, CopyTrait::AltClone> {
 template <typename T>
 struct CloneObjectsFromFirstElementImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneObjectsFromFirstElementImpl<T, clone_objects_constexpr_v<T>>::Clone(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2533,7 +2684,7 @@ struct CloneObjectsFromFirstElementImpl<T, CopyTrait::MemcpyOrMemmove> {
 template <typename T>
 struct CloneObjectsFromFirstElementImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2556,7 +2707,7 @@ struct CloneObjectsFromFirstElementImpl<T, CopyTrait::CppCopy> {
 template <typename T>
 struct CloneObjectsFromFirstElementImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2586,9 +2737,14 @@ struct CloneObjectsFromFirstElementImpl<T, CopyTrait::AltClone> {
 template <typename T>
 struct CloneObjectsFromLastElementImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneObjectsFromLastElementImpl<T, clone_objects_constexpr_v<T>>::Clone(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2605,7 +2761,7 @@ struct CloneObjectsFromLastElementImpl<T, CopyTrait::MemcpyOrMemmove> {
 template <typename T>
 struct CloneObjectsFromLastElementImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2633,7 +2789,7 @@ struct CloneObjectsFromLastElementImpl<T, CopyTrait::CppCopy> {
 template <typename T>
 struct CloneObjectsFromLastElementImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> Clone(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> Clone(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -2668,7 +2824,12 @@ struct CloneObjectsFromLastElementImpl<T, CopyTrait::AltClone> {
 template <typename T>
 struct MoveObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2685,7 +2846,7 @@ struct MoveObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> 
 template <typename T>
 struct MoveObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -2706,7 +2867,12 @@ struct MoveObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 template <typename T>
 struct MoveObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2723,7 +2889,7 @@ struct MoveObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 template <typename T>
 struct MoveObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -2744,7 +2910,12 @@ struct MoveObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 template <typename T>
 struct MoveObjectsFromFirstElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2761,7 +2932,7 @@ struct MoveObjectsFromFirstElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 template <typename T>
 struct MoveObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -2782,7 +2953,12 @@ struct MoveObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements> {
 template <typename T>
 struct MoveObjectsFromLastElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveObjectsFromLastElementImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2799,7 +2975,7 @@ struct MoveObjectsFromLastElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 template <typename T>
 struct MoveObjectsFromLastElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2825,7 +3001,12 @@ struct MoveObjectsFromLastElementImpl<T, MoveTrait::MoveByElements> {
 template <typename T>
 struct MoveDestructibleObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2842,7 +3023,7 @@ struct MoveDestructibleObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::Memcp
 template <typename T>
 struct MoveDestructibleObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -2863,7 +3044,12 @@ struct MoveDestructibleObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveB
 template <typename T>
 struct MoveDestructibleObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2880,7 +3066,7 @@ struct MoveDestructibleObjectsFromLastElementNonOverlapImpl<T, MoveTrait::Memcpy
 template <typename T>
 struct MoveDestructibleObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -2901,7 +3087,12 @@ struct MoveDestructibleObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveBy
 template <typename T>
 struct MoveDestructibleObjectsFromFirstElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2918,7 +3109,7 @@ struct MoveDestructibleObjectsFromFirstElementImpl<T, MoveTrait::MemcpyOrMemmove
 template <typename T>
 struct MoveDestructibleObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -2939,7 +3130,12 @@ struct MoveDestructibleObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements>
 template <typename T>
 struct MoveDestructibleObjectsFromLastElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleObjectsFromLastElementImpl<T, MoveTrait::MoveByElements>::Move(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2956,7 +3152,7 @@ struct MoveDestructibleObjectsFromLastElementImpl<T, MoveTrait::MemcpyOrMemmove>
 template <typename T>
 struct MoveDestructibleObjectsFromLastElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> Move(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -2982,9 +3178,17 @@ struct MoveDestructibleObjectsFromLastElementImpl<T, MoveTrait::MoveByElements> 
 template <typename T>
 struct CloneConstructObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneConstructObjectsFromFirstElementNonOverlapImpl<
+                T,
+                construct_clone_objects_constexpr_v<T>
+            >::CloneConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3001,7 +3205,7 @@ struct CloneConstructObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::MemcpyO
 template <typename T>
 struct CloneConstructObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3024,7 +3228,7 @@ struct CloneConstructObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::CppCopy
 template <typename T>
 struct CloneConstructObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3054,9 +3258,17 @@ struct CloneConstructObjectsFromFirstElementNonOverlapImpl<T, CopyTrait::AltClon
 template <typename T>
 struct CloneConstructObjectsFromLastElementNonOverlapImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneConstructObjectsFromLastElementNonOverlapImpl<
+                T,
+                construct_clone_objects_constexpr_v<T>
+            >::CloneConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3073,7 +3285,7 @@ struct CloneConstructObjectsFromLastElementNonOverlapImpl<T, CopyTrait::MemcpyOr
 template <typename T>
 struct CloneConstructObjectsFromLastElementNonOverlapImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3096,7 +3308,7 @@ struct CloneConstructObjectsFromLastElementNonOverlapImpl<T, CopyTrait::CppCopy>
 template <typename T>
 struct CloneConstructObjectsFromLastElementNonOverlapImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* __restrict pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3131,9 +3343,17 @@ struct CloneConstructObjectsFromLastElementNonOverlapImpl<T, CopyTrait::AltClone
 template <typename T>
 struct CloneConstructObjectsFromFirstElementImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneConstructObjectsFromFirstElementImpl<
+                T,
+                construct_clone_objects_constexpr_v<T>
+            >::CloneConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3150,7 +3370,7 @@ struct CloneConstructObjectsFromFirstElementImpl<T, CopyTrait::MemcpyOrMemmove> 
 template <typename T>
 struct CloneConstructObjectsFromFirstElementImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3173,7 +3393,7 @@ struct CloneConstructObjectsFromFirstElementImpl<T, CopyTrait::CppCopy> {
 template <typename T>
 struct CloneConstructObjectsFromFirstElementImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3203,13 +3423,21 @@ struct CloneConstructObjectsFromFirstElementImpl<T, CopyTrait::AltClone> {
 template <typename T>
 struct CloneConstructObjectsFromLastElementImpl<T, CopyTrait::MemcpyOrMemmove> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return CloneConstructObjectsFromLastElementImpl<
+                T,
+                construct_clone_objects_constexpr_v<T>
+            >::CloneConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
+
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
-        std::memmove(pDstBegin, pSrcBegin, (pSrcEnd - pSrcBegin) * sizeof(T));
+        std::memmove(pDstBegin, pSrcBegin, size * sizeof(T));
 
         CloneResult<T> result;
         result.pDstFailedOrEndOrBeginMinusOne = pDstBegin - 1;
@@ -3222,7 +3450,7 @@ struct CloneConstructObjectsFromLastElementImpl<T, CopyTrait::MemcpyOrMemmove> {
 template <typename T>
 struct CloneConstructObjectsFromLastElementImpl<T, CopyTrait::CppCopy> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3250,7 +3478,7 @@ struct CloneConstructObjectsFromLastElementImpl<T, CopyTrait::CppCopy> {
 template <typename T>
 struct CloneConstructObjectsFromLastElementImpl<T, CopyTrait::AltClone> {
 
-    ALT_NODISCARD ALT_FORCE_INLINE static CloneResult<T> CloneConstruct(
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static CloneResult<T> CloneConstruct(
         T* pDstBegin, const T* __restrict pSrcBegin, const T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3285,7 +3513,12 @@ struct CloneConstructObjectsFromLastElementImpl<T, CopyTrait::AltClone> {
 template <typename T>
 struct MoveConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements>::MoveConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3302,7 +3535,7 @@ struct MoveConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MemcpyOr
 template <typename T>
 struct MoveConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -3323,7 +3556,12 @@ struct MoveConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByEl
 template <typename T>
 struct MoveConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements>::MoveConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3340,7 +3578,7 @@ struct MoveConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MemcpyOrM
 template <typename T>
 struct MoveConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -3361,7 +3599,12 @@ struct MoveConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByEle
 template <typename T>
 struct MoveConstructObjectsFromFirstElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveConstructObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements>::MoveConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3378,7 +3621,7 @@ struct MoveConstructObjectsFromFirstElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 template <typename T>
 struct MoveConstructObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -3399,7 +3642,12 @@ struct MoveConstructObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements> {
 template <typename T>
 struct MoveConstructObjectsFromLastElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveConstructObjectsFromLastElementImpl<T, MoveTrait::MoveByElements>::MoveConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3416,7 +3664,7 @@ struct MoveConstructObjectsFromLastElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 template <typename T>
 struct MoveConstructObjectsFromLastElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3442,9 +3690,17 @@ struct MoveConstructObjectsFromLastElementImpl<T, MoveTrait::MoveByElements> {
 template <typename T>
 struct MoveDestructibleConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(
         T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleConstructObjectsFromFirstElementNonOverlapImpl<
+                T,
+                MoveTrait::MoveByElements
+            >::MoveDestructibleConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3461,7 +3717,7 @@ struct MoveDestructibleConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTra
 template <typename T>
 struct MoveDestructibleConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(
         T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3484,9 +3740,17 @@ struct MoveDestructibleConstructObjectsFromFirstElementNonOverlapImpl<T, MoveTra
 template <typename T>
 struct MoveDestructibleConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(
         T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
     ) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleConstructObjectsFromLastElementNonOverlapImpl<
+                T,
+                MoveTrait::MoveByElements
+            >::MoveDestructibleConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3503,7 +3767,7 @@ struct MoveDestructibleConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrai
 template <typename T>
 struct MoveDestructibleConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(
         T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd
     ) noexcept {
 
@@ -3526,7 +3790,15 @@ struct MoveDestructibleConstructObjectsFromLastElementNonOverlapImpl<T, MoveTrai
 template <typename T>
 struct MoveDestructibleConstructObjectsFromFirstElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleConstructObjectsFromFirstElementImpl<
+                T,
+                MoveTrait::MoveByElements
+            >::MoveDestructibleConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3543,7 +3815,7 @@ struct MoveDestructibleConstructObjectsFromFirstElementImpl<T, MoveTrait::Memcpy
 template <typename T>
 struct MoveDestructibleConstructObjectsFromFirstElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         T* src = pSrcBegin;
         T* dst = pDstBegin;
@@ -3564,7 +3836,15 @@ struct MoveDestructibleConstructObjectsFromFirstElementImpl<T, MoveTrait::MoveBy
 template <typename T>
 struct MoveDestructibleConstructObjectsFromLastElementImpl<T, MoveTrait::MemcpyOrMemmove> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MoveDestructibleConstructObjectsFromLastElementImpl<
+                T,
+                MoveTrait::MoveByElements
+            >::MoveDestructibleConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3581,7 +3861,7 @@ struct MoveDestructibleConstructObjectsFromLastElementImpl<T, MoveTrait::MemcpyO
 template <typename T>
 struct MoveDestructibleConstructObjectsFromLastElementImpl<T, MoveTrait::MoveByElements> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(T* pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3607,7 +3887,12 @@ struct MoveDestructibleConstructObjectsFromLastElementImpl<T, MoveTrait::MoveByE
 template <typename T>
 struct MemcpyOrMoveDestructibleConstructObjectsNonOverlapImpl<T, true> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+
+        ALT_IF_IS_CONSTANT_EVALUATED {
+
+            return MemcpyOrMoveDestructibleConstructObjectsNonOverlapImpl<T, false>::MoveDestructibleConstruct(pDstBegin, pSrcBegin, pSrcEnd);
+        }
 
         const usize size = static_cast<usize>(pSrcEnd - pSrcBegin);
 
@@ -3624,14 +3909,13 @@ struct MemcpyOrMoveDestructibleConstructObjectsNonOverlapImpl<T, true> {
 template <typename T>
 struct MemcpyOrMoveDestructibleConstructObjectsNonOverlapImpl<T, false> {
 
-    ALT_FORCE_INLINE static MoveResult<T> MoveDestructibleConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
+    ALT_FORCE_INLINE constexpr static MoveResult<T> MoveDestructibleConstruct(T* __restrict pDstBegin, T* __restrict pSrcBegin, T* __restrict pSrcEnd) noexcept {
 
         return MoveDestructibleConstructObjectsFromFirstElementNonOverlapImpl<T>::MoveDestructibleConstruct(pDstBegin, pSrcBegin, pSrcEnd);
     }
 };
 
 } // namespace _MemoryDetails
-
 } // namespace Memory
 } // namespace Alt
 

@@ -22,7 +22,9 @@ class StaticBitSet;
  * @tparam Usize The underlying bit-width type of the BitSet.
  */
 template <typename Usize>
-class BitSetIterator final : public Iterator<BitSetIterator<Usize>, bool, IIteratorForwardTrait, IIteratorExactSizeTrait> {
+class BitSetIterator final
+    : public Iterator<BitSetIterator<Usize>, bool, IIteratorForwardTrait, IIteratorExactSizeTrait>
+{
 public:
 
     /**
@@ -31,7 +33,7 @@ public:
      * @param self Reference to the source BitSetT.
      */
     template <usize MIN_BITS_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE BitSetIterator(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIterator(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pBegin(self.m_Words.Data())
         , m_SizeBits(self.m_SizeBits)
     {}
@@ -42,7 +44,7 @@ public:
      * @param self Reference to the source StaticBitSet.
      */
     template <usize SIZE_IN_BITS>
-    ALT_FORCE_INLINE BitSetIterator(const StaticBitSet<SIZE_IN_BITS, Usize>& self) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIterator(const StaticBitSet<SIZE_IN_BITS, Usize>& self) noexcept
         : m_pBegin(self.m_Words)
         , m_SizeBits(SIZE_IN_BITS)
     {}
@@ -51,7 +53,7 @@ public:
      * @brief Returns the number of bits remaining to be iterated.
      * @return The remaining count of bits as a usize.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_SizeBits;
     }
 
@@ -59,7 +61,7 @@ public:
      * @brief Advances the iterator by one bit and returns its state.
      * @return An Optional containing true if the current bit is set, false if not, or Nullopt if at end.
      */
-    ALT_FORCE_INLINE Optional<bool> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<bool> Next() noexcept {
 
         if (m_SizeBits == 0) {
             return Nullopt;
@@ -81,9 +83,9 @@ public:
      * @param advance_ The number of bits to jump forward.
      * @return The actual number of bits advanced (clamped by size).
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, m_SizeBits);
+        const usize advance = Min(advance_, m_SizeBits);
 
         m_SizeBits -= advance;
 
@@ -98,7 +100,7 @@ public:
      * @brief Gets the remaining number of bits to be processed.
      * @return The count as a usize.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         return m_SizeBits;
     }
@@ -107,17 +109,17 @@ public:
      * @brief Checks if there are any more bits to process.
      * @return True if the iterator is at the end of the data, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
 
         return m_SizeBits == 0;
     }
 
 private:
 
-    constexpr static usize BITS = static_cast<usize>(Num::Desc<Usize>::Bits());
-    static_assert(Num::IsPowerOf2(BITS), "");
+    constexpr static usize BITS = static_cast<usize>(Desc<Usize>::Bits());
+    static_assert(IsPowerOf2(BITS), "");
     
-    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Num::Count0BitsRightConstexpr(BITS);
+    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Count0BitsRight(BITS);
     constexpr static usize BITS_TO_BITIDX_IN_WORD_MASK = BITS - 1;
 
     const Usize* m_pBegin;
@@ -131,7 +133,9 @@ private:
  * @tparam Usize The underlying bit-width type of the BitSet.
  */
 template <typename Usize>
-class BitSetIteratorActiveRange final : public Iterator<BitSetIteratorActiveRange<Usize>, RangeUsize, IIteratorForwardTrait> {
+class BitSetIteratorActiveRange final
+    : public Iterator<BitSetIteratorActiveRange<Usize>, RangeUsize, IIteratorForwardTrait>
+{
 private:
 
     using T = TypeTraits::select_larger_t<usize, Usize>;
@@ -144,25 +148,25 @@ public:
      * @param self Reference to the source BitSetT.
      */
     template <usize MIN_BITS_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE BitSetIteratorActiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pBegin(self.m_Words.Data())
         , m_pEnd(self.m_Words.DataEnd())
         , m_MaskLast(
             (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {}
 
     template <usize MIN_BITS_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE BitSetIteratorActiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset) noexcept
         : m_pBegin(self.m_Words.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.m_Words.DataEnd())
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -170,7 +174,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = static_cast<T>(*m_pBegin) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -180,14 +184,14 @@ public:
     }
 
     template <usize MIN_BITS_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE BitSetIteratorActiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset, const usize bitSize) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset, const usize bitSize) noexcept
         : m_pBegin(self.m_Words.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.m_Words.Data() + ((bitOffset + bitSize) >> BITS_TO_WORDID_RIGHT_SHIFT) + (((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1))
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -195,7 +199,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = static_cast<T>(*m_pBegin) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -210,25 +214,25 @@ public:
      * @param self Reference to the source StaticBitSet.
      */
     template <usize SIZE_IN_BITS>
-    ALT_FORCE_INLINE BitSetIteratorActiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
         , m_MaskLast(
             (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {}
 
     template <usize SIZE_IN_BITS>
-    ALT_FORCE_INLINE BitSetIteratorActiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset) noexcept
         : m_pBegin(self.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.DataEnd())
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -237,7 +241,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = static_cast<T>(*(self.Data() + m_WordID)) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -247,14 +251,14 @@ public:
     }
 
     template <usize SIZE_IN_BITS>
-    ALT_FORCE_INLINE BitSetIteratorActiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset, const usize bitSize) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorActiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset, const usize bitSize) noexcept
         : m_pBegin(self.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.Data() + ((bitOffset + bitSize) >> BITS_TO_WORDID_RIGHT_SHIFT) + (((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1))
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -263,7 +267,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = static_cast<T>(*(self.Data() + m_WordID)) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -276,7 +280,7 @@ public:
      * @brief Returns the next contiguous range of set bits.
      * @return An Optional containing a RangeUsize object, or Nullopt if no more active ranges exist.
      */
-    ALT_FORCE_INLINE Optional<RangeUsize> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<RangeUsize> Next() noexcept {
 
         if (m_WordAcc == 0) {
 
@@ -291,7 +295,7 @@ public:
                 m_WordID += 1;
             }
 
-            const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+            const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
             m_WordAcc = static_cast<T>(*m_pBegin) & mask;
             m_WordShiftAcc = 0;
@@ -302,16 +306,16 @@ public:
         }
 
         const bool isLast = m_pBegin + 1 == m_pEnd;
-        T mask = isLast ? m_MaskLast : Num::Desc<T>::Max();
+        T mask = isLast ? m_MaskLast : Desc<T>::Max();
 
         T word = m_WordAcc;
         T wordShiftAcc = m_WordShiftAcc;
-        T idx = static_cast<T>(Num::Count0BitsRight(word));
+        T idx = static_cast<T>(Count0BitsRight(word));
 
         wordShiftAcc += idx;
 
-        T guardMask0 = idx == BITS ? 0 : Num::Desc<T>::Max();
-        const T guardMask1 = wordShiftAcc == BITS ? 0 : Num::Desc<T>::Max();
+        T guardMask0 = idx == BITS ? 0 : Desc<T>::Max();
+        const T guardMask1 = wordShiftAcc == BITS ? 0 : Desc<T>::Max();
 
         word = (word >> idx) & guardMask0;
         mask = (mask >> wordShiftAcc) & guardMask1;
@@ -331,7 +335,7 @@ public:
                 m_WordID += 1;
             }
 
-            mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+            mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
             word = static_cast<T>(*m_pBegin) & mask;
             end = m_WordID << BITS_TO_WORDID_RIGHT_SHIFT;
@@ -339,10 +343,10 @@ public:
             wordShiftAcc = 0;
         }
 
-        idx = static_cast<T>(Num::Count0BitsRight(~word));
+        idx = static_cast<T>(Count0BitsRight(~word));
         end += idx;
 
-        guardMask0 = idx == BITS ? 0 : Num::Desc<T>::Max();
+        guardMask0 = idx == BITS ? 0 : Desc<T>::Max();
         word = (word >> idx) & guardMask0;
 
         wordShiftAcc += idx;
@@ -361,7 +365,7 @@ public:
      * @param advance_ The number of regions to advance.
      * @return The actual number of regions advanced (clamped by size).
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         if (advance == 0) {
             return 0;
@@ -381,13 +385,13 @@ public:
 
 private:
 
-    constexpr static T BITS = static_cast<T>(Num::Desc<Usize>::Bits());
-    static_assert(Num::IsPowerOf2(BITS), "");
+    constexpr static T BITS = static_cast<T>(Desc<Usize>::Bits());
+    static_assert(IsPowerOf2(BITS), "");
 
-    constexpr static T BITS_TO_WORDID_RIGHT_SHIFT = static_cast<T>(Num::Count0BitsRightConstexpr(BITS));
+    constexpr static T BITS_TO_WORDID_RIGHT_SHIFT = static_cast<T>(Count0BitsRight(BITS));
     constexpr static T BITS_TO_BITIDX_IN_WORD_MASK = BITS - 1;
 
-    constexpr static T WORD_MAX = static_cast<T>(Num::Desc<Usize>::Max());
+    constexpr static T WORD_MAX = static_cast<T>(Desc<Usize>::Max());
 
     const Usize* m_pBegin;
     const Usize* m_pEnd;
@@ -416,25 +420,25 @@ public:
      * @param self Reference to the source BitSetT.
      */
     template <usize MIN_BITS_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE BitSetIteratorInactiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pBegin(self.m_Words.Data())
         , m_pEnd(self.m_Words.DataEnd())
         , m_MaskLast(
             (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {}
 
     template <usize MIN_BITS_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE BitSetIteratorInactiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset) noexcept
         : m_pBegin(self.m_Words.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.m_Words.DataEnd())
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (self.m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -443,7 +447,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = ~static_cast<T>(*(self.m_Words.Data() + m_WordID)) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -452,14 +456,14 @@ public:
     }
 
     template <usize MIN_BITS_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE BitSetIteratorInactiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset, const usize bitSize) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange(const BitSetT<Usize, MIN_BITS_CAPACITY_ON_ALLOCATE>& self, const usize bitOffset, const usize bitSize) noexcept
         : m_pBegin(self.m_Words.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.m_Words.Data() + ((bitOffset + bitSize) >> BITS_TO_WORDID_RIGHT_SHIFT) + (((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1))
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -468,7 +472,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = ~static_cast<T>(*(self.m_Words.Data() + m_WordID)) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -482,25 +486,25 @@ public:
      * @param self Reference to the source StaticBitSet.
      */
     template <usize SIZE_IN_BITS>
-    ALT_FORCE_INLINE BitSetIteratorInactiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
         , m_MaskLast(
             (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {}
 
     template <usize SIZE_IN_BITS>
-    ALT_FORCE_INLINE BitSetIteratorInactiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset) noexcept
         : m_pBegin(self.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.DataEnd())
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << (SIZE_IN_BITS & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -509,7 +513,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = ~static_cast<T>(*(self.Data() + m_WordID)) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -518,14 +522,14 @@ public:
     }
 
     template <usize SIZE_IN_BITS>
-    ALT_FORCE_INLINE BitSetIteratorInactiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset, const usize bitSize) noexcept
+    ALT_FORCE_INLINE constexpr BitSetIteratorInactiveRange(const StaticBitSet<SIZE_IN_BITS, Usize>& self, const usize bitOffset, const usize bitSize) noexcept
         : m_pBegin(self.Data() + (bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT))
         , m_pEnd(self.Data() + ((bitOffset + bitSize) >> BITS_TO_WORDID_RIGHT_SHIFT) + (((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1))
         , m_WordID(bitOffset >> BITS_TO_WORDID_RIGHT_SHIFT)
         , m_WordShiftAcc(bitOffset & BITS_TO_BITIDX_IN_WORD_MASK)
         , m_MaskLast(
             ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK) == 0
-                ? Num::Desc<T>::Max()
+                ? Desc<T>::Max()
                 : (static_cast<T>(1) << ((bitOffset + bitSize) & BITS_TO_BITIDX_IN_WORD_MASK)) - 1
         )
     {
@@ -534,7 +538,7 @@ public:
             return;
         }
 
-        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+        const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
         m_WordAcc = ~static_cast<T>(*(self.Data() + m_WordID)) & mask;
         m_WordAcc >>= m_WordShiftAcc;
@@ -546,7 +550,7 @@ public:
      * @brief Returns the next consecutive range of unset bits.
      * @return An Optional containing a RangeUsize object, or Nullopt if no more inactive ranges exist.
      */
-    ALT_FORCE_INLINE Optional<RangeUsize> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<RangeUsize> Next() noexcept {
 
         if (m_WordAcc == 0) {
 
@@ -561,7 +565,7 @@ public:
                 m_WordID += 1;
             }
 
-            const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+            const T mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
             m_WordAcc = ~static_cast<T>(*m_pBegin) & mask;
             m_WordShiftAcc = 0;
@@ -572,16 +576,16 @@ public:
         }
 
         const bool isLast = m_pBegin + 1 == m_pEnd;
-        T mask = isLast ? m_MaskLast : Num::Desc<T>::Max();
+        T mask = isLast ? m_MaskLast : Desc<T>::Max();
 
         T word = m_WordAcc;
         T wordShiftAcc = m_WordShiftAcc;
-        T idx = static_cast<T>(Num::Count0BitsRight(word));
+        T idx = static_cast<T>(Count0BitsRight(word));
 
         wordShiftAcc += idx;
 
-        T guardMask0 = idx == BITS ? 0 : Num::Desc<T>::Max();
-        const T guardMask1 = wordShiftAcc == BITS ? 0 : Num::Desc<T>::Max();
+        T guardMask0 = idx == BITS ? 0 : Desc<T>::Max();
+        const T guardMask1 = wordShiftAcc == BITS ? 0 : Desc<T>::Max();
 
         word = (word >> idx) & guardMask0;
         mask = (mask >> wordShiftAcc) & guardMask1;
@@ -601,7 +605,7 @@ public:
                 m_WordID += 1;
             }
 
-            mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Num::Desc<T>::Max();
+            mask = m_pBegin + 1 == m_pEnd ? m_MaskLast : Desc<T>::Max();
 
             word = ~static_cast<T>(*m_pBegin) & mask;
             end = m_WordID << BITS_TO_WORDID_RIGHT_SHIFT;
@@ -609,10 +613,10 @@ public:
             wordShiftAcc = 0;
         }
 
-        idx = Num::Count0BitsRight(~word);
+        idx = Count0BitsRight(~word);
         end += idx;
 
-        guardMask0 = idx == BITS ? 0 : Num::Desc<T>::Max();
+        guardMask0 = idx == BITS ? 0 : Desc<T>::Max();
         word = (word >> idx) & guardMask0;
 
         wordShiftAcc += idx;
@@ -631,7 +635,7 @@ public:
      * @param advance_ The number of regions to advance.
      * @return The actual number of regions advanced (clamped by size).
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         if (advance == 0) {
             return 0;
@@ -651,13 +655,13 @@ public:
 
 private:
 
-    constexpr static T BITS = static_cast<T>(Num::Desc<Usize>::Bits());
-    static_assert(Num::IsPowerOf2(BITS), "");
+    constexpr static T BITS = static_cast<T>(Desc<Usize>::Bits());
+    static_assert(IsPowerOf2(BITS), "");
 
-    constexpr static T BITS_TO_WORDID_RIGHT_SHIFT = static_cast<T>(Num::Count0BitsRightConstexpr(BITS));
+    constexpr static T BITS_TO_WORDID_RIGHT_SHIFT = static_cast<T>(Count0BitsRight(BITS));
     constexpr static T BITS_TO_BITIDX_IN_WORD_MASK = BITS - 1;
 
-    constexpr static T WORD_MAX = static_cast<T>(Num::Desc<Usize>::Max());
+    constexpr static T WORD_MAX = static_cast<T>(Desc<Usize>::Max());
 
     const Usize* m_pBegin;
     const Usize* m_pEnd;

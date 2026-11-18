@@ -47,42 +47,42 @@ template <typename T, usize SIZE, typename Usize>
 class StaticQueueStorageCore {
 public:
 
-    ALT_FORCE_INLINE T* GetMemoryBeginImpl() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBeginImpl() noexcept {
 
         return m_Memory->GetPtr();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBeginImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBeginImpl() const noexcept {
 
         return m_Memory->GetPtr();
     }
 
-    ALT_FORCE_INLINE usize GetOffsetImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetOffsetImpl() const noexcept {
 
         return static_cast<usize>(m_Offset);
     }
 
-    ALT_FORCE_INLINE Usize& GetOffsetRefImpl() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetOffsetRefImpl() noexcept {
 
         return m_Offset;
     }
 
-    ALT_FORCE_INLINE const Usize& GetOffsetRefImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetOffsetRefImpl() const noexcept {
 
         return m_Offset;
     }
 
-    ALT_FORCE_INLINE usize GetSizeImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeImpl() const noexcept {
 
         return static_cast<usize>(m_Size);
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRefImpl() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRefImpl() noexcept {
 
         return m_Size;
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRefImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRefImpl() const noexcept {
 
         return m_Size;
     }
@@ -99,42 +99,42 @@ template <typename T, typename Usize>
 class StaticQueueStorageCore<T, 0, Usize> {
 public:
 
-    ALT_FORCE_INLINE T* GetMemoryBeginImpl() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBeginImpl() noexcept {
 
         return nullptr;
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBeginImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBeginImpl() const noexcept {
 
         return nullptr;
     }
 
-    ALT_FORCE_INLINE usize GetOffsetImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetOffsetImpl() const noexcept {
 
         return static_cast<usize>(m_SomethingForRef);
     }
 
-    ALT_FORCE_INLINE Usize& GetOffsetRefImpl() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetOffsetRefImpl() noexcept {
 
         return m_SomethingForRef;
     }
 
-    ALT_FORCE_INLINE const Usize& GetOffsetRefImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetOffsetRefImpl() const noexcept {
 
         return m_SomethingForRef;
     }
 
-    ALT_FORCE_INLINE usize GetSizeImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeImpl() const noexcept {
 
         return static_cast<usize>(m_SomethingForRef);
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRefImpl() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRefImpl() noexcept {
 
         return m_SomethingForRef;
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRefImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRefImpl() const noexcept {
 
         return m_SomethingForRef;
     }
@@ -157,13 +157,13 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageDestruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticQueueStorageCore<T, SIZE, Usize>
 {
-    StaticQueueStorageDestruct() noexcept = default;
+    constexpr StaticQueueStorageDestruct() noexcept = default;
 
-    StaticQueueStorageDestruct(const StaticQueueStorageDestruct&) noexcept = default;
-    StaticQueueStorageDestruct& operator=(const StaticQueueStorageDestruct&) noexcept = default;
+    constexpr StaticQueueStorageDestruct(const StaticQueueStorageDestruct&) noexcept = default;
+    constexpr StaticQueueStorageDestruct& operator=(const StaticQueueStorageDestruct&) noexcept = default;
 
-    StaticQueueStorageDestruct(StaticQueueStorageDestruct&&) noexcept = default;
-    StaticQueueStorageDestruct& operator=(StaticQueueStorageDestruct&&) noexcept = default;
+    constexpr StaticQueueStorageDestruct(StaticQueueStorageDestruct&&) noexcept = default;
+    constexpr StaticQueueStorageDestruct& operator=(StaticQueueStorageDestruct&&) noexcept = default;
 
     ~StaticQueueStorageDestruct() noexcept = delete;
 };
@@ -172,13 +172,13 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageDestruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticQueueStorageCore<T, SIZE, Usize>
 {
-    StaticQueueStorageDestruct() noexcept = default;
+    constexpr StaticQueueStorageDestruct() noexcept = default;
 
-    StaticQueueStorageDestruct(const StaticQueueStorageDestruct&) noexcept = default;
-    StaticQueueStorageDestruct& operator=(const StaticQueueStorageDestruct&) noexcept = default;
+    constexpr StaticQueueStorageDestruct(const StaticQueueStorageDestruct&) noexcept = default;
+    constexpr StaticQueueStorageDestruct& operator=(const StaticQueueStorageDestruct&) noexcept = default;
 
-    StaticQueueStorageDestruct(StaticQueueStorageDestruct&&) noexcept = default;
-    StaticQueueStorageDestruct& operator=(StaticQueueStorageDestruct&&) noexcept = default;
+    constexpr StaticQueueStorageDestruct(StaticQueueStorageDestruct&&) noexcept = default;
+    constexpr StaticQueueStorageDestruct& operator=(StaticQueueStorageDestruct&&) noexcept = default;
 
     ~StaticQueueStorageDestruct() noexcept = default;
 };
@@ -187,13 +187,13 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageDestruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticQueueStorageCore<T, SIZE, Usize>
 {
-    StaticQueueStorageDestruct() noexcept = default;
+    constexpr StaticQueueStorageDestruct() noexcept = default;
 
-    StaticQueueStorageDestruct(const StaticQueueStorageDestruct&) noexcept = default;
-    StaticQueueStorageDestruct& operator=(const StaticQueueStorageDestruct&) noexcept = default;
+    constexpr StaticQueueStorageDestruct(const StaticQueueStorageDestruct&) noexcept = default;
+    constexpr StaticQueueStorageDestruct& operator=(const StaticQueueStorageDestruct&) noexcept = default;
 
-    StaticQueueStorageDestruct(StaticQueueStorageDestruct&&) noexcept = default;
-    StaticQueueStorageDestruct& operator=(StaticQueueStorageDestruct&&) noexcept = default;
+    constexpr StaticQueueStorageDestruct(StaticQueueStorageDestruct&&) noexcept = default;
+    constexpr StaticQueueStorageDestruct& operator=(StaticQueueStorageDestruct&&) noexcept = default;
 
     ~StaticQueueStorageDestruct() noexcept {
 
@@ -214,12 +214,12 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageMoveAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticQueueStorageDestruct<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageMoveAssign() noexcept = default;
+    constexpr StaticQueueStorageMoveAssign() noexcept = default;
 
-    StaticQueueStorageMoveAssign(const StaticQueueStorageMoveAssign&) noexcept = default;
-    StaticQueueStorageMoveAssign& operator=(const StaticQueueStorageMoveAssign&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign(const StaticQueueStorageMoveAssign&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign& operator=(const StaticQueueStorageMoveAssign&) noexcept = default;
 
-    StaticQueueStorageMoveAssign(StaticQueueStorageMoveAssign&&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign(StaticQueueStorageMoveAssign&&) noexcept = default;
     StaticQueueStorageMoveAssign& operator=(StaticQueueStorageMoveAssign&&) noexcept = delete;
 };
 
@@ -227,14 +227,14 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageMoveAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticQueueStorageDestruct<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageMoveAssign() noexcept = default;
+    constexpr StaticQueueStorageMoveAssign() noexcept = default;
 
-    StaticQueueStorageMoveAssign(const StaticQueueStorageMoveAssign&) noexcept = default;
-    StaticQueueStorageMoveAssign& operator=(const StaticQueueStorageMoveAssign&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign(const StaticQueueStorageMoveAssign&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign& operator=(const StaticQueueStorageMoveAssign&) noexcept = default;
 
-    StaticQueueStorageMoveAssign(StaticQueueStorageMoveAssign&&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign(StaticQueueStorageMoveAssign&&) noexcept = default;
 
-    StaticQueueStorageMoveAssign& operator=(StaticQueueStorageMoveAssign&& rhs) noexcept {
+    constexpr StaticQueueStorageMoveAssign& operator=(StaticQueueStorageMoveAssign&& rhs) noexcept {
 
         // we can do better - move only "active" elements
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
@@ -246,14 +246,14 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageMoveAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticQueueStorageDestruct<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageMoveAssign() noexcept = default;
+    constexpr StaticQueueStorageMoveAssign() noexcept = default;
 
-    StaticQueueStorageMoveAssign(const StaticQueueStorageMoveAssign&) noexcept = default;
-    StaticQueueStorageMoveAssign& operator=(const StaticQueueStorageMoveAssign&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign(const StaticQueueStorageMoveAssign&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign& operator=(const StaticQueueStorageMoveAssign&) noexcept = default;
 
-    StaticQueueStorageMoveAssign(StaticQueueStorageMoveAssign&&) noexcept = default;
+    constexpr StaticQueueStorageMoveAssign(StaticQueueStorageMoveAssign&&) noexcept = default;
 
-    StaticQueueStorageMoveAssign& operator=(StaticQueueStorageMoveAssign&& rhs) noexcept {
+    constexpr StaticQueueStorageMoveAssign& operator=(StaticQueueStorageMoveAssign&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
         return *this;
@@ -273,48 +273,48 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageMoveConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticQueueStorageMoveAssign<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageMoveConstruct() noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct() noexcept = default;
 
-    StaticQueueStorageMoveConstruct(const StaticQueueStorageMoveConstruct&) noexcept = default;
-    StaticQueueStorageMoveConstruct& operator=(const StaticQueueStorageMoveConstruct&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct(const StaticQueueStorageMoveConstruct&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct& operator=(const StaticQueueStorageMoveConstruct&) noexcept = default;
 
     StaticQueueStorageMoveConstruct(StaticQueueStorageMoveConstruct&&) noexcept = delete;
-    StaticQueueStorageMoveConstruct& operator=(StaticQueueStorageMoveConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct& operator=(StaticQueueStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageMoveConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticQueueStorageMoveAssign<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageMoveConstruct() noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct() noexcept = default;
 
-    StaticQueueStorageMoveConstruct(const StaticQueueStorageMoveConstruct&) noexcept = default;
-    StaticQueueStorageMoveConstruct& operator=(const StaticQueueStorageMoveConstruct&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct(const StaticQueueStorageMoveConstruct&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct& operator=(const StaticQueueStorageMoveConstruct&) noexcept = default;
 
-    StaticQueueStorageMoveConstruct(StaticQueueStorageMoveConstruct&& rhs) noexcept {
+    constexpr StaticQueueStorageMoveConstruct(StaticQueueStorageMoveConstruct&& rhs) noexcept {
 
         // we can do better - move only "active" elements
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    StaticQueueStorageMoveConstruct& operator=(StaticQueueStorageMoveConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct& operator=(StaticQueueStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageMoveConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticQueueStorageMoveAssign<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageMoveConstruct() noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct() noexcept = default;
 
-    StaticQueueStorageMoveConstruct(const StaticQueueStorageMoveConstruct&) noexcept = default;
-    StaticQueueStorageMoveConstruct& operator=(const StaticQueueStorageMoveConstruct&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct(const StaticQueueStorageMoveConstruct&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct& operator=(const StaticQueueStorageMoveConstruct&) noexcept = default;
 
-    StaticQueueStorageMoveConstruct(StaticQueueStorageMoveConstruct&& rhs) noexcept {
+    constexpr StaticQueueStorageMoveConstruct(StaticQueueStorageMoveConstruct&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    StaticQueueStorageMoveConstruct& operator=(StaticQueueStorageMoveConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageMoveConstruct& operator=(StaticQueueStorageMoveConstruct&&) noexcept = default;
 };
 
 template <
@@ -330,50 +330,50 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageCopyAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticQueueStorageMoveConstruct<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageCopyAssign() noexcept = default;
+    constexpr StaticQueueStorageCopyAssign() noexcept = default;
 
-    StaticQueueStorageCopyAssign(const StaticQueueStorageCopyAssign&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign(const StaticQueueStorageCopyAssign&) noexcept = default;
     StaticQueueStorageCopyAssign& operator=(const StaticQueueStorageCopyAssign&) noexcept = delete;
 
-    StaticQueueStorageCopyAssign(StaticQueueStorageCopyAssign&&) noexcept = default;
-    StaticQueueStorageCopyAssign& operator=(StaticQueueStorageCopyAssign&&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign(StaticQueueStorageCopyAssign&&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign& operator=(StaticQueueStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageCopyAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticQueueStorageMoveConstruct<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageCopyAssign() noexcept = default;
+    constexpr StaticQueueStorageCopyAssign() noexcept = default;
 
-    StaticQueueStorageCopyAssign(const StaticQueueStorageCopyAssign&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign(const StaticQueueStorageCopyAssign&) noexcept = default;
 
-    StaticQueueStorageCopyAssign& operator=(const StaticQueueStorageCopyAssign& rhs) noexcept {
+    constexpr StaticQueueStorageCopyAssign& operator=(const StaticQueueStorageCopyAssign& rhs) noexcept {
 
         // we can do better - copy only "active" elements
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    StaticQueueStorageCopyAssign(StaticQueueStorageCopyAssign&&) noexcept = default;
-    StaticQueueStorageCopyAssign& operator=(StaticQueueStorageCopyAssign&&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign(StaticQueueStorageCopyAssign&&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign& operator=(StaticQueueStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageCopyAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticQueueStorageMoveConstruct<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageCopyAssign() noexcept = default;
+    constexpr StaticQueueStorageCopyAssign() noexcept = default;
 
-    StaticQueueStorageCopyAssign(const StaticQueueStorageCopyAssign&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign(const StaticQueueStorageCopyAssign&) noexcept = default;
 
-    StaticQueueStorageCopyAssign& operator=(const StaticQueueStorageCopyAssign& rhs) noexcept {
+    constexpr StaticQueueStorageCopyAssign& operator=(const StaticQueueStorageCopyAssign& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    StaticQueueStorageCopyAssign(StaticQueueStorageCopyAssign&&) noexcept = default;
-    StaticQueueStorageCopyAssign& operator=(StaticQueueStorageCopyAssign&&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign(StaticQueueStorageCopyAssign&&) noexcept = default;
+    constexpr StaticQueueStorageCopyAssign& operator=(StaticQueueStorageCopyAssign&&) noexcept = default;
 };
 
 template <
@@ -389,48 +389,48 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageCopyConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticQueueStorageCopyAssign<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageCopyConstruct() noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct() noexcept = default;
 
     StaticQueueStorageCopyConstruct(const StaticQueueStorageCopyConstruct&) noexcept = delete;
-    StaticQueueStorageCopyConstruct& operator=(const StaticQueueStorageCopyConstruct&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct& operator=(const StaticQueueStorageCopyConstruct&) noexcept = default;
 
-    StaticQueueStorageCopyConstruct(StaticQueueStorageCopyConstruct&&) noexcept = default;
-    StaticQueueStorageCopyConstruct& operator=(StaticQueueStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct(StaticQueueStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct& operator=(StaticQueueStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageCopyConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticQueueStorageCopyAssign<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageCopyConstruct() noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct() noexcept = default;
 
-    StaticQueueStorageCopyConstruct(const StaticQueueStorageCopyConstruct& rhs) noexcept {
+    constexpr StaticQueueStorageCopyConstruct(const StaticQueueStorageCopyConstruct& rhs) noexcept {
 
         // we can do better - copy only "active" elements
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    StaticQueueStorageCopyConstruct& operator=(const StaticQueueStorageCopyConstruct&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct& operator=(const StaticQueueStorageCopyConstruct&) noexcept = default;
 
-    StaticQueueStorageCopyConstruct(StaticQueueStorageCopyConstruct&&) noexcept = default;
-    StaticQueueStorageCopyConstruct& operator=(StaticQueueStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct(StaticQueueStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct& operator=(StaticQueueStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticQueueStorageCopyConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticQueueStorageCopyAssign<SelfT, T, SIZE, Usize>
 {
-    StaticQueueStorageCopyConstruct() noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct() noexcept = default;
 
-    StaticQueueStorageCopyConstruct(const StaticQueueStorageCopyConstruct& rhs) noexcept {
+    constexpr StaticQueueStorageCopyConstruct(const StaticQueueStorageCopyConstruct& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    StaticQueueStorageCopyConstruct& operator=(const StaticQueueStorageCopyConstruct&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct& operator=(const StaticQueueStorageCopyConstruct&) noexcept = default;
 
-    StaticQueueStorageCopyConstruct(StaticQueueStorageCopyConstruct&&) noexcept = default;
-    StaticQueueStorageCopyConstruct& operator=(StaticQueueStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct(StaticQueueStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticQueueStorageCopyConstruct& operator=(StaticQueueStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename T, usize SIZE, typename Usize>
@@ -475,61 +475,61 @@ public:
         RHS_SIZE <= SIZE
     ;
 
-    ALT_FORCE_INLINE StaticQueueStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr StaticQueueStorage() noexcept = default;
 
-    ALT_FORCE_INLINE T* GetMemoryBegin() noexcept {
-
-        return this->GetMemoryBeginImpl();
-    }
-
-    ALT_FORCE_INLINE const T* GetMemoryBegin() const noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBegin() noexcept {
 
         return this->GetMemoryBeginImpl();
     }
 
-    ALT_FORCE_INLINE T* GetMemoryEnd() noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBegin() const noexcept {
+
+        return this->GetMemoryBeginImpl();
+    }
+
+    ALT_FORCE_INLINE constexpr T* GetMemoryEnd() noexcept {
 
         return this->GetMemoryBeginImpl() + SIZE;
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryEnd() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryEnd() const noexcept {
 
         return this->GetMemoryBeginImpl() + SIZE;
     }
 
-    ALT_FORCE_INLINE Usize& GetOffsetRef() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetOffsetRef() noexcept {
 
         return this->GetOffsetRefImpl();
     }
 
-    ALT_FORCE_INLINE const Usize& GetOffsetRef() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetOffsetRef() const noexcept {
 
         return this->GetOffsetRefImpl();
     }
 
-    ALT_FORCE_INLINE usize GetOffset() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetOffset() const noexcept {
 
         return this->GetOffsetImpl();
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRef() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRef() noexcept {
 
         return this->GetSizeRefImpl();
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRef() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRef() const noexcept {
 
         return this->GetSizeRefImpl();
     }
 
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         return this->GetSizeImpl();
     }
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_copy_constructible_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(_StaticQueueDetails::Rule5Copy_t, const StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(_StaticQueueDetails::Rule5Copy_t, const StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         const usize offset = rhs.GetOffset();
         const usize size = rhs.GetSize();
@@ -540,7 +540,7 @@ public:
         const T* pQueueBegin1 = pMemoryBegin1 + offset;
 
         const usize sizeBottomCapacity = static_cast<usize>(rhs.GetMemoryEnd() - pQueueBegin1);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
         const usize sizeTop = size - sizeBottom;
 
         pQueueBegin0 = Memory::CopyConstructObjectsNonOverlap(pQueueBegin0, pQueueBegin1, pQueueBegin1 + sizeBottom);
@@ -551,7 +551,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<is_copy_constructible_v<U, SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(_StaticQueueDetails::Rule5Copy_t, const StaticQueueStorage<U, SIZE, Usize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(_StaticQueueDetails::Rule5Copy_t, const StaticQueueStorage<U, SIZE, Usize>& rhs) noexcept {
 
         const usize offset = rhs.GetOffset();
         const usize size = rhs.GetSize();
@@ -563,7 +563,7 @@ public:
         const T* pQueueBegin1 = pMemoryBegin1 + offset;
 
         const usize sizeBottomCapacity = static_cast<usize>(rhs.GetMemoryEnd() - pQueueBegin1);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
         const usize sizeTop = size - sizeBottom;
 
         Memory::CopyConstructObjectsNonOverlap(pQueueBegin0, pQueueBegin1, pQueueBegin1 + sizeBottom);
@@ -575,7 +575,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_copy_assignable_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(_StaticQueueDetails::Rule5Copy_t, const StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(_StaticQueueDetails::Rule5Copy_t, const StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return;
@@ -594,18 +594,18 @@ public:
         const T* pQueueBegin1 = pMemoryBegin1 + offset1;
 
         const usize sizeBottom0Capacity = static_cast<usize>(GetMemoryEnd() - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(sizeBottom0Capacity, size0);
+        const usize sizeBottom0 = Min(sizeBottom0Capacity, size0);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(rhs.GetMemoryEnd() - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(sizeBottom1Capacity, size1);
+        const usize sizeBottom1 = Min(sizeBottom1Capacity, size1);
         const usize sizeTop1 = size1 - sizeBottom1;
 
-        const usize sizeBottomToCopy = Num::Min(sizeBottom0, sizeBottom1);
-        const usize sizeTopToCopy = Num::Min(sizeBottom0 - sizeBottomToCopy, sizeTop1);
+        const usize sizeBottomToCopy = Min(sizeBottom0, sizeBottom1);
+        const usize sizeTopToCopy = Min(sizeBottom0 - sizeBottomToCopy, sizeTop1);
         const usize sizeBottom0CapacityRemainder = sizeBottom0Capacity - sizeBottom0;
-        const usize sizeBottomToConstruct = Num::Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToCopy);
-        const usize sizeTopToConstruct = Num::Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToCopy);
+        const usize sizeBottomToConstruct = Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToCopy);
+        const usize sizeTopToConstruct = Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToCopy);
 
         T* pDstBeginBottom = nullptr;
         T* pDstBeginTop = nullptr;
@@ -641,13 +641,13 @@ public:
         const usize sizeTop1Remainder = sizeTop1 - sizeTopToCopy - sizeTopToConstruct;
 
         {
-            const usize sizeBottomToCopy = Num::Min(sizeTop0, sizeBottom1Remainder);
+            const usize sizeBottomToCopy = Min(sizeTop0, sizeBottom1Remainder);
             pDstBeginBottom = Memory::CopyObjectsNonOverlap(
                 pMemoryBegin0, pSrcBeginBottom, pSrcBeginBottom + sizeBottomToCopy
             );
             pSrcBeginBottom += sizeBottomToCopy;
 
-            const usize sizeTopToCopy = Num::Min(sizeTop0 - sizeBottomToCopy, sizeTop1Remainder);
+            const usize sizeTopToCopy = Min(sizeTop0 - sizeBottomToCopy, sizeTop1Remainder);
             pDstBeginTop = Memory::CopyObjectsNonOverlap(
                 pDstBeginBottom, pSrcBeginTop, pSrcBeginTop + sizeTopToCopy
             );
@@ -671,7 +671,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_move_constructible_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(_StaticQueueDetails::Rule5Move_t, StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(_StaticQueueDetails::Rule5Move_t, StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         const usize offset = rhs.GetOffset();
         const usize size = rhs.GetSize();
@@ -682,7 +682,7 @@ public:
         T* pQueueBegin1 = pMemoryBegin1 + offset;
 
         const usize sizeBottomCapacity = static_cast<usize>(rhs.GetMemoryEnd() - pQueueBegin1);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
         const usize sizeTop = size - sizeBottom;
 
         const Memory::MoveFromFirstElementResult<T> result = Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(
@@ -701,7 +701,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<is_move_constructible_v<U, SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(_StaticQueueDetails::Rule5Move_t, StaticQueueStorage<U, SIZE, Usize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(_StaticQueueDetails::Rule5Move_t, StaticQueueStorage<U, SIZE, Usize>& rhs) noexcept {
 
         const usize offset = rhs.GetOffset();
         const usize size = rhs.GetSize();
@@ -713,7 +713,7 @@ public:
         T* pQueueBegin1 = pMemoryBegin1 + offset;
 
         const usize sizeBottomCapacity = static_cast<usize>(rhs.GetMemoryEnd() - pQueueBegin1);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
         const usize sizeTop = size - sizeBottom;
 
         Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(pQueueBegin0, pQueueBegin1, pQueueBegin1 + sizeBottom);
@@ -728,7 +728,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_move_assignable_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(_StaticQueueDetails::Rule5Move_t, StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(_StaticQueueDetails::Rule5Move_t, StaticQueueStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return;
@@ -747,21 +747,21 @@ public:
         T* pQueueBegin1 = pMemoryBegin1 + offset1;
 
         const usize sizeBottom0Capacity = static_cast<usize>(GetMemoryEnd() - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(sizeBottom0Capacity, size0);
+        const usize sizeBottom0 = Min(sizeBottom0Capacity, size0);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(rhs.GetMemoryEnd() - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(sizeBottom1Capacity, size1);
+        const usize sizeBottom1 = Min(sizeBottom1Capacity, size1);
         const usize sizeTop1 = size1 - sizeBottom1;
 
         Memory::MoveFromFirstElementResult<T> resultBottom;
         Memory::MoveFromFirstElementResult<T> resultTop;
 
-        const usize sizeBottomToMove = Num::Min(sizeBottom0, sizeBottom1);
-        const usize sizeTopToMove = Num::Min(sizeBottom0 - sizeBottomToMove, sizeTop1);
+        const usize sizeBottomToMove = Min(sizeBottom0, sizeBottom1);
+        const usize sizeTopToMove = Min(sizeBottom0 - sizeBottomToMove, sizeTop1);
         const usize sizeBottom0CapacityRemainder = sizeBottom0Capacity - sizeBottom0;
-        const usize sizeBottomToConstruct = Num::Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToMove);
-        const usize sizeTopToConstruct = Num::Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToMove);
+        const usize sizeBottomToConstruct = Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToMove);
+        const usize sizeTopToConstruct = Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToMove);
 
         {
             resultBottom = Memory::MoveDestructibleObjectsFromFirstElementNonOverlap(
@@ -787,12 +787,12 @@ public:
         const usize sizeTop1Remainder = sizeTop1 - sizeTopToMove - sizeTopToConstruct;
 
         {
-            const usize sizeBottomToMove = Num::Min(sizeTop0, sizeBottom1Remainder);
+            const usize sizeBottomToMove = Min(sizeTop0, sizeBottom1Remainder);
             resultBottom = Memory::MoveDestructibleObjectsFromFirstElementNonOverlap(
                 pMemoryBegin0, resultBottom.pSrcEnd, resultBottom.pSrcEnd + sizeBottomToMove
             );
 
-            const usize sizeTopToMove = Num::Min(sizeTop0 - sizeBottomToMove, sizeTop1Remainder);
+            const usize sizeTopToMove = Min(sizeTop0 - sizeBottomToMove, sizeTop1Remainder);
             resultTop = Memory::MoveDestructibleObjectsFromFirstElementNonOverlap(
                 resultBottom.pDstEnd, resultTop.pSrcEnd, resultTop.pSrcEnd + sizeTopToMove
             );
@@ -816,7 +816,7 @@ public:
         rhs.GetSizeRef() = 0;
     }
 
-    ALT_FORCE_INLINE void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         const usize size = GetSize();
 
@@ -830,7 +830,7 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(GetMemoryEnd() - pQueueBegin);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
 
         Memory::DestroyObjects(pQueueBegin, pQueueBegin + sizeBottom);
         Memory::DestroyObjects(pMemoryBegin, pMemoryBegin + size - sizeBottom);
@@ -889,7 +889,7 @@ public:
      */
     template <usize SIZE_, typename U = T,
         std::enable_if_t<SIZE_ != 0 && SIZE_ <= SIZE && std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD static StaticQueue Create() noexcept {
+    ALT_NODISCARD constexpr static StaticQueue Create() noexcept {
         iferr_scope;
 
         StaticQueue result{};
@@ -900,7 +900,7 @@ public:
 
     template <usize SIZE_, typename U = T,
         std::enable_if_t<SIZE_ == 0>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE static StaticQueue Create() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static StaticQueue Create() noexcept {
 
         return StaticQueue{};
     }
@@ -921,7 +921,7 @@ public:
      */
     template <usize SIZE_, typename U = T,
         std::enable_if_t<SIZE_ <= SIZE && (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)>* = nullptr>
-    ALT_NODISCARD static StaticQueue Create(const U& val) noexcept {
+    ALT_NODISCARD constexpr static StaticQueue Create(const U& val) noexcept {
         iferr_scope;
 
         StaticQueue result{};
@@ -945,7 +945,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticQueue> Create(const usize size = 0) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticQueue> Create(const usize size = 0) noexcept {
         iferr_scope;
 
         StaticQueue result{};
@@ -972,7 +972,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticQueue> Create(const usize size, const U& val) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticQueue> Create(const usize size, const U& val) noexcept {
         iferr_scope;
 
         StaticQueue result{};
@@ -996,7 +996,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<(is_populated_v<ArgsT...> && sizeof...(ArgsT) <= SIZE) && std::conjunction_v<is_pushable_t<ArgsT&&>...>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticQueue> CreatePush(ArgsT&&... args) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticQueue> CreatePush(ArgsT&&... args) noexcept {
         iferr_scope;
 
         StaticQueue self;
@@ -1013,7 +1013,7 @@ public:
      * assert(q.IsEmpty());
      * assert(q.GetCapacity() == 10);
      */
-    ALT_FORCE_INLINE StaticQueue() noexcept = default;
+    ALT_FORCE_INLINE constexpr StaticQueue() noexcept = default;
 
     /**
      * @brief Creates a StaticQueue using a variadic list of arguments.
@@ -1030,7 +1030,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<(sizeof...(ArgsT) <= SIZE) && std::conjunction_v<std::is_constructible<T, ArgsT&&>...>>* = nullptr>
-    StaticQueue(ArgsT&&... args) noexcept {
+    constexpr StaticQueue(ArgsT&&... args) noexcept {
         iferr_scope;
 
         PushBackVariadicImpl(*this, std::forward<ArgsT>(args)...) iferr_panic_only_dev("checked by template - never panic");
@@ -1048,7 +1048,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_copy_constructible_v<U, RHS_SIZE>>* = nullptr>
-    StaticQueue(const StaticQueue<U, RHS_SIZE>& rhs) noexcept {
+    constexpr StaticQueue(const StaticQueue<U, RHS_SIZE>& rhs) noexcept {
 
         m_Storage.Construct(_StaticQueueDetails::Rule5Copy, rhs.m_Storage);
     }
@@ -1069,7 +1069,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_copy_assignable_v<U, RHS_SIZE>>* = nullptr>
-    StaticQueue& operator=(const StaticQueue<U, RHS_SIZE>& rhs) noexcept {
+    constexpr StaticQueue& operator=(const StaticQueue<U, RHS_SIZE>& rhs) noexcept {
 
         m_Storage.Assign(_StaticQueueDetails::Rule5Copy, rhs.m_Storage);
         return *this;
@@ -1088,7 +1088,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_move_constructible_v<U, RHS_SIZE>>* = nullptr>
-    StaticQueue(StaticQueue<U, RHS_SIZE>&& rhs) noexcept {
+    constexpr StaticQueue(StaticQueue<U, RHS_SIZE>&& rhs) noexcept {
 
         m_Storage.Construct(_StaticQueueDetails::Rule5Move, rhs.m_Storage);
     }
@@ -1109,7 +1109,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_move_assignable_v<U, RHS_SIZE>>* = nullptr>
-    StaticQueue& operator=(StaticQueue<U, RHS_SIZE>&& rhs) noexcept {
+    constexpr StaticQueue& operator=(StaticQueue<U, RHS_SIZE>&& rhs) noexcept {
 
         m_Storage.Assign(_StaticQueueDetails::Rule5Move, rhs.m_Storage);
         return *this;
@@ -1119,7 +1119,7 @@ public:
      * @brief Returns the number of elements currently in the queue.
      * @return The size of the queue.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         return m_Storage.GetSize();
     }
@@ -1137,7 +1137,7 @@ public:
      * @brief Checks if the queue contains no elements.
      * @return True if empty, false otherwise.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
 
         return GetSize() == 0;
     }
@@ -1146,7 +1146,7 @@ public:
      * @brief Checks if the queue contains at least one element.
      * @return True if populated, false otherwise.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsPopulated() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsPopulated() const noexcept {
 
         return !IsEmpty();
     }
@@ -1155,7 +1155,7 @@ public:
      * @brief Checks if the queue full - any push will return false.
      * @return True if full, false otherwise.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsFull() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsFull() const noexcept {
 
         return GetSize() == SIZE;
     }
@@ -1164,7 +1164,7 @@ public:
      * @brief Removes all elements from the queue.
      * @details Destroys all existing objects.
      */
-    void Clear() noexcept {
+    constexpr void Clear() noexcept {
 
         m_Storage.Destroy();
     }
@@ -1179,7 +1179,7 @@ public:
      * assert(q[0] == 0);
      * assert(q[1] == 2);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize i) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         T* pQueueBegin = GetQueueBegin();
@@ -1190,7 +1190,7 @@ public:
         return i < sizeBottom ? pQueueBegin[i] : pMemoryBegin[i - sizeBottom];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& operator[](const usize i) const noexcept {
         ALT_ASSERT(i < GetSize());
 
         const T* pQueueBegin = GetQueueBegin();
@@ -1205,25 +1205,25 @@ public:
      * @brief Returns a reference to the first (front) element.
      * @return Reference to the first element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetFirst() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetFirst() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetQueueBegin();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetFirst() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetFirst() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetQueueBegin();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetFront() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetFront() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetQueueBegin();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetFront() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetFront() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetQueueBegin();
@@ -1234,19 +1234,19 @@ public:
      * @return Reference to the last element.
      * @note Asserts that the qtor is not empty.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetLast() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetLast() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return GetBack();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetLast() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetLast() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return GetBack();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetBack() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         T* pQueueBegin = GetQueueBegin();
@@ -1259,7 +1259,7 @@ public:
         return size <= sizeBottomCapacity ? pQueueBegin[size - 1] : pMemoryBegin[size - sizeBottomCapacity - 1];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetBack() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetBack() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         const T* pQueueBegin = GetQueueBegin();
@@ -1276,7 +1276,7 @@ public:
      * @brief Returns a mutable iterator for the queue.
      * @return An `QueueIterator`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE QueueIterator<T> GetIterator() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr QueueIterator<T> GetIterator() noexcept {
 
         return QueueIterator<T>{ *this };
     }
@@ -1285,7 +1285,7 @@ public:
      * @brief Returns a constant iterator for the queue.
      * @return An `QueueIteratorConst`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE QueueIteratorConst<T> GetIterator() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr QueueIteratorConst<T> GetIterator() const noexcept {
 
         return QueueIteratorConst<T>{ *this };
     }
@@ -1315,7 +1315,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || (std::is_assignable_v<T&, const U&> && std::is_constructible_v<T, const U&>))
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(StaticQueue<U, SIZE_>&& queue_) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(StaticQueue<U, SIZE_>&& queue_) noexcept {
 
         if (static_cast<const void*>(this) == &queue_) {
             return true;
@@ -1330,7 +1330,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || (std::is_assignable_v<T&, const U&> && std::is_constructible_v<T, const U&>))
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const StaticQueue<U, SIZE_>& queue) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const StaticQueue<U, SIZE_>& queue) noexcept {
 
         if (static_cast<const void*>(this) == &queue) {
             return true;
@@ -1354,21 +1354,21 @@ public:
         GetSizeRef() = 0;
 
         const usize sizeBottom0Capacity = static_cast<usize>(pMemoryEnd0 - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(sizeBottom0Capacity, size0);
+        const usize sizeBottom0 = Min(sizeBottom0Capacity, size0);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(sizeBottom1Capacity, size1);
+        const usize sizeBottom1 = Min(sizeBottom1Capacity, size1);
         const usize sizeTop1 = size1 - sizeBottom1;
 
         Memory::CloneFromFirstElementResult<T> resultBottom;
         Memory::CloneFromFirstElementResult<T> resultTop;
 
-        const usize sizeBottomToClone = Num::Min(sizeBottom0, sizeBottom1);
-        const usize sizeTopToClone = Num::Min(sizeBottom0 - sizeBottomToClone, sizeTop1);
+        const usize sizeBottomToClone = Min(sizeBottom0, sizeBottom1);
+        const usize sizeTopToClone = Min(sizeBottom0 - sizeBottomToClone, sizeTop1);
         const usize sizeBottom0CapacityRemainder = sizeBottom0Capacity - sizeBottom0;
-        const usize sizeBottomToConstruct = Num::Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToClone);
-        const usize sizeTopToConstruct = Num::Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToClone);
+        const usize sizeBottomToConstruct = Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToClone);
+        const usize sizeTopToConstruct = Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToClone);
 
         {
             resultBottom = Memory::CloneObjectsFromFirstElementNonOverlap(
@@ -1435,7 +1435,7 @@ public:
         const usize sizeTop1Remainder = sizeTop1 - sizeTopToClone - sizeTopToConstruct;
 
         {
-            const usize sizeBottomToClone = Num::Min(sizeTop0, sizeBottom1Remainder);
+            const usize sizeBottomToClone = Min(sizeTop0, sizeBottom1Remainder);
             resultBottom = Memory::CloneObjectsFromFirstElementNonOverlap(
                 pMemoryBegin0,
                 resultBottom.pSrcObjectWhereCloneFailedOrEnd,
@@ -1450,7 +1450,7 @@ public:
                 return false;
             }
 
-            const usize sizeTopToClone = Num::Min(sizeTop0 - sizeBottomToClone, sizeTop1Remainder);
+            const usize sizeTopToClone = Min(sizeTop0 - sizeBottomToClone, sizeTop1Remainder);
             resultTop = Memory::CloneObjectsFromFirstElementNonOverlap(
                 resultBottom.pDstObjectWhereCloneFailedOrEnd,
                 resultTop.pSrcObjectWhereCloneFailedOrEnd,
@@ -1501,7 +1501,7 @@ public:
             std::is_same_v<InnerU, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const InnerU&> || (std::is_assignable_v<T&, const InnerU&> && std::is_constructible_v<T, const InnerU&>))
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(U&& rhs) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -1518,9 +1518,9 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-        const usize sizeBottom = Num::Min(sizeBottomCapacity, size);
+        const usize sizeBottom = Min(sizeBottomCapacity, size);
 
-        const usize sizeBottomToClone = Num::Min(sliceSize, sizeBottom);
+        const usize sizeBottomToClone = Min(sliceSize, sizeBottom);
         Memory::CloneFromFirstElementResult<T> result = Memory::CloneObjectsFromFirstElementNonOverlap(
             pQueueBegin, slice.Data(), slice.Data() + sizeBottomToClone
         );
@@ -1534,7 +1534,7 @@ public:
         }
 
         T* pDst = result.pDstObjectWhereCloneFailedOrEnd;
-        const usize sizeBottomToConstruct = Num::Min(sliceSize, sizeBottomCapacity);
+        const usize sizeBottomToConstruct = Min(sliceSize, sizeBottomCapacity);
         result = Memory::CloneConstructObjectsFromFirstElementNonOverlap(
             pDst, result.pSrcObjectWhereCloneFailedOrEnd, slice.Data() + sizeBottomToConstruct
         );
@@ -1545,7 +1545,7 @@ public:
         }
 
         const usize sizeTop = size - sizeBottom;
-        const usize sizeTopToClone = Num::Min(sliceSize - sizeBottomToConstruct, sizeTop);
+        const usize sizeTopToClone = Min(sliceSize - sizeBottomToConstruct, sizeTop);
 
         result = Memory::CloneObjectsFromFirstElementNonOverlap(
             pMemoryBegin, result.pSrcObjectWhereCloneFailedOrEnd, result.pSrcObjectWhereCloneFailedOrEnd + sizeTopToClone
@@ -1568,7 +1568,7 @@ public:
         return result.isOk;
     }
 
-    ALT_NODISCARD bool CloneFrom(const T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const T* pBegin, const usize size) noexcept {
 
         const Slice<const T> slice{ pBegin, size };
         return CloneFrom(slice);
@@ -1579,7 +1579,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const StaticQueue<U, SIZE_>& queue) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const StaticQueue<U, SIZE_>& queue) noexcept {
         ALT_ASSERT(static_cast<const void*>(this) != &queue);
 
         iferr_scope_on_err {
@@ -1605,7 +1605,7 @@ public:
         const usize offset = static_cast<usize>(pQueueBegin1 - pMemoryBegin1);
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
 
-        const usize sizeBottom = Num::Min(size1, sizeBottomCapacity);
+        const usize sizeBottom = Min(size1, sizeBottomCapacity);
 
         pQueueBegin0 = pMemoryBegin0 + offset;
 
@@ -1631,7 +1631,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD Optional<StaticQueue> Clone() const noexcept {
+    ALT_NODISCARD constexpr Optional<StaticQueue> Clone() const noexcept {
         iferr_scope;
 
         MaybeUninit<StaticQueue> valueToConstruct;
@@ -1660,7 +1660,7 @@ public:
      */
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_assignable_v<T&, U&&> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool MoveFrom(StaticQueue<U, SIZE_>&& queue_) noexcept {
+    ALT_NODISCARD constexpr bool MoveFrom(StaticQueue<U, SIZE_>&& queue_) noexcept {
 
         if (static_cast<const void*>(this) == &queue_) {
             return true;
@@ -1672,7 +1672,7 @@ public:
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_assignable_v<T&, U&&> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool MoveFrom(StaticQueue<U, SIZE_>& queue) noexcept {
+    ALT_NODISCARD constexpr bool MoveFrom(StaticQueue<U, SIZE_>& queue) noexcept {
 
         if (static_cast<const void*>(this) == &queue) {
             return true;
@@ -1694,21 +1694,21 @@ public:
         }
 
         const usize sizeBottom0Capacity = static_cast<usize>(pMemoryEnd0 - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(sizeBottom0Capacity, size0);
+        const usize sizeBottom0 = Min(sizeBottom0Capacity, size0);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(sizeBottom1Capacity, size1);
+        const usize sizeBottom1 = Min(sizeBottom1Capacity, size1);
         const usize sizeTop1 = size1 - sizeBottom1;
 
         Memory::MoveFromFirstElementResult<T> resultBottom;
         Memory::MoveFromFirstElementResult<T> resultTop;
 
-        const usize sizeBottomToMove = Num::Min(sizeBottom0, sizeBottom1);
-        const usize sizeTopToMove = Num::Min(sizeBottom0 - sizeBottomToMove, sizeTop1);
+        const usize sizeBottomToMove = Min(sizeBottom0, sizeBottom1);
+        const usize sizeTopToMove = Min(sizeBottom0 - sizeBottomToMove, sizeTop1);
         const usize sizeBottom0CapacityRemainder = sizeBottom0Capacity - sizeBottom0;
-        const usize sizeBottomToConstruct = Num::Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToMove);
-        const usize sizeTopToConstruct = Num::Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToMove);
+        const usize sizeBottomToConstruct = Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToMove);
+        const usize sizeTopToConstruct = Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToMove);
 
         {
             resultBottom = Memory::MoveObjectsFromFirstElementNonOverlap(
@@ -1734,12 +1734,12 @@ public:
         const usize sizeTop1Remainder = sizeTop1 - sizeTopToMove - sizeTopToConstruct;
 
         {
-            const usize sizeBottomToMove = Num::Min(sizeTop0, sizeBottom1Remainder);
+            const usize sizeBottomToMove = Min(sizeTop0, sizeBottom1Remainder);
             resultBottom = Memory::MoveObjectsFromFirstElementNonOverlap(
                 pMemoryBegin0, resultBottom.pSrcEnd, resultBottom.pSrcEnd + sizeBottomToMove
             );
 
-            const usize sizeTopToMove = Num::Min(sizeTop0 - sizeBottomToMove, sizeTop1Remainder);
+            const usize sizeTopToMove = Min(sizeTop0 - sizeBottomToMove, sizeTop1Remainder);
             resultTop = Memory::MoveObjectsFromFirstElementNonOverlap(
                 resultBottom.pDstEnd, resultTop.pSrcEnd, resultTop.pSrcEnd + sizeTopToMove
             );
@@ -1767,7 +1767,7 @@ public:
             std::is_constructible_v<Slice<InnerU>, U&&> &&
             std::is_same_v<InnerU, T> &&std::is_assignable_v<T&, InnerU&&> && std::is_constructible_v<T, InnerU&&>
         >* = nullptr>
-    ALT_NODISCARD bool MoveFrom(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool MoveFrom(U&& rhs) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -1784,23 +1784,23 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-        const usize sizeBottom = Num::Min(sizeBottomCapacity, size);
+        const usize sizeBottom = Min(sizeBottomCapacity, size);
 
-        const usize sizeBottomToMove = Num::Min(sliceSize, sizeBottom);
+        const usize sizeBottomToMove = Min(sliceSize, sizeBottom);
         Memory::MoveFromFirstElementResult<T> result = Memory::MoveObjectsFromFirstElementNonOverlap(
             pQueueBegin, slice.Data(), slice.Data() + sizeBottomToMove
         );
 
         Memory::DestroyObjects(result.pDstEnd, pQueueBegin + sizeBottom);
 
-        const usize sizeBottomToConstruct = Num::Min(sliceSize, sizeBottomCapacity);
+        const usize sizeBottomToConstruct = Min(sliceSize, sizeBottomCapacity);
         result = Memory::MoveConstructObjectsFromFirstElementNonOverlap(
             result.pDstEnd, result.pSrcEnd, slice.Data() + sizeBottomToConstruct
         );
 
         const usize sizeTop = size - sizeBottom;
 
-        const usize sizeTopToMove = Num::Min(sliceSize - sizeBottomToConstruct, sizeTop);
+        const usize sizeTopToMove = Min(sliceSize - sizeBottomToConstruct, sizeTop);
         result = Memory::MoveObjectsFromFirstElementNonOverlap(
             pMemoryBegin, result.pSrcEnd, result.pSrcEnd + sizeTopToMove
         );
@@ -1816,7 +1816,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD bool MoveFrom(T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool MoveFrom(T* pBegin, const usize size) noexcept {
 
         Slice<T> slice{ pBegin, size };
         return MoveFrom(slice);
@@ -1840,7 +1840,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendBackClone(StaticQueue<U, SIZE_>&& queue_) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackClone(StaticQueue<U, SIZE_>&& queue_) noexcept {
 
         StaticQueue<U, SIZE_>& queue = queue_;
         return AppendBackClone(queue);
@@ -1851,7 +1851,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendBackClone(const StaticQueue<U, SIZE_>& queue) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackClone(const StaticQueue<U, SIZE_>& queue) noexcept {
 
         T* pQueueBegin0 = GetQueueBegin();
         T* pMemoryBegin0 = GetMemoryBegin();
@@ -1875,12 +1875,12 @@ public:
         }
 
         const usize sizeBottom0Capacity = static_cast<usize>(pMemoryEnd0 - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(size0, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(size0, sizeBottom0Capacity);
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
 
-        const usize sizeBottom = Num::Min(sizeBottom1, sizeBottom0);
+        const usize sizeBottom = Min(sizeBottom1, sizeBottom0);
         T* pQueueBottomBegin = pQueueBegin0 + sizeBottom0;
         T* pQueueTopBegin = pMemoryBegin0 + size0 - sizeBottom0;
 
@@ -1912,7 +1912,7 @@ public:
         }
 
         const usize sizeTop1 = size1 - sizeBottom1;
-        const usize sizeBottomRemainder = Num::Min(sizeTop1, sizeBottom0 - sizeBottom);
+        const usize sizeBottomRemainder = Min(sizeTop1, sizeBottom0 - sizeBottom);
 
         {
             const T* pBegin = pMemoryBegin1;
@@ -1950,7 +1950,7 @@ public:
             std::is_same_v<InnerU, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const InnerU&> || std::is_constructible_v<T, const InnerU&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendBackClone(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackClone(U&& rhs) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -1971,10 +1971,10 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
 
         T* pQueueBottomBegin = pQueueBegin + sizeBottom;
-        const usize sizeBottomAppend = Num::Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
+        const usize sizeBottomAppend = Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
         Memory::CloneFromFirstElementResult<T> result = Memory::CloneConstructObjectsFromFirstElementNonOverlap(
             pQueueBottomBegin, slice.Data(), slice.Data() + sizeBottomAppend
         );
@@ -1995,7 +1995,7 @@ public:
         return result.isOk;
     }
 
-    ALT_NODISCARD bool AppendBackClone(const T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackClone(const T* pBegin, const usize size) noexcept {
 
         const Slice<const T> slice{ pBegin, size };
         return AppendBackClone(slice);
@@ -2019,7 +2019,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendFrontClone(StaticQueue<U, SIZE_>&& queue_) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontClone(StaticQueue<U, SIZE_>&& queue_) noexcept {
 
         StaticQueue<U, SIZE_>& queue = queue_;
         return AppendFrontClone(queue);
@@ -2030,7 +2030,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendFrontClone(const StaticQueue<U, SIZE_>& queue) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontClone(const StaticQueue<U, SIZE_>& queue) noexcept {
 
         T* pQueueBegin0 = GetQueueBegin();
         T* pMemoryBegin0 = GetMemoryBegin();
@@ -2056,10 +2056,10 @@ public:
         const usize sizeTop0Capacity = static_cast<usize>(pQueueBegin0 - pMemoryBegin0);
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
         const usize sizeTop1 = size1 - sizeBottom1;
 
-        const usize sizeTop = Num::Min(sizeTop0Capacity, sizeTop1);
+        const usize sizeTop = Min(sizeTop0Capacity, sizeTop1);
         T* pQueueBottomBegin = pQueueBegin0 - sizeTop;
         T* pQueueBottomEnd = pMemoryEnd0 - sizeTop1 + sizeTop;
 
@@ -2103,7 +2103,7 @@ public:
             }
         }
 
-        const usize sizeTopRemainder = Num::Min(sizeBottom1, sizeTop0Capacity - sizeTop);
+        const usize sizeTopRemainder = Min(sizeBottom1, sizeTop0Capacity - sizeTop);
         pQueueBottomBegin -= sizeTopRemainder;
         pQueueBottomEnd -= sizeBottom1 - sizeTopRemainder;
 
@@ -2161,7 +2161,7 @@ public:
             std::is_constructible_v<Slice<const InnerU>, U&&> &&
             std::is_same_v<InnerU, T> && (TypeTraits::is_only_clonable_to_from_v<T, const InnerU&> || std::is_constructible_v<T, const InnerU&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendFrontClone(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontClone(U&& rhs) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2170,19 +2170,18 @@ public:
         Slice<T> slice = rhs;
         ALT_ASSERT(!Memory::IsOverlap(pMemoryBegin, pMemoryEnd, slice.Data(), slice.DataEnd()));
 
-        const usize size = GetSize();
         const usize sizeToAppend = slice.GetSize();
 
         if (sizeToAppend == 0) {
             return true;
         }
 
-        if (sizeToAppend > GetCapacity() - size) {
+        if (sizeToAppend > GetCapacity() - GetSize()) {
             return false;
         }
 
         const usize sizeTopCapacity = static_cast<usize>(pQueueBegin - pMemoryBegin);
-        const usize size = Num::Min(sizeToAppend, sizeTopCapacity);
+        const usize size = Min(sizeToAppend, sizeTopCapacity);
 
         T* pQueueBeginTop = pQueueBegin - size;
         const Memory::CloneFromLastElementResult<T> resultTop = Memory::CloneConstructObjectsFromLastElementNonOverlap(
@@ -2219,7 +2218,7 @@ public:
         return resultBottom.isOk;
     }
 
-    ALT_NODISCARD bool AppendFrontClone(const T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontClone(const T* pBegin, const usize size) noexcept {
 
         const Slice<const T> slice{ pBegin, size };
         return AppendFrontClone(slice);
@@ -2241,7 +2240,7 @@ public:
      */
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool AppendBackMove(StaticQueue<U, SIZE_>&& queue_) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackMove(StaticQueue<U, SIZE_>&& queue_) noexcept {
 
         StaticQueue<U, SIZE_>& queue = queue_;
         return AppendBackMove(queue);
@@ -2249,7 +2248,7 @@ public:
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool AppendBackMove(StaticQueue<U, SIZE_>& queue) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackMove(StaticQueue<U, SIZE_>& queue) noexcept {
 
         T* pQueueBegin0 = GetQueueBegin();
         T* pMemoryBegin0 = GetMemoryBegin();
@@ -2273,12 +2272,12 @@ public:
         }
 
         const usize sizeBottom0Capacity = static_cast<usize>(pMemoryEnd0 - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(size0, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(size0, sizeBottom0Capacity);
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
 
-        const usize sizeBottom = Num::Min(sizeBottom1, sizeBottom0);
+        const usize sizeBottom = Min(sizeBottom1, sizeBottom0);
         T* pQueueBottomBegin = pQueueBegin0 + sizeBottom0;
         T* pQueueTopBegin = pMemoryBegin0 + size0 - sizeBottom0;
 
@@ -2294,7 +2293,7 @@ public:
         }
 
         const usize sizeTop1 = size1 - sizeBottom1;
-        const usize sizeBottomRemainder = Num::Min(sizeTop1, sizeBottom0 - sizeBottom);
+        const usize sizeBottomRemainder = Min(sizeTop1, sizeBottom0 - sizeBottom);
 
         {
             T* pBegin = pMemoryBegin1;
@@ -2314,7 +2313,7 @@ public:
             std::is_constructible_v<Slice<InnerU>, U&&> &&
             std::is_same_v<InnerU, T> && std::is_constructible_v<T, InnerU&&>
         >* = nullptr>
-    ALT_NODISCARD bool AppendBackMove(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackMove(U&& rhs) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2335,10 +2334,10 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
 
         T* pQueueBottomBegin = pQueueBegin + sizeBottom;
-        const usize sizeBottomAppend = Num::Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
+        const usize sizeBottomAppend = Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
         Memory::MoveConstructObjectsFromFirstElementNonOverlap(pQueueBottomBegin, slice.Data(), slice.Data() + sizeBottomAppend);
 
         T* pQueueTopBegin = pMemoryBegin + size - sizeBottom;
@@ -2349,7 +2348,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD bool AppendBackMove(T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool AppendBackMove(T* pBegin, const usize size) noexcept {
 
         Slice<T> slice{ pBegin, size };
         return AppendBackMove(slice);
@@ -2371,7 +2370,7 @@ public:
      */
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool AppendFrontMove(StaticQueue<U, SIZE_>&& queue_) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontMove(StaticQueue<U, SIZE_>&& queue_) noexcept {
 
         StaticQueue<U, SIZE_>& queue = queue_;
         return AppendFrontMove(queue);
@@ -2379,7 +2378,7 @@ public:
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool AppendFrontMove(StaticQueue<U, SIZE_>& queue) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontMove(StaticQueue<U, SIZE_>& queue) noexcept {
 
         T* pQueueBegin0 = GetQueueBegin();
         T* pMemoryBegin0 = GetMemoryBegin();
@@ -2405,10 +2404,10 @@ public:
         const usize sizeTop0Capacity = static_cast<usize>(pQueueBegin0 - pMemoryBegin0);
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
         const usize sizeTop1 = size1 - sizeBottom1;
 
-        const usize sizeTop = Num::Min(sizeTop0Capacity, sizeTop1);
+        const usize sizeTop = Min(sizeTop0Capacity, sizeTop1);
         T* pQueueBottomBegin = pQueueBegin0 - sizeTop;
         T* pQueueBottomEnd = pMemoryEnd0 - sizeTop1 + sizeTop;
 
@@ -2420,7 +2419,7 @@ public:
             Memory::MoveConstructObjectsFromFirstElementNonOverlap(pQueueBottomEnd, pMemoryBegin1, pBegin);
         }
 
-        const usize sizeTopRemainder = Num::Min(sizeBottom1, sizeTop0Capacity - sizeTop);
+        const usize sizeTopRemainder = Min(sizeBottom1, sizeTop0Capacity - sizeTop);
         pQueueBottomBegin -= sizeTopRemainder;
         pQueueBottomEnd -= sizeBottom1 - sizeTopRemainder;
 
@@ -2447,7 +2446,7 @@ public:
             std::is_constructible_v<Slice<InnerU>, U&&> &&
             std::is_same_v<InnerU, T> && std::is_constructible_v<T, InnerU&&>
         >* = nullptr>
-    ALT_NODISCARD bool AppendFrontMove(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontMove(U&& rhs) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2456,20 +2455,19 @@ public:
         Slice<T> slice = rhs;
         ALT_ASSERT(!Memory::IsOverlap(pMemoryBegin, pMemoryEnd, slice.Data(), slice.DataEnd()));
 
-        const usize size = GetSize();
         const usize sizeToAppend = slice.GetSize();
 
         if (sizeToAppend == 0) {
             return true;
         }
 
-        if (sizeToAppend > GetCapacity() - size) {
+        if (sizeToAppend > GetCapacity() - GetSize()) {
             return false;
         }
 
         const usize sizeTopCapacity = static_cast<usize>(pQueueBegin - pMemoryBegin);
 
-        const usize size = Num::Min(sizeToAppend, sizeTopCapacity);
+        const usize size = Min(sizeToAppend, sizeTopCapacity);
 
         T* pQueueBeginTop = pQueueBegin - size;
         Memory::MoveConstructObjectsFromFirstElementNonOverlap(pQueueBeginTop, slice.DataEnd() - size, slice.DataEnd());
@@ -2487,7 +2485,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD bool AppendFrontMove(T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool AppendFrontMove(T* pBegin, const usize size) noexcept {
 
         Slice<T> slice{ pBegin, size };
         return AppendFrontMove(slice);
@@ -2508,7 +2506,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_pushable_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool PushBack(U&& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool PushBack(U&& val) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2549,7 +2547,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<is_populated_v<ArgsT...> && std::conjunction_v<is_pushable_t<ArgsT&&>...>>* = nullptr>
-    ALT_NODISCARD bool PushBack(ArgsT&&... vals) noexcept {
+    ALT_NODISCARD constexpr bool PushBack(ArgsT&&... vals) noexcept {
         iferr_scope;
 
         const usize size = GetSize();
@@ -2581,7 +2579,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_pushable_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool PushFront(U&& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool PushFront(U&& val) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2625,7 +2623,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<is_populated_v<ArgsT...> && std::conjunction_v<is_pushable_t<ArgsT&&>...>>* = nullptr>
-    ALT_NODISCARD bool PushFront(ArgsT&&... vals) noexcept {
+    ALT_NODISCARD constexpr bool PushFront(ArgsT&&... vals) noexcept {
         iferr_scope;
 
         const usize size = GetSize();
@@ -2650,7 +2648,7 @@ public:
      * usize val = q.PopBack();
      * assert(val == 4);
      */
-    ALT_FORCE_INLINE T PopBack() noexcept {
+    ALT_FORCE_INLINE constexpr T PopBack() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         T* pQueueBegin = GetQueueBegin();
@@ -2677,7 +2675,7 @@ public:
      * usize val = q.PopFront();
      * assert(val == 0);
      */
-    ALT_FORCE_INLINE T PopFront() noexcept {
+    ALT_FORCE_INLINE constexpr T PopFront() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         T result = Memory::MoveDestructibleObject(*GetQueueBegin());
@@ -2716,10 +2714,10 @@ public:
             std::is_default_constructible_v<U> &&
             std::conjunction_v<std::is_convertible<ArgsT&&, usize>...>
         >* = nullptr>
-    ALT_NODISCARD bool ResizeBackAddition(ArgsT&&... sizeAdditions) noexcept {
+    ALT_NODISCARD constexpr bool ResizeBackAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return ResizeBack(size);
     }
@@ -2743,7 +2741,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD bool ResizeBack(const usize size) noexcept {
+    ALT_NODISCARD constexpr bool ResizeBack(const usize size) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2755,8 +2753,8 @@ public:
 
             const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(sizeQueue, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(sizeQueue, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = pQueueBegin + sizeBottom1;
             T* pQueueBottomEnd = pQueueBegin + sizeBottom0;
@@ -2775,8 +2773,8 @@ public:
             const usize sizeOld = sizeQueue;
             const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(sizeOld, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(sizeOld, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = pQueueBegin + sizeBottom0;
             T* pQueueBottomEnd = pQueueBegin + sizeBottom1;
@@ -2794,7 +2792,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>>* = nullptr>
-    ALT_NODISCARD bool ResizeBack(const usize size, const U& val) noexcept {
+    ALT_NODISCARD constexpr bool ResizeBack(const usize size, const U& val) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2806,8 +2804,8 @@ public:
 
             const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(sizeQueue, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(sizeQueue, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = pQueueBegin + sizeBottom1;
             T* pQueueBottomEnd = pQueueBegin + sizeBottom0;
@@ -2828,8 +2826,8 @@ public:
             const usize sizeOld = sizeQueue;
             const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(sizeOld, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(sizeOld, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = pQueueBegin + sizeBottom0;
             T* pQueueBottomEnd = pQueueBegin + sizeBottom1;
@@ -2880,10 +2878,10 @@ public:
             std::is_default_constructible_v<U> &&
             std::conjunction_v<std::is_convertible<ArgsT&&, usize>...>
         >* = nullptr>
-    ALT_NODISCARD bool ResizeFrontAddition(ArgsT&&... sizeAdditions) noexcept {
+    ALT_NODISCARD constexpr bool ResizeFrontAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return ResizeFront(size);
     }
@@ -2907,7 +2905,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD bool ResizeFront(const usize size) noexcept {
+    ALT_NODISCARD constexpr bool ResizeFront(const usize size) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2920,7 +2918,7 @@ public:
             const usize sizeToDestroy = sizeQueue - size;
 
             const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-            const usize sizeBottom = Num::Min(sizeToDestroy, sizeBottomCapacity);
+            const usize sizeBottom = Min(sizeToDestroy, sizeBottomCapacity);
 
             T* pQueueBeginBottom = pQueueBegin + sizeBottom;
             Memory::DestroyObjects(pQueueBegin, pQueueBeginBottom);
@@ -2943,7 +2941,7 @@ public:
             const usize sizeToConstruct = size - sizeQueue;
 
             const usize sizeTopCapacity = static_cast<usize>(pQueueBegin - pMemoryBegin);
-            const usize sizeTop = Num::Min(sizeToConstruct, sizeTopCapacity);
+            const usize sizeTop = Min(sizeToConstruct, sizeTopCapacity);
 
             T* pQueueBeginTop = pQueueBegin - sizeTop;
             Memory::FillConstructDefaultObjects(pQueueBeginTop, pQueueBegin);
@@ -2965,7 +2963,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>>* = nullptr>
-    ALT_NODISCARD bool ResizeFront(const usize size, const U& val) noexcept {
+    ALT_NODISCARD constexpr bool ResizeFront(const usize size, const U& val) noexcept {
 
         T* pQueueBegin = GetQueueBegin();
         T* pMemoryBegin = GetMemoryBegin();
@@ -2978,7 +2976,7 @@ public:
             const usize sizeToDestroy = sizeQueue - size;
 
             const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-            const usize sizeBottom = Num::Min(sizeToDestroy, sizeBottomCapacity);
+            const usize sizeBottom = Min(sizeToDestroy, sizeBottomCapacity);
 
             T* pQueueBeginBottom = pQueueBegin + sizeBottom;
             Memory::DestroyObjects(pQueueBegin, pQueueBeginBottom);
@@ -3002,7 +3000,7 @@ public:
             const usize sizeToConstruct = size - sizeQueue;
 
             const usize sizeTopCapacity = static_cast<usize>(pQueueBegin - pMemoryBegin);
-            const usize sizeTop = Num::Min(sizeToConstruct, sizeTopCapacity);
+            const usize sizeTop = Min(sizeToConstruct, sizeTopCapacity);
 
             T* pQueueBeginTop = pQueueBegin - sizeTop;
             Memory::CloneFromLastElementResult<T> result = Memory::FillCloneConstructObjectsFromLastElement(
@@ -3053,12 +3051,12 @@ public:
      * assert(first == 0);
      * assert(q[0] == 16);
      */
-    ALT_FORCE_INLINE T RemoveSwapLast(const usize i) noexcept {
+    ALT_FORCE_INLINE constexpr T RemoveSwapLast(const usize i) noexcept {
 
         return RemoveSwapBack(i);
     }
 
-    ALT_FORCE_INLINE T RemoveSwapBack(const usize i) noexcept {
+    ALT_FORCE_INLINE constexpr T RemoveSwapBack(const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         T* pQueueBegin = GetQueueBegin();
@@ -3097,12 +3095,12 @@ public:
      * assert(first == 16);
      * assert(q[0] == 0);
      */
-    ALT_FORCE_INLINE T RemoveSwapFirst(const usize i) noexcept {
+    ALT_FORCE_INLINE constexpr T RemoveSwapFirst(const usize i) noexcept {
 
         return RemoveSwapFront(i);
     }
 
-    ALT_FORCE_INLINE T RemoveSwapFront(const usize i) noexcept {
+    ALT_FORCE_INLINE constexpr T RemoveSwapFront(const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         T* pQueueBegin = GetQueueBegin();
@@ -3145,7 +3143,7 @@ public:
      * assert(first == 0);
      * assert(q[0] == 2);
      */
-    T Remove(const usize i) noexcept {
+    constexpr T Remove(const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         T* pQueueBegin = GetQueueBegin();
@@ -3157,7 +3155,7 @@ public:
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
 
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
         const usize sizeTop = size - sizeBottom;
 
         const bool isBottom = i < sizeBottomCapacity;
@@ -3186,7 +3184,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator==(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(U&& rhs_) const noexcept {
 
         const T* pQueueBegin = GetQueueBegin();
         const T* pMemoryBegin = GetMemoryBegin();
@@ -3201,7 +3199,7 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
 
         const bool isEQ = Algorithms::CompareEQ(pQueueBegin, pQueueBegin + sizeBottom, rhs.Data(), rhs.Data() + sizeBottom);
         if (!isEQ) {
@@ -3213,7 +3211,7 @@ public:
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD bool operator==(const StaticQueue<U, SIZE_>& queue) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(const StaticQueue<U, SIZE_>& queue) const noexcept {
 
         const T* pQueueBegin0 = GetQueueBegin();
         const T* pMemoryBegin0 = GetMemoryBegin();
@@ -3231,14 +3229,14 @@ public:
         }
 
         const usize sizeBottom0Capacity = static_cast<usize>(pMemoryEnd0 - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(size0, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(size0, sizeBottom0Capacity);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
         const usize sizeTop1 = size1 - sizeBottom1;
 
-        const usize sizeBottom = Num::Min(sizeBottom0, sizeBottom1);
+        const usize sizeBottom = Min(sizeBottom0, sizeBottom1);
 
         const T* pQueueBottom0Begin = pQueueBegin0 + sizeBottom;
         const T* pQueueBottom1Begin = pQueueBegin1 + sizeBottom;
@@ -3248,7 +3246,7 @@ public:
             return false;
         }
 
-        usize sizeBottomRemainder = Num::Min(sizeBottom0 - sizeBottom, sizeTop1);
+        usize sizeBottomRemainder = Min(sizeBottom0 - sizeBottom, sizeTop1);
         const T* pQueueTop1Begin = pMemoryBegin1 + sizeBottomRemainder;
 
         isEQ = Algorithms::CompareEQ(pQueueBottom0Begin, pQueueBottom0Begin + sizeBottomRemainder, pMemoryBegin1, pQueueTop1Begin);
@@ -3256,7 +3254,7 @@ public:
             return false;
         }
 
-        sizeBottomRemainder = Num::Min(sizeBottom1 - sizeBottom, sizeTop0);
+        sizeBottomRemainder = Min(sizeBottom1 - sizeBottom, sizeTop0);
         const T* pQueueTop0Begin = pMemoryBegin0 + sizeBottomRemainder;
 
         isEQ = Algorithms::CompareEQ(pMemoryBegin0, pQueueTop0Begin, pQueueBottom1Begin, pQueueBottom1Begin + sizeBottomRemainder);
@@ -3269,21 +3267,21 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator!=(U&& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(U&& rhs) const noexcept {
 
         return !(*this == rhs);
     }
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD bool operator!=(const StaticQueue<U, SIZE_>& queue) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(const StaticQueue<U, SIZE_>& queue) const noexcept {
 
         return !(*this == queue);
     }
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator<(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(U&& rhs_) const noexcept {
 
         const T* pQueueBegin = GetQueueBegin();
         const T* pMemoryBegin = GetMemoryBegin();
@@ -3298,7 +3296,7 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
 
         const ssize cmp = Algorithms::Compare(pQueueBegin, pQueueBegin + sizeBottom, rhs.Data(), rhs.Data() + sizeBottom);
 
@@ -3322,7 +3320,7 @@ public:
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD bool operator<(const StaticQueue<U, SIZE_>& queue) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(const StaticQueue<U, SIZE_>& queue) const noexcept {
 
         const T* pQueueBegin0 = GetQueueBegin();
         const T* pMemoryBegin0 = GetMemoryBegin();
@@ -3340,14 +3338,14 @@ public:
         }
 
         const usize sizeBottom0Capacity = static_cast<usize>(pMemoryEnd0 - pQueueBegin0);
-        const usize sizeBottom0 = Num::Min(size0, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(size0, sizeBottom0Capacity);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(pMemoryEnd1 - pQueueBegin1);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
         const usize sizeTop1 = size1 - sizeBottom1;
 
-        const usize sizeBottom = Num::Min(sizeBottom0, sizeBottom1);
+        const usize sizeBottom = Min(sizeBottom0, sizeBottom1);
 
         const T* pQueueBottom0Begin = pQueueBegin0 + sizeBottom;
         const T* pQueueBottom1Begin = pQueueBegin1 + sizeBottom;
@@ -3368,7 +3366,7 @@ public:
         }
         }
 
-        usize sizeBottomRemainder = Num::Min(sizeBottom0 - sizeBottom, sizeTop1);
+        usize sizeBottomRemainder = Min(sizeBottom0 - sizeBottom, sizeTop1);
         const T* pQueueTop1Begin = pMemoryBegin1 + sizeBottomRemainder;
 
         cmp = Algorithms::Compare(pQueueBottom0Begin, pQueueBottom0Begin + sizeBottomRemainder, pMemoryBegin1, pQueueTop1Begin);
@@ -3388,7 +3386,7 @@ public:
         }
         }
 
-        sizeBottomRemainder = Num::Min(sizeBottom1 - sizeBottom, sizeTop0);
+        sizeBottomRemainder = Min(sizeBottom1 - sizeBottom, sizeTop0);
         const T* pQueueTop0Begin = pMemoryBegin0 + sizeBottomRemainder;
 
         cmp = Algorithms::Compare(pMemoryBegin0, pQueueTop0Begin, pQueueBottom1Begin, pQueueBottom1Begin + sizeBottomRemainder);
@@ -3413,7 +3411,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator>(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(U&& rhs_) const noexcept {
 
         const T* pQueueBegin = GetQueueBegin();
         const T* pMemoryBegin = GetMemoryBegin();
@@ -3428,7 +3426,7 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(pMemoryEnd - pQueueBegin);
-        const usize sizeBottom = Num::Min(size, sizeBottomCapacity);
+        const usize sizeBottom = Min(size, sizeBottomCapacity);
 
         const ssize cmp = Algorithms::Compare(pQueueBegin, pQueueBegin + sizeBottom, rhs.Data(), rhs.Data() + sizeBottom);
 
@@ -3452,35 +3450,35 @@ public:
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD bool operator>(const StaticQueue<U, SIZE_>& queue) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(const StaticQueue<U, SIZE_>& queue) const noexcept {
 
         return queue < *this;
     }
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator<=(U&& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(U&& rhs) const noexcept {
 
         return !(*this > rhs);
     }
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD bool operator<=(const StaticQueue<U, SIZE_>& queue) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(const StaticQueue<U, SIZE_>& queue) const noexcept {
 
         return !(*this > queue);
     }
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator>=(U&& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(U&& rhs) const noexcept {
 
         return !(*this < rhs);
     }
 
     template <typename U = T, usize SIZE_ = SIZE,
         std::enable_if_t<std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD bool operator>=(const StaticQueue<U, SIZE_>& queue) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(const StaticQueue<U, SIZE_>& queue) const noexcept {
 
         return !(*this < queue);
     }
@@ -3489,87 +3487,87 @@ private:
 
     template <typename U = Usize,
         std::enable_if_t<std::is_same_v<U, usize>>* = nullptr>
-    ALT_FORCE_INLINE static bool IsCanOverflowSizeInc(const U x) noexcept {
+    ALT_FORCE_INLINE constexpr static bool IsCanOverflowSizeInc(const U x) noexcept {
 
-        return Num::IsOverflowCheckAdd(x, 1);
+        return IsOverflowCheckAdd(x, 1);
     }
 
     template <typename U = Usize,
         std::enable_if_t<!std::is_same_v<U, usize>>* = nullptr>
-    ALT_FORCE_INLINE static bool IsCanOverflowSizeInc(const U) noexcept {
+    ALT_FORCE_INLINE constexpr static bool IsCanOverflowSizeInc(const U) noexcept {
 
         return false;
     }
 
-    ALT_FORCE_INLINE T* GetMemoryBegin() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBegin() noexcept {
 
         return m_Storage.GetMemoryBegin();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBegin() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBegin() const noexcept {
 
         return m_Storage.GetMemoryBegin();
     }
 
-    ALT_FORCE_INLINE T* GetMemoryEnd() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryEnd() noexcept {
 
         return m_Storage.GetMemoryEnd();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryEnd() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryEnd() const noexcept {
 
         return m_Storage.GetMemoryEnd();
     }
 
-    ALT_FORCE_INLINE T* GetQueueBegin() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetQueueBegin() noexcept {
 
         return m_Storage.GetMemoryBegin() + m_Storage.GetOffset();
     }
 
-    ALT_FORCE_INLINE const T* GetQueueBegin() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetQueueBegin() const noexcept {
 
         return m_Storage.GetMemoryBegin() + m_Storage.GetOffset();
     }
 
-    ALT_FORCE_INLINE Usize& GetOffsetRef() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetOffsetRef() noexcept {
 
         return m_Storage.GetOffsetRef();
     }
 
-    ALT_FORCE_INLINE const Usize& GetOffsetRef() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetOffsetRef() const noexcept {
 
         return m_Storage.GetOffsetRef();
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRef() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRef() noexcept {
 
         return m_Storage.GetSizeRef();
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRef() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRef() const noexcept {
 
         return m_Storage.GetSizeRef();
     }
 
     template <typename HeadT, typename ...TailT>
-    ALT_FORCE_INLINE static bool PushBackVariadicImpl(StaticQueue& self, HeadT&& head, TailT&&... tail) noexcept {
+    ALT_FORCE_INLINE constexpr static bool PushBackVariadicImpl(StaticQueue& self, HeadT&& head, TailT&&... tail) noexcept {
         iferr_scope;
 
         self.PushBack(std::forward<HeadT>(head)) iferr_return false;
         return PushBackVariadicImpl(self, std::forward<TailT>(tail)...);
     }
 
-    ALT_FORCE_INLINE static bool PushBackVariadicImpl(StaticQueue&) noexcept { return true; }
+    ALT_FORCE_INLINE constexpr static bool PushBackVariadicImpl(StaticQueue&) noexcept { return true; }
 
     template <typename HeadT, typename ...TailT>
-    ALT_FORCE_INLINE static bool PushFrontVariadicImpl(StaticQueue& self, HeadT&& head, TailT&&... tail) noexcept {
+    ALT_FORCE_INLINE constexpr static bool PushFrontVariadicImpl(StaticQueue& self, HeadT&& head, TailT&&... tail) noexcept {
         iferr_scope;
 
         self.PushFront(std::forward<HeadT>(head)) iferr_return false;
         return PushFrontVariadicImpl(self, std::forward<TailT>(tail)...);
     }
 
-    ALT_FORCE_INLINE static bool PushFrontVariadicImpl(StaticQueue&) noexcept { return true; }
+    ALT_FORCE_INLINE constexpr static bool PushFrontVariadicImpl(StaticQueue&) noexcept { return true; }
 
 private:
 
@@ -3593,7 +3591,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<std::is_assignable_v<T&, U>>* = nullptr>
-    static bool ExtendMove(SelfT& self, IteratorInterface<U, IIteratorForwardTrait>& iter) noexcept {
+    constexpr static bool ExtendMove(SelfT& self, IteratorInterface<U, IIteratorForwardTrait>& iter) noexcept {
         iferr_scope;
 
         while (Optional<U> val = iter.Next()) {
@@ -3641,7 +3639,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -3673,7 +3671,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -3728,7 +3726,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const T& val : iter) {
 
@@ -3759,7 +3757,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const T& val : iter) {
 

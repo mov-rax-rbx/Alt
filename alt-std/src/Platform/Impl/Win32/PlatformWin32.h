@@ -1679,7 +1679,13 @@ public:
          */
         sizeInBytes += sizeInBytes == 0 ? 1 : 0;
 
-        if (!BitFlag::IsSetEnumFlags(bits, Platform::MemoryReallocateBytesBits::InPlace)) {
+        if (BitFlag::IsSetEnumFlags(bits, Platform::MemoryReallocateBytesBits::InPlace)) {
+
+            if (!pMemoryOld) {
+                return nullptr;
+            }
+        }
+        else {
 
             if (!pMemoryOld) {
                 return reinterpret_cast<u8*>((*pHeapAlloc)(m_MainMemoryHeap, static_cast<DWORD>(bits), static_cast<SIZE_T>(sizeInBytes)));
@@ -1898,7 +1904,7 @@ public:
     }
 
     ALT_NODISCARD ALT_FORCE_INLINE constexpr static usize SemaphoreGetMax() noexcept {
-        return static_cast<usize>(Num::Desc<s32>::Max());
+        return static_cast<usize>(Desc<s32>::Max());
     }
 
     ALT_NODISCARD ALT_FORCE_INLINE Result<Platform::Handle, Platform::Error> SemaphoreCreate(
@@ -2122,7 +2128,7 @@ public:
         while (size_ > 0) {
 
             DWORD sizeWrite = 0;
-            DWORD size = static_cast<DWORD>(Num::Min(size_, MAX_WCHAR_PER_CONSOLE_WRITE));
+            DWORD size = static_cast<DWORD>(Min(size_, MAX_WCHAR_PER_CONSOLE_WRITE));
 
             size_ -= static_cast<usize>(size);
 
@@ -2392,7 +2398,7 @@ public:
         const usize sizeInBytes
     ) const noexcept {
 
-        ALT_ASSERT(Num::IsPowerOf2(m_AllocationGranularity));
+        ALT_ASSERT(IsPowerOf2(m_AllocationGranularity));
 
         const u64 pageAlign = static_cast<u64>(m_AllocationGranularity);
 
@@ -2402,7 +2408,7 @@ public:
         // sizeInBytes - The number of bytes of a file mapping to map to the view. All bytes must be within the maximum size specified by CreateFileMapping. If this parameter is 0 (zero), the mapping extends from the specified offset to the end of the file mapping.
 
         usize sizeInBytesAdjusted;
-        if (Num::IsOverflowCheckAdd(sizeInBytes, offsetPtr, &sizeInBytesAdjusted)) {
+        if (IsOverflowCheckAdd(sizeInBytes, offsetPtr, &sizeInBytesAdjusted)) {
             sizeInBytesAdjusted = 0;
         }
 
@@ -2768,11 +2774,11 @@ public:
 
         constexpr usize ALIGNMENT = 8;
 
-        const usize sizeInBytesFileDirInfo = Num::Max(sizeInBytes, sizeof(FILE_DIRECTORY_INFORMATION) + 256 * sizeof(wchar_t));
+        const usize sizeInBytesFileDirInfo = Max(sizeInBytes, sizeof(FILE_DIRECTORY_INFORMATION) + 256 * sizeof(wchar_t));
 
         DirectoryEntrySizeResult result{};
         result.sizeInBytesFileDirInfo = sizeInBytesFileDirInfo;
-        result.sizeToAllocate = Num::CeilDiv(sizeInBytesFileDirInfo + (ALIGNMENT - 1), sizeof(u16));
+        result.sizeToAllocate = CeilDiv(sizeInBytesFileDirInfo + (ALIGNMENT - 1), sizeof(u16));
 
         return result;
     }
@@ -3568,7 +3574,7 @@ public:
         }
 
         const usize offset = stl_Utf16Buffer.GetSize();
-        const usize sizeToAllocate = Num::AddOverflowCheck(size, isDoubleNullTerm ? 2 : 1) iferr_return Nullopt;
+        const usize sizeToAllocate = AddOverflowCheck(size, isDoubleNullTerm ? 2 : 1) iferr_return Nullopt;
         stl_Utf16Buffer.ResizeAddition(sizeToAllocate) iferr_return Nullopt;
 
         const u8* pBytesEnd = pBytes;
@@ -3664,7 +3670,7 @@ public:
         }
 
         const usize offset = stl_Utf16Buffer.GetSize();
-        const usize sizeToAllocate = Num::AddOverflowCheck(size, isDoubleNullTerm ? 2 : 1) iferr_return Nullopt;
+        const usize sizeToAllocate = AddOverflowCheck(size, isDoubleNullTerm ? 2 : 1) iferr_return Nullopt;
         stl_Utf16Buffer.ResizeAddition(sizeToAllocate) iferr_return Nullopt;
 
         pBytes = filepath.CastToCompatibleChar().Data();
@@ -3829,7 +3835,7 @@ private:
         (*pGetNativeSystemInfo)(&info);
 
         m_PageSizeInBytes = static_cast<usize>(info.dwPageSize);
-        ALT_ASSERT(Num::IsPowerOf2(m_PageSizeInBytes)); // see. 'RoundUpToPageSize(...)/RoundUpToPageSizePreserveZero(...)'
+        ALT_ASSERT(IsPowerOf2(m_PageSizeInBytes)); // see. 'RoundUpToPageSize(...)/RoundUpToPageSizePreserveZero(...)'
 
         m_AllocationGranularity = static_cast<usize>(info.dwAllocationGranularity);
         m_NumOfLogicalProcessors = static_cast<usize>(info.dwNumberOfProcessors);
@@ -4017,7 +4023,7 @@ private:
     //		const usize sizeOld = instance.stl_Utf16Buffer.GetSize();
     //		defer{ instance.Utf16BufferDeferGuard(sizeOld); };
 
-    //		instance.stl_Utf16Buffer.ResizeAddition(Num::CeilDiv((usize)__Win32__MAXIMUM_REPARSE_DATA_BUFFER_SIZE, sizeof(u16))) iferr_return Platform::Error::MemoryAllocation();
+    //		instance.stl_Utf16Buffer.ResizeAddition(CeilDiv((usize)__Win32__MAXIMUM_REPARSE_DATA_BUFFER_SIZE, sizeof(u16))) iferr_return Platform::Error::MemoryAllocation();
 
     //		PREPARSE_DATA_BUFFER pReparseData = reinterpret_cast<PREPARSE_DATA_BUFFER>(instance.stl_Utf16Buffer.Data() + sizeOld);
 
@@ -4234,7 +4240,7 @@ private:
         ALT_ASSERT(reinterpret_cast<const void*>(pFilepath) >= stl_Utf16Buffer.Data() && reinterpret_cast<const void*>(pFilepath) <= stl_Utf16Buffer.DataEnd());
 
         const usize size = static_cast<usize>(stl_Utf16Buffer.DataEnd() - reinterpret_cast<const u16*>(pFilepath) - 1);
-        if (size > Num::Desc<USHORT>::Max()) {
+        if (size > Desc<USHORT>::Max()) {
             return Platform::Error::PlatformNtError(__Win32__STATUS_NAME_TOO_LONG);
         }
 
@@ -4455,7 +4461,7 @@ private:
         ALT_ASSERT(reinterpret_cast<const void*>(pFilepath) >= stl_Utf16Buffer.Data() && reinterpret_cast<const void*>(pFilepath) <= stl_Utf16Buffer.DataEnd());
 
         const usize size = static_cast<usize>(stl_Utf16Buffer.DataEnd() - reinterpret_cast<const u16*>(pFilepath) - 1);
-        if (size > Num::Desc<USHORT>::Max()) {
+        if (size > Desc<USHORT>::Max()) {
             return Platform::Error::PlatformNtError(__Win32__STATUS_NAME_TOO_LONG);
         }
 
@@ -5366,7 +5372,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrap(u32 sizeInBytes) 
     const u32 low = sizeInBytes & (pageSizePow2 - 1);
     const u32 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset);
+    return AddWrap(sizeInBytes, roundOffset);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrap(u32 sizeInBytes, const u32 wrap) noexcept {
@@ -5378,7 +5384,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrap(u32 sizeInBytes, 
     const u32 low = sizeInBytes & (pageSizePow2 - 1);
     const u32 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset, wrap);
+    return AddWrap(sizeInBytes, roundOffset, wrap);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrap(u64 sizeInBytes) noexcept {
@@ -5390,7 +5396,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrap(u64 sizeInBytes) 
     const u64 low = sizeInBytes & (pageSizePow2 - 1);
     const u64 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset);
+    return AddWrap(sizeInBytes, roundOffset);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrap(u64 sizeInBytes, const u64 wrap) noexcept {
@@ -5402,7 +5408,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrap(u64 sizeInBytes, 
     const u64 low = sizeInBytes & (pageSizePow2 - 1);
     const u64 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset, wrap);
+    return AddWrap(sizeInBytes, roundOffset, wrap);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrapPreserveZero(const u32 sizeInBytes) noexcept {
@@ -5412,7 +5418,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrapPreserveZero(const
     const u32 low = sizeInBytes & (pageSizePow2 - 1);
     const u32 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset);
+    return AddWrap(sizeInBytes, roundOffset);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrapPreserveZero(const u32 sizeInBytes, const u32 wrap) noexcept {
@@ -5422,7 +5428,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrapPreserveZero(const
     const u32 low = sizeInBytes & (pageSizePow2 - 1);
     const u32 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset, wrap);
+    return AddWrap(sizeInBytes, roundOffset, wrap);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrapPreserveZero(const u64 sizeInBytes) noexcept {
@@ -5432,7 +5438,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrapPreserveZero(const
     const u64 low = sizeInBytes & (pageSizePow2 - 1);
     const u64 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset);
+    return AddWrap(sizeInBytes, roundOffset);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrapPreserveZero(const u64 sizeInBytes, const u64 wrap) noexcept {
@@ -5442,7 +5448,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrapPreserveZero(const
     const u64 low = sizeInBytes & (pageSizePow2 - 1);
     const u64 roundOffset = (pageSizePow2 - low) & ~pageSizePow2;
 
-    return Num::AddWrap(sizeInBytes, roundOffset, wrap);
+    return AddWrap(sizeInBytes, roundOffset, wrap);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundDownToPageSize(const u32 sizeInBytes) noexcept {
@@ -5477,11 +5483,11 @@ ALT_FORCE_INLINE void MemoryDeallocateBytes(void* pMemory) noexcept {
 ALT_NODISCARD ALT_FORCE_INLINE u8* MemoryAlignedAllocateBytes(const usize sizeInBytes, const usize alignment, const MemoryAllocateBytesBits bits) noexcept {
     iferr_scope;
 
-    ALT_ASSERT(Num::IsPowerOf2(alignment) && alignment <= Num::Desc<u32>::Max());
+    ALT_ASSERT(IsPowerOf2(alignment) && alignment <= Desc<u32>::Max());
 
     constexpr static usize ALIGN_SIZE_OF = sizeof(u32);
 
-    const usize totalSizeInBytes = Num::AddOverflowCheck(sizeInBytes, alignment) iferr_return nullptr;
+    const usize totalSizeInBytes = AddOverflowCheck(sizeInBytes, ALIGN_SIZE_OF, alignment) iferr_return nullptr;
     u8* pMemory = _PlatformDetails::GetPlatformInstance().MemoryAllocateBytes(totalSizeInBytes, bits) iferr_return nullptr;
 
     pMemory += ALIGN_SIZE_OF;
@@ -6465,7 +6471,7 @@ public:
     }
 
     ALT_FORCE_INLINE usize GetSize() const noexcept {
-        return Num::Popcount(m_DriversBits);
+        return Popcount(m_DriversBits);
     }
 
     ALT_FORCE_INLINE bool IsEmpty() const noexcept {
@@ -6478,7 +6484,7 @@ public:
             return Nullopt;
         }
 
-        const usize idx = Num::Count0BitsRight(m_DriversBits);
+        const usize idx = Count0BitsRight(m_DriversBits);
         m_DriversBits &= ~(static_cast<usize>(1) << idx);
 
         return static_cast<char>(static_cast<u8>('A') + static_cast<u8>(idx));
@@ -6510,7 +6516,7 @@ public:
             return Nullopt;
         }
 
-        const usize idx = (Num::Desc<usize>::Bits() - 1) - Num::Count0BitsLeft(m_DriversBits);
+        const usize idx = (Desc<usize>::Bits() - 1) - Count0BitsLeft(m_DriversBits);
         m_DriversBits &= ~(static_cast<usize>(1) << idx);
 
         return static_cast<char>(static_cast<u8>('A') + static_cast<u8>(idx));
@@ -8265,7 +8271,7 @@ ALT_NODISCARD inline Result<String, Error> FilePathCanonical(const PathOffset pa
     return path;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Slice<const char> FilePathGetLogicalDriver(Slice<const char> filepath) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<const char> FilePathGetLogicalDriver(Slice<const char> filepath) noexcept {
 
     const Slice<const char> longPrefix = "\\\\?\\"_s;
     if (filepath.StartWith(longPrefix)) {
@@ -8281,36 +8287,36 @@ ALT_NODISCARD ALT_FORCE_INLINE Slice<const char> FilePathGetLogicalDriver(Slice<
     return ""_s;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Slice<const char> FilePathGetLogicalDriver(const char* pFilepath, const usize size) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<const char> FilePathGetLogicalDriver(const char* pFilepath, const usize size) noexcept {
 
     const Slice<const char> filepath{ pFilepath, size };
     return FilePathGetLogicalDriver(filepath);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Slice<const char> FilePathGetLogicalDriver(const char* pFilepath) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<const char> FilePathGetLogicalDriver(const char* pFilepath) noexcept {
 
     const Slice<const char> filepath{ pFilepath, String::CalculateCStrLen(pFilepath) };
     return FilePathGetLogicalDriver(filepath);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE bool FilePathIsAbsolute(const Slice<const char> filepath) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool FilePathIsAbsolute(const Slice<const char> filepath) noexcept {
 
     return FilePathGetLogicalDriver(filepath).IsPopulated();
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE bool FilePathIsAbsolute(const char* pFilepath, const usize size) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool FilePathIsAbsolute(const char* pFilepath, const usize size) noexcept {
 
     const Slice<const char> filepath{ pFilepath, size };
     return FilePathIsAbsolute(filepath);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE bool FilePathIsAbsolute(const char* pFilepath) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool FilePathIsAbsolute(const char* pFilepath) noexcept {
 
     const Slice<const char> filepath{ pFilepath, String::CalculateCStrLen(pFilepath) };
     return FilePathIsAbsolute(filepath);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePathSplitParentPathAndFilename(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr FilePathSplitParentPathAndFilenameResult FilePathSplitParentPathAndFilename(
     const Slice<const char> filepath, const FilePathSeparatorBits separatorBits = FilePathSeparatorBits::Any
 ) noexcept {
     iferr_scope;
@@ -8330,7 +8336,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePath
 
         usize offsetDir = 0;
         if (offset0 && offset1) {
-            offsetDir = Num::Max(*offset0, *offset1);
+            offsetDir = Max(*offset0, *offset1);
         }
         else if (offset0 && !offset1) {
             offsetDir = *offset0;
@@ -8339,7 +8345,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePath
             offsetDir = *offset1;
         }
 
-        result.parentPath = filepath.SubSlice(0, Num::Max(offsetDir, 1));
+        result.parentPath = filepath.SubSlice(0, Max(offsetDir, 1));
         result.filename = filepath.SubSlice(offsetDir + 1);
 
         return result;
@@ -8348,7 +8354,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePath
 
         const usize offsetDir = filepath.FindLast('/') iferr_return result;
 
-        result.parentPath = filepath.SubSlice(0, Num::Max(offsetDir, 1));
+        result.parentPath = filepath.SubSlice(0, Max(offsetDir, 1));
         result.filename = filepath.SubSlice(offsetDir + 1);
 
         return result;
@@ -8357,7 +8363,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePath
 
         const usize offsetDir = filepath.FindLast(ALT_DS) iferr_return result;
 
-        result.parentPath = filepath.SubSlice(0, Num::Max(offsetDir, 1));
+        result.parentPath = filepath.SubSlice(0, Max(offsetDir, 1));
         result.filename = filepath.SubSlice(offsetDir + 1);
 
         return result;
@@ -8366,7 +8372,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePath
     return result;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePathSplitParentPathAndFilename(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr FilePathSplitParentPathAndFilenameResult FilePathSplitParentPathAndFilename(
     const char* pFilepath, const usize size, const FilePathSeparatorBits separatorBits = FilePathSeparatorBits::Any
 ) noexcept {
 
@@ -8374,7 +8380,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePath
     return FilePathSplitParentPathAndFilename(filepath, separatorBits);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePathSplitParentPathAndFilename(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr FilePathSplitParentPathAndFilenameResult FilePathSplitParentPathAndFilename(
     const char* pFilepath, const FilePathSeparatorBits separatorBits = FilePathSeparatorBits::Any
 ) noexcept {
 
@@ -8382,7 +8388,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitParentPathAndFilenameResult FilePath
     return FilePathSplitParentPathAndFilename(filepath, separatorBits);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitResult FilePathSplit(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr FilePathSplitResult FilePathSplit(
     const Slice<const char> filepath, const FilePathSeparatorBits separatorBits = FilePathSeparatorBits::Any
 ) noexcept {
     iferr_scope;
@@ -8426,7 +8432,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitResult FilePathSplit(
     return result;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitResult FilePathSplit(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr FilePathSplitResult FilePathSplit(
     const char* pFilepath, const usize size, const FilePathSeparatorBits separatorBits = FilePathSeparatorBits::Any
 ) noexcept {
 
@@ -8434,7 +8440,7 @@ ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitResult FilePathSplit(
     return FilePathSplit(filepath, separatorBits);
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE FilePathSplitResult FilePathSplit(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr FilePathSplitResult FilePathSplit(
     const char* pFilepath, const FilePathSeparatorBits separatorBits = FilePathSeparatorBits::Any
 ) noexcept {
 
@@ -8729,7 +8735,7 @@ public:
     ALT_NODISCARD static Result<void, String> Create(DirectoryWatcher& watcherOut, const Desc& opt) noexcept {
         iferr_scope;
 
-        watcherOut.m_Buffer.Resize(opt.bufferSize, 0) iferr_return "Failed to allocate memory"_salloc;
+        watcherOut.m_Buffer.Resize(opt.bufferSize, static_cast<_PlatformDetails::BYTE>(0)) iferr_return "Failed to allocate memory"_salloc;
         return watcherOut.Initialize(opt);
     }
 
@@ -9123,7 +9129,7 @@ public:
         /*
          * https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
          * 
-         * <N> - number <= Num::Desc<s16>::Max()
+         * <N> - number <= Desc<s16>::Max()
          * 
          * save - save actual state (cursor, colors, ...)
          * load - load previouse state (cursor, colors, ...)

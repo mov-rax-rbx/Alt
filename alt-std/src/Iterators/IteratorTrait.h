@@ -12,7 +12,7 @@ namespace Alt {
 class IIteratorBase : public _IterDetails::TraitMarker {
 public:
 
-    /*
+    /**
      * Interface
      */
     //virtual usize GetSizeHint() const noexcept = 0;
@@ -24,7 +24,7 @@ template <typename T>
 class IIteratorForwardTrait : public _IterDetails::TraitMarker {
 public:
 
-    /*
+    /**
      * Interface
      */
     //virtual Optional<T> Next() noexcept = 0;
@@ -37,7 +37,7 @@ template <typename T>
 class IIteratorBackwardTrait : public _IterDetails::TraitMarker {
 public:
 
-    /*
+    /**
      * Interface
      */
     //virtual Optional<T> NextBack() noexcept = 0;
@@ -50,7 +50,7 @@ template <typename T>
 class IIteratorExactSizeTrait : public _IterDetails::TraitMarker {
 public:
 
-    /*
+    /**
      * Interface
      */
     //virtual usize GetSize() const noexcept = 0;

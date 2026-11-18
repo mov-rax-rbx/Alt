@@ -42,8 +42,8 @@ template <
     typename T,
     usize MIN_NUM_ELEMENTS = 16,
     usize MAX_NUM_ELEMENTS_TO_RESERVE = ALT_PLATFORM_32BIT_BOOL
-        ? Memory::GB(2) / Num::Max(sizeof(T), sizeof(uptr))
-        : Memory::TB(1) / Num::Max(sizeof(T), sizeof(uptr))
+        ? Memory::GB(2) / Max(sizeof(T), sizeof(uptr))
+        : Memory::TB(1) / Max(sizeof(T), sizeof(uptr))
 >
 class PoolAllocatorVirtual;
 
@@ -313,22 +313,22 @@ public:
         const usize minSizeInBytes = GetMinElementsSizeInBytes();
         const usize maxSizeInBytesReserved = GetMaxElementsSizeInBytesReserved();
 
-        const usize sizeInBytesPerfectForNextGrow = Num::MulWrap(m_TotalSizeInBytes, GetGrowFactor());
-        const usize sizeInBytesPerfectGrow = Num::Clamp(sizeInBytesPerfectForNextGrow, minSizeInBytes, maxSizeInBytesReserved);
+        const usize sizeInBytesPerfectForNextGrow = MulWrap(m_TotalSizeInBytes, GetGrowFactor());
+        const usize sizeInBytesPerfectGrow = Clamp(sizeInBytesPerfectForNextGrow, minSizeInBytes, maxSizeInBytesReserved);
 
         const bool isFirstAllocation = m_TotalSizeInBytes == 0;
         const usize sizeInBytesOnDemand = elementSizeOf + (isFirstAllocation ? elementAlignOf - 1 : 0) - m_AvailableSizeInBytes;
 
         usize totalSizeInBytes;
-        if (Num::IsOverflowCheckAdd(m_TotalSizeInBytes, sizeInBytesOnDemand, &totalSizeInBytes)) {
+        if (IsOverflowCheckAdd(m_TotalSizeInBytes, sizeInBytesOnDemand, &totalSizeInBytes)) {
             return nullptr;
         }
 
-        const usize totalSizeInBytesPerfectGrow = Num::AddWrap(m_TotalSizeInBytes, sizeInBytesPerfectGrow, maxSizeInBytesReserved);
+        const usize totalSizeInBytesPerfectGrow = AddWrap(m_TotalSizeInBytes, sizeInBytesPerfectGrow, maxSizeInBytesReserved);
 
         totalSizeInBytes = totalSizeInBytesPerfectGrow >= totalSizeInBytes
             ? totalSizeInBytesPerfectGrow
-            : Num::Max(Num::Min(Memory::RoundUpToPageSizeWrap(totalSizeInBytes), maxSizeInBytesReserved), totalSizeInBytes);
+            : Max(Min(Memory::RoundUpToPageSizeWrap(totalSizeInBytes), maxSizeInBytesReserved), totalSizeInBytes);
 
         return AllocateVirtualMemory(totalSizeInBytes);
     }
@@ -526,8 +526,8 @@ public:
 
     ALT_FORCE_INLINE PoolAllocatorVirtual() noexcept {
 
-        const usize minElementsSizeInBytes = Num::MulWrap(MIN_NUM_ELEMENTS, GetElementSizeOf());
-        const usize maxElementsSizeInBytes = Num::MulWrap(MAX_NUM_ELEMENTS_TO_RESERVE, GetElementSizeOf());
+        const usize minElementsSizeInBytes = MulWrap(MIN_NUM_ELEMENTS, GetElementSizeOf());
+        const usize maxElementsSizeInBytes = MulWrap(MAX_NUM_ELEMENTS_TO_RESERVE, GetElementSizeOf());
 
         m_MinElementsSizeInBytes = Memory::RoundUpToPageSizeWrapPreserveZero(minElementsSizeInBytes);
         m_MaxElementsSizeInBytesReserved = Memory::RoundUpToPageSizeWrap(maxElementsSizeInBytes);
@@ -553,11 +553,11 @@ public:
     }
 
     ALT_FORCE_INLINE usize GetElementSizeOf() const noexcept {
-        return Num::Max(sizeof(T), alignof(T), sizeof(uptr));
+        return Max(sizeof(T), alignof(T), sizeof(uptr));
     }
 
     ALT_FORCE_INLINE usize GetElementAlignOf() const noexcept {
-        return Num::Max(alignof(T), alignof(uptr));
+        return Max(alignof(T), alignof(uptr));
     }
 
     ALT_FORCE_INLINE usize GetMinElementsSizeInBytes() const noexcept {
@@ -629,25 +629,25 @@ public:
             desc.elementAlignOf = alignof(T);
 
             desc.maxNumElementsReserved = ALT_PLATFORM_32BIT_BOOL
-                ? Memory::GB(2) / Num::Max(sizeof(T), sizeof(uptr))
-                : Memory::TB(1) / Num::Max(sizeof(T), sizeof(uptr));
+                ? Memory::GB(2) / Max(sizeof(T), sizeof(uptr))
+                : Memory::TB(1) / Max(sizeof(T), sizeof(uptr));
 
             return desc;
         }
     };
 
     ALT_NODISCARD static Optional<PoolAllocatorVirtualDynamic> CreateCapacity(const MemoryDesc& desc_) noexcept {
-        ALT_ASSERT(Num::IsPowerOf2(desc_.elementAlignOf));
+        ALT_ASSERT(IsPowerOf2(desc_.elementAlignOf));
 
         MemoryDesc_ desc{};
-        desc.elementAlignOf = Num::Max(desc_.elementAlignOf, alignof(uptr));
-        desc.elementSizeOf = Num::Max(desc_.elementSizeOf, desc_.elementAlignOf, sizeof(uptr));
+        desc.elementAlignOf = Max(desc_.elementAlignOf, alignof(uptr));
+        desc.elementSizeOf = Max(desc_.elementSizeOf, desc_.elementAlignOf, sizeof(uptr));
 
-        const usize minNumElements = Num::Min(desc_.minNumElements, desc_.maxNumElementsReserved);
-        const usize maxNumElements = Num::Max(desc_.minNumElements, desc_.maxNumElementsReserved);
+        const usize minNumElements = Min(desc_.minNumElements, desc_.maxNumElementsReserved);
+        const usize maxNumElements = Max(desc_.minNumElements, desc_.maxNumElementsReserved);
 
-        const usize minElementsSizeInBytes = Num::MulWrap(minNumElements, desc.elementSizeOf);
-        const usize maxElementsSizeInBytes = Num::MulWrap(maxNumElements, desc.elementSizeOf);
+        const usize minElementsSizeInBytes = MulWrap(minNumElements, desc.elementSizeOf);
+        const usize maxElementsSizeInBytes = MulWrap(maxNumElements, desc.elementSizeOf);
 
         desc.minElementsSizeInBytes = Memory::RoundUpToPageSizeWrapPreserveZero(minElementsSizeInBytes);
         desc.maxElementsSizeInBytesReserved = Memory::RoundUpToPageSizeWrap(maxElementsSizeInBytes);

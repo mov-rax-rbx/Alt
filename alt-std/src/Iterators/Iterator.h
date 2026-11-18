@@ -11,7 +11,7 @@
 
 #include "STD/STDIterator.h"
 
-/*
+/**
  * class Iterator final : public Alt::Iterator<Iterator, T*, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait> {
  * public:
  * 
@@ -41,7 +41,7 @@
  *     // IIteratorForwardTrait
  *     usize Advance(const usize advance_) noexcept {
  * 
- *         const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+ *         const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
  *         m_pBegin += advance;
  * 
  *         return advance;
@@ -63,7 +63,7 @@
  *     // IIteratorBackwardTrait
  *     usize AdvanceBack(const usize advance_) noexcept {
  * 
- *         const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+ *         const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
  *         m_pEnd -= advance;
  * 
  *         return advance;
@@ -110,17 +110,17 @@ public:
     /*
      * IteratorBase
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return Self().GetSizeHint();
     }
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -128,7 +128,7 @@ private:
 template <typename SelfT, typename T>
 class Iterator<SelfT, T>;
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter{
  *     []() {
  *         static usize cnt = 0;
@@ -157,19 +157,19 @@ public:
     using Type = typename Super::Type;
     using Traits = typename Super::Traits;
 
-    ALT_FORCE_INLINE IteratorForwardFromFunc(FuncT func) noexcept
+    ALT_FORCE_INLINE constexpr IteratorForwardFromFunc(FuncT func) noexcept
         : Super(func)
     {}
 
     /*
     * IteratorBase
     */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return 0;
     }
 };
 
-/*
+/**
  * Alt::IteratorBackwardFromFunc iter{
  *     []() {
  *         static usize cnt = 4;
@@ -199,14 +199,14 @@ public:
     using Type = typename Super::Type;
     using Traits = typename Super::Traits;
 
-    ALT_FORCE_INLINE IteratorBackwardFromFunc(FuncT func) noexcept
+    ALT_FORCE_INLINE constexpr IteratorBackwardFromFunc(FuncT func) noexcept
         : Super(func)
     {}
 
     /*
      * IteratorBase
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return 0;
     }
 };
@@ -223,15 +223,15 @@ public:
     using Traits = _IterDetails::type_list<IIteratorForwardTrait<Type>>;
 
     template <typename U = FuncT>
-    ALT_FORCE_INLINE IteratorForwardFromFuncImpl(U&& func) noexcept
+    ALT_FORCE_INLINE constexpr IteratorForwardFromFuncImpl(U&& func) noexcept
         : m_Func(std::forward<U>(func))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Type> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Type> Next() noexcept {
         return (m_Func)();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -262,15 +262,15 @@ public:
     using Traits = _IterDetails::type_list<IIteratorForwardTrait<Type>>;
 
     template <typename U = FuncT>
-    ALT_FORCE_INLINE IteratorForwardFromFuncImpl(U&& func) noexcept
+    ALT_FORCE_INLINE constexpr IteratorForwardFromFuncImpl(U&& func) noexcept
         : m_Func(std::forward<U>(func))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Type> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Type> Next() noexcept {
         return MakeOptional((m_Func)());
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -301,15 +301,15 @@ public:
     using Traits = _IterDetails::type_list<IIteratorBackwardTrait<Type>>;
 
     template <typename U = FuncT>
-    ALT_FORCE_INLINE IteratorBackwardFromFuncImpl(U&& func) noexcept
+    ALT_FORCE_INLINE constexpr IteratorBackwardFromFuncImpl(U&& func) noexcept
         : m_Func(std::forward<U>(func))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Type> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Type> NextBack() noexcept {
         return (m_Func)();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -340,15 +340,15 @@ public:
     using Traits = _IterDetails::type_list<IIteratorBackwardTrait<Type>>;
 
     template <typename U = FuncT>
-    ALT_FORCE_INLINE IteratorBackwardFromFuncImpl(U&& func) noexcept
+    ALT_FORCE_INLINE constexpr IteratorBackwardFromFuncImpl(U&& func) noexcept
         : m_Func(std::forward<U>(func))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Type> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Type> NextBack() noexcept {
         return MakeOptional((m_Func)());
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {

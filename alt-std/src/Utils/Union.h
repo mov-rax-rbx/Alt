@@ -61,20 +61,39 @@ using clean_t = TypeTraits::clean_t<T>;
 template <usize SIZE>
 using count_to_type_t = TypeTraits::count_to_type_t<SIZE>;
 
-template <usize ACC, typename T, typename ...TailT>
-struct find_type_index {
+template <usize ACC, typename T, typename ...ArgsT>
+struct find_index_by_type {
 
     constexpr static usize value = ACC;
 };
 
 template <usize ACC, typename T, typename FirstT, typename ...TailT>
-struct find_type_index<ACC, T, FirstT, TailT...>
+struct find_index_by_type<ACC, T, FirstT, TailT...>
     : std::conditional_t<
         std::is_same_v<clean_t<T>, clean_t<FirstT>>,
         std::integral_constant<usize, ACC>,
-        find_type_index<ACC + 1, T, TailT...>
+        find_index_by_type<ACC + 1, T, TailT...>
     >
 {};
+
+template <usize ACC, usize IDX, typename ...ArgsT>
+struct find_type_by_index {
+
+    using Type = Noval_t;
+};
+
+template <usize ACC, usize IDX, typename FirstT, typename ...TailT>
+struct find_type_by_index<ACC, IDX, FirstT, TailT...> {
+
+    using Type = std::conditional_t<
+        ACC == IDX,
+        FirstT,
+        typename find_type_by_index<ACC + 1, IDX, TailT...>::Type
+    >;
+};
+
+template <usize ACC, usize IDX, typename ...ArgsT>
+using find_type_by_index_t = typename find_type_by_index<ACC, IDX, ArgsT...>::Type;
 
 template <typename T>
 using unwrap_void_to_noval_or_just_type_t = std::conditional_t<
@@ -109,7 +128,7 @@ struct UnionOperator;
 template <typename Usize, typename FirstT, typename ...TailT>
 struct UnionOperator<Usize, FirstT, TailT...> {
 
-    constexpr static Usize INVALID_TYPE_IDX = find_type_index<0, Noval_t, FirstT, TailT...>::value;
+    constexpr static Usize INVALID_TYPE_IDX = find_index_by_type<0, Noval_t, FirstT, TailT...>::value;
 
     template <typename T>
     using is_same_as_first = std::is_same<clean_t<T>, clean_t<FirstT>>;
@@ -124,54 +143,34 @@ struct UnionOperator<Usize, FirstT, TailT...> {
     constexpr static bool is_exist_v = is_exist<T>::value;
 
     template <Usize ACC, typename T>
-    constexpr static Usize FindTypeIndex() noexcept {
-        return _UnionDetails::find_type_index<0, T, FirstT, TailT...>::value;
+    ALT_FORCE_INLINE constexpr static Usize FindIndexByType() noexcept {
+        return _UnionDetails::find_index_by_type<0, T, FirstT, TailT...>::value;
     }
 
-    template <typename T, typename SelfT,
-        std::enable_if_t<is_same_as_first_v<T>>* = nullptr>
-    constexpr static const unwrap_reference_to_alt_ref_or_just_type_t<T>& Get(const SelfT& self) noexcept {
+    template <typename T, typename SelfT>
+    ALT_FORCE_INLINE constexpr static unwrap_reference_to_alt_ref_or_just_type_t<T>& Get(SelfT& self) noexcept {
         return self.m_Val.template GetVal<unwrap_reference_to_alt_ref_or_just_type_t<T>>();
     }
 
-    template <typename T, typename SelfT,
-        std::enable_if_t<!is_same_as_first_v<T>>* = nullptr>
-    constexpr static const unwrap_reference_to_alt_ref_or_just_type_t<T>& Get(const SelfT& self) noexcept {
-        return UnionOperator<Usize, TailT...>::template Get<T>(self);
-    }
-
-    template <typename T, typename SelfT,
-        std::enable_if_t<is_same_as_first_v<T>>* = nullptr>
-    constexpr static unwrap_reference_to_alt_ref_or_just_type_t<T>& Get(SelfT& self) noexcept {
+    template <typename T, typename SelfT>
+    ALT_FORCE_INLINE constexpr static const unwrap_reference_to_alt_ref_or_just_type_t<T>& Get(const SelfT& self) noexcept {
         return self.m_Val.template GetVal<unwrap_reference_to_alt_ref_or_just_type_t<T>>();
     }
 
-    template <typename T, typename SelfT,
-        std::enable_if_t<!is_same_as_first_v<T>>* = nullptr>
-    constexpr static unwrap_reference_to_alt_ref_or_just_type_t<T>& Get(SelfT& self) noexcept {
-        return UnionOperator<Usize, TailT...>::template Get<T>(self);
-    }
-
-    template <typename T, typename SelfT,
-        std::enable_if_t<is_same_as_first_v<T>>* = nullptr>
-    constexpr static unwrap_reference_to_alt_ref_or_just_type_t<T>&& Get(SelfT&& self) noexcept {
+    template <typename T, typename SelfT>
+    ALT_FORCE_INLINE constexpr static unwrap_reference_to_alt_ref_or_just_type_t<T>&& Get(SelfT&& self) noexcept {
         return std::move(self.m_Val.template GetVal<unwrap_reference_to_alt_ref_or_just_type_t<T>>());
     }
 
-    template <typename T, typename SelfT,
-        std::enable_if_t<!is_same_as_first_v<T>>* = nullptr>
-    constexpr static unwrap_reference_to_alt_ref_or_just_type_t<T>&& Get(SelfT&& self) noexcept {
-        return UnionOperator<Usize, TailT...>::template Get<T>(std::move(self));
-    }
-
     template <Usize ACC = 0, typename SelfT, typename ...ArgsT>
-    static void ConstructCopy(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
+    ALT_FORCE_INLINE constexpr static void ConstructCopy(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
 
-        using T = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using MineT = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using YourT = unwrap_reference_to_alt_ref_or_just_type_t<find_type_by_index_t<0, ACC, ArgsT...>>;
 
         if (ACC == typeIdx) {
 
-            lhs.m_Val.template Construct<T>(rhs.m_Val.template GetVal<T>());
+            lhs.m_Val.template Construct<MineT>(rhs.m_Val.template GetVal<YourT>());
             return;
         }
 
@@ -179,13 +178,14 @@ struct UnionOperator<Usize, FirstT, TailT...> {
     }
 
     template <Usize ACC = 0, typename SelfT, typename ...ArgsT>
-    static void AssignCopy(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
+    ALT_FORCE_INLINE constexpr static void AssignCopy(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
 
-        using T = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using MineT = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using YourT = unwrap_reference_to_alt_ref_or_just_type_t<find_type_by_index_t<0, ACC, ArgsT...>>;
 
         if (ACC == typeIdx) {
 
-            lhs.m_Val.template Assign<T>(rhs.m_Val.template GetVal<T>());
+            lhs.m_Val.template Assign<MineT>(rhs.m_Val.template GetVal<YourT>());
             return;
         }
 
@@ -193,13 +193,14 @@ struct UnionOperator<Usize, FirstT, TailT...> {
     }
 
     template <Usize ACC = 0, typename SelfT, typename ...ArgsT>
-    static void ConstructMove(SelfT& lhs, UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
+    ALT_FORCE_INLINE constexpr static void ConstructMove(SelfT& lhs, UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
 
-        using T = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using MineT = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using YourT = unwrap_reference_to_alt_ref_or_just_type_t<find_type_by_index_t<0, ACC, ArgsT...>>;
 
         if (ACC == typeIdx) {
 
-            lhs.m_Val.template Construct<T>(std::move(rhs.m_Val.template GetVal<T>()));
+            lhs.m_Val.template Construct<MineT>(std::move(rhs.m_Val.template GetVal<YourT>()));
             return;
         }
 
@@ -207,13 +208,14 @@ struct UnionOperator<Usize, FirstT, TailT...> {
     }
 
     template <Usize ACC = 0, typename SelfT, typename ...ArgsT>
-    static void AssignMove(SelfT& lhs, UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
+    ALT_FORCE_INLINE constexpr static void AssignMove(SelfT& lhs, UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
 
-        using T = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using MineT = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using YourT = unwrap_reference_to_alt_ref_or_just_type_t<find_type_by_index_t<0, ACC, ArgsT...>>;
 
         if (ACC == typeIdx) {
 
-            lhs.m_Val.template Assign<T>(std::move(rhs.m_Val.template GetVal<T>()));
+            lhs.m_Val.template Assign<MineT>(std::move(rhs.m_Val.template GetVal<YourT>()));
             return;
         }
 
@@ -221,7 +223,7 @@ struct UnionOperator<Usize, FirstT, TailT...> {
     }
 
     template <Usize ACC = 0, typename SelfT>
-    static void Destroy(SelfT& self, const Usize typeIdx) noexcept {
+    ALT_FORCE_INLINE constexpr static void Destroy(SelfT& self, const Usize typeIdx) noexcept {
 
         using T = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
 
@@ -235,26 +237,28 @@ struct UnionOperator<Usize, FirstT, TailT...> {
     }
 
     template <Usize ACC = 0, typename SelfT, typename ...ArgsT>
-    ALT_NODISCARD static bool AssignCloneFrom(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool AssignCloneFrom(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
 
-        using T = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using MineT = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using YourT = unwrap_reference_to_alt_ref_or_just_type_t<find_type_by_index_t<0, ACC, ArgsT...>>;
 
         if (ACC == typeIdx) {
 
-            return lhs.m_Val.template AssignCloneOrMove<T>(rhs.m_Val.template GetVal<T>());
+            return lhs.m_Val.template AssignCloneOrMove<MineT>(rhs.m_Val.template GetVal<YourT>());
         }
 
         return UnionOperator<Usize, TailT...>::template AssignCloneFrom<ACC + 1>(lhs, rhs, typeIdx);
     }
 
     template <Usize ACC = 0, typename SelfT, typename ...ArgsT>
-    ALT_NODISCARD static bool ConstructCloneFrom(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool ConstructCloneFrom(SelfT& lhs, const UnionCore<ArgsT...>& rhs, const Usize typeIdx) noexcept {
 
-        using T = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using MineT = unwrap_reference_to_alt_ref_or_just_type_t<FirstT>;
+        using YourT = unwrap_reference_to_alt_ref_or_just_type_t<find_type_by_index_t<0, ACC, ArgsT...>>;
 
         if (ACC == typeIdx) {
 
-            return lhs.m_Val.template ConstructCloneOrMove<T>(rhs.m_Val.template GetVal<T>());
+            return lhs.m_Val.template ConstructCloneOrMove<MineT>(rhs.m_Val.template GetVal<YourT>());
         }
 
         return UnionOperator<Usize, TailT...>::template ConstructCloneFrom<ACC + 1>(lhs, rhs, typeIdx);
@@ -267,42 +271,39 @@ struct UnionOperator<Usize> {
     constexpr static Usize INVALID_TYPE_IDX = 0;
 
     template <typename T>
-    constexpr static bool is_same_as_first_v = false;
-
-    template <typename T>
     using is_exist = std::false_type;
 
     template <typename T>
     constexpr static bool is_exist_v = is_exist<T>::value;
 
     template <Usize ACC, typename SelfT, typename ...ArgsT>
-    static void ConstructCopy(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept
+    ALT_FORCE_INLINE constexpr static void ConstructCopy(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept
     {}
 
     template <Usize ACC, typename SelfT, typename ...ArgsT>
-    static void AssignCopy(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept
+    ALT_FORCE_INLINE constexpr static void AssignCopy(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept
     {}
 
     template <Usize ACC, typename SelfT, typename ...ArgsT>
-    static void ConstructMove(SelfT&, UnionCore<ArgsT...>&, const Usize) noexcept
+    ALT_FORCE_INLINE constexpr static void ConstructMove(SelfT&, UnionCore<ArgsT...>&, const Usize) noexcept
     {}
 
     template <Usize ACC, typename SelfT, typename ...ArgsT>
-    static void AssignMove(SelfT&, UnionCore<ArgsT...>&, const Usize) noexcept
+    ALT_FORCE_INLINE constexpr static void AssignMove(SelfT&, UnionCore<ArgsT...>&, const Usize) noexcept
     {}
 
     template <Usize ACC = 0, typename SelfT>
-    static void Destroy(SelfT&, const Usize) noexcept
+    ALT_FORCE_INLINE constexpr static void Destroy(SelfT&, const Usize) noexcept
     {}
 
     template <Usize ACC, typename SelfT, typename ...ArgsT>
-    ALT_NODISCARD static bool AssignCloneFrom(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool AssignCloneFrom(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept {
 
         return true;
     }
 
     template <Usize ACC, typename SelfT, typename ...ArgsT>
-    ALT_NODISCARD static bool ConstructCloneFrom(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool ConstructCloneFrom(SelfT&, const UnionCore<ArgsT...>&, const Usize) noexcept {
 
         return true;
     }
@@ -315,13 +316,13 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageDestruct<_MaybeUninitDetails::Rule5Trait::Deleted, SelfT, ArgsT...>
     : UnionCore<ArgsT...>
 {
-    UnionStorageDestruct() noexcept = default;
+    constexpr UnionStorageDestruct() noexcept = default;
 
-    UnionStorageDestruct(const UnionStorageDestruct&) noexcept = default;
-    UnionStorageDestruct& operator=(const UnionStorageDestruct&) noexcept = default;
+    constexpr UnionStorageDestruct(const UnionStorageDestruct&) noexcept = default;
+    constexpr UnionStorageDestruct& operator=(const UnionStorageDestruct&) noexcept = default;
 
-    UnionStorageDestruct(UnionStorageDestruct&&) noexcept = default;
-    UnionStorageDestruct& operator=(UnionStorageDestruct&&) noexcept = default;
+    constexpr UnionStorageDestruct(UnionStorageDestruct&&) noexcept = default;
+    constexpr UnionStorageDestruct& operator=(UnionStorageDestruct&&) noexcept = default;
 
     ~UnionStorageDestruct() noexcept = delete;
 };
@@ -330,13 +331,13 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageDestruct<_MaybeUninitDetails::Rule5Trait::Trivial, SelfT, ArgsT...>
     : UnionCore<ArgsT...> 
 {
-    UnionStorageDestruct() noexcept = default;
+    constexpr UnionStorageDestruct() noexcept = default;
 
-    UnionStorageDestruct(const UnionStorageDestruct&) noexcept = default;
-    UnionStorageDestruct& operator=(const UnionStorageDestruct&) noexcept = default;
+    constexpr UnionStorageDestruct(const UnionStorageDestruct&) noexcept = default;
+    constexpr UnionStorageDestruct& operator=(const UnionStorageDestruct&) noexcept = default;
 
-    UnionStorageDestruct(UnionStorageDestruct&&) noexcept = default;
-    UnionStorageDestruct& operator=(UnionStorageDestruct&&) noexcept = default;
+    constexpr UnionStorageDestruct(UnionStorageDestruct&&) noexcept = default;
+    constexpr UnionStorageDestruct& operator=(UnionStorageDestruct&&) noexcept = default;
 
     ~UnionStorageDestruct() noexcept = default;
 };
@@ -345,13 +346,13 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageDestruct<_MaybeUninitDetails::Rule5Trait::NonTrivial, SelfT, ArgsT...>
     : UnionCore<ArgsT...>
 {
-    UnionStorageDestruct() noexcept = default;
+    constexpr UnionStorageDestruct() noexcept = default;
 
-    UnionStorageDestruct(const UnionStorageDestruct&) noexcept = default;
-    UnionStorageDestruct& operator=(const UnionStorageDestruct&) noexcept = default;
+    constexpr UnionStorageDestruct(const UnionStorageDestruct&) noexcept = default;
+    constexpr UnionStorageDestruct& operator=(const UnionStorageDestruct&) noexcept = default;
 
-    UnionStorageDestruct(UnionStorageDestruct&&) noexcept = default;
-    UnionStorageDestruct& operator=(UnionStorageDestruct&&) noexcept = default;
+    constexpr UnionStorageDestruct(UnionStorageDestruct&&) noexcept = default;
+    constexpr UnionStorageDestruct& operator=(UnionStorageDestruct&&) noexcept = default;
 
     ~UnionStorageDestruct() noexcept {
 
@@ -366,12 +367,12 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageAssignMove<_MaybeUninitDetails::Rule5Trait::Deleted, SelfT, ArgsT...>
     : UnionStorageDestruct<_MaybeUninitDetails::rule5_destructible_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageAssignMove() noexcept = default;
+    constexpr UnionStorageAssignMove() noexcept = default;
 
-    UnionStorageAssignMove(const UnionStorageAssignMove&) noexcept = default;
-    UnionStorageAssignMove& operator=(const UnionStorageAssignMove&) noexcept = default;
+    constexpr UnionStorageAssignMove(const UnionStorageAssignMove&) noexcept = default;
+    constexpr UnionStorageAssignMove& operator=(const UnionStorageAssignMove&) noexcept = default;
 
-    UnionStorageAssignMove(UnionStorageAssignMove&&) noexcept = default;
+    constexpr UnionStorageAssignMove(UnionStorageAssignMove&&) noexcept = default;
     UnionStorageAssignMove& operator=(UnionStorageAssignMove&&) noexcept = delete;
 };
 
@@ -379,27 +380,27 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageAssignMove<_MaybeUninitDetails::Rule5Trait::Trivial, SelfT, ArgsT...>
     : UnionStorageDestruct<_MaybeUninitDetails::rule5_destructible_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageAssignMove() noexcept = default;
+    constexpr UnionStorageAssignMove() noexcept = default;
 
-    UnionStorageAssignMove(const UnionStorageAssignMove&) noexcept = default;
-    UnionStorageAssignMove& operator=(const UnionStorageAssignMove&) noexcept = default;
+    constexpr UnionStorageAssignMove(const UnionStorageAssignMove&) noexcept = default;
+    constexpr UnionStorageAssignMove& operator=(const UnionStorageAssignMove&) noexcept = default;
 
-    UnionStorageAssignMove(UnionStorageAssignMove&&) noexcept = default;
-    UnionStorageAssignMove& operator=(UnionStorageAssignMove&&) noexcept = default;
+    constexpr UnionStorageAssignMove(UnionStorageAssignMove&&) noexcept = default;
+    constexpr UnionStorageAssignMove& operator=(UnionStorageAssignMove&&) noexcept = default;
 };
 
 template <typename SelfT, typename ...ArgsT>
 struct UnionStorageAssignMove<_MaybeUninitDetails::Rule5Trait::NonTrivial, SelfT, ArgsT...>
     : UnionStorageDestruct<_MaybeUninitDetails::rule5_destructible_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageAssignMove() noexcept = default;
+    constexpr UnionStorageAssignMove() noexcept = default;
 
-    UnionStorageAssignMove(const UnionStorageAssignMove&) noexcept = default;
-    UnionStorageAssignMove& operator=(const UnionStorageAssignMove&) noexcept = default;
+    constexpr UnionStorageAssignMove(const UnionStorageAssignMove&) noexcept = default;
+    constexpr UnionStorageAssignMove& operator=(const UnionStorageAssignMove&) noexcept = default;
 
-    UnionStorageAssignMove(UnionStorageAssignMove&&) noexcept = default;
+    constexpr UnionStorageAssignMove(UnionStorageAssignMove&&) noexcept = default;
 
-    UnionStorageAssignMove& operator=(UnionStorageAssignMove&& rhs) noexcept {
+    constexpr UnionStorageAssignMove& operator=(UnionStorageAssignMove&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
         return *this;
@@ -413,43 +414,43 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageConstructMove<_MaybeUninitDetails::Rule5Trait::Deleted, SelfT, ArgsT...>
     : UnionStorageAssignMove<_MaybeUninitDetails::rule5_move_assignable_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageConstructMove() noexcept = default;
+    constexpr UnionStorageConstructMove() noexcept = default;
 
-    UnionStorageConstructMove(const UnionStorageConstructMove&) noexcept = default;
-    UnionStorageConstructMove& operator=(const UnionStorageConstructMove&) noexcept = default;
+    constexpr UnionStorageConstructMove(const UnionStorageConstructMove&) noexcept = default;
+    constexpr UnionStorageConstructMove& operator=(const UnionStorageConstructMove&) noexcept = default;
 
     UnionStorageConstructMove(UnionStorageConstructMove&&) noexcept = delete;
-    UnionStorageConstructMove& operator=(UnionStorageConstructMove&&) noexcept = default;
+    constexpr UnionStorageConstructMove& operator=(UnionStorageConstructMove&&) noexcept = default;
 };
 
 template <typename SelfT, typename ...ArgsT>
 struct UnionStorageConstructMove<_MaybeUninitDetails::Rule5Trait::Trivial, SelfT, ArgsT...>
     : UnionStorageAssignMove<_MaybeUninitDetails::rule5_move_assignable_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageConstructMove() noexcept = default;
+    constexpr UnionStorageConstructMove() noexcept = default;
 
-    UnionStorageConstructMove(const UnionStorageConstructMove&) noexcept = default;
-    UnionStorageConstructMove& operator=(const UnionStorageConstructMove&) noexcept = default;
+    constexpr UnionStorageConstructMove(const UnionStorageConstructMove&) noexcept = default;
+    constexpr UnionStorageConstructMove& operator=(const UnionStorageConstructMove&) noexcept = default;
 
-    UnionStorageConstructMove(UnionStorageConstructMove&&) noexcept = default;
-    UnionStorageConstructMove& operator=(UnionStorageConstructMove&&) noexcept = default;
+    constexpr UnionStorageConstructMove(UnionStorageConstructMove&&) noexcept = default;
+    constexpr UnionStorageConstructMove& operator=(UnionStorageConstructMove&&) noexcept = default;
 };
 
 template <typename SelfT, typename ...ArgsT>
 struct UnionStorageConstructMove<_MaybeUninitDetails::Rule5Trait::NonTrivial, SelfT, ArgsT...>
     : UnionStorageAssignMove<_MaybeUninitDetails::rule5_move_assignable_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageConstructMove() noexcept = default;
+    constexpr UnionStorageConstructMove() noexcept = default;
 
-    UnionStorageConstructMove(const UnionStorageConstructMove&) noexcept = default;
-    UnionStorageConstructMove& operator=(const UnionStorageConstructMove&) noexcept = default;
+    constexpr UnionStorageConstructMove(const UnionStorageConstructMove&) noexcept = default;
+    constexpr UnionStorageConstructMove& operator=(const UnionStorageConstructMove&) noexcept = default;
 
-    UnionStorageConstructMove(UnionStorageConstructMove&& rhs) noexcept {
+    constexpr UnionStorageConstructMove(UnionStorageConstructMove&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    UnionStorageConstructMove& operator=(UnionStorageConstructMove&&) noexcept = default;
+    constexpr UnionStorageConstructMove& operator=(UnionStorageConstructMove&&) noexcept = default;
 };
 
 template <_MaybeUninitDetails::Rule5Trait RULE5_TRAIT, typename ...ArgsT>
@@ -459,44 +460,44 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageAssignCopy<_MaybeUninitDetails::Rule5Trait::Deleted, SelfT, ArgsT...>
     : UnionStorageConstructMove<_MaybeUninitDetails::rule5_move_constructible_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageAssignCopy() noexcept = default;
+    constexpr UnionStorageAssignCopy() noexcept = default;
 
-    UnionStorageAssignCopy(const UnionStorageAssignCopy&) noexcept = default;
+    constexpr UnionStorageAssignCopy(const UnionStorageAssignCopy&) noexcept = default;
     UnionStorageAssignCopy& operator=(const UnionStorageAssignCopy&) noexcept = delete;
 
-    UnionStorageAssignCopy(UnionStorageAssignCopy&&) noexcept = default;
-    UnionStorageAssignCopy& operator=(UnionStorageAssignCopy&&) noexcept = default;
+    constexpr UnionStorageAssignCopy(UnionStorageAssignCopy&&) noexcept = default;
+    constexpr UnionStorageAssignCopy& operator=(UnionStorageAssignCopy&&) noexcept = default;
 };
 
 template <typename SelfT, typename ...ArgsT>
 struct UnionStorageAssignCopy<_MaybeUninitDetails::Rule5Trait::Trivial, SelfT, ArgsT...>
     : UnionStorageConstructMove<_MaybeUninitDetails::rule5_move_constructible_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageAssignCopy() noexcept = default;
+    constexpr UnionStorageAssignCopy() noexcept = default;
 
-    UnionStorageAssignCopy(const UnionStorageAssignCopy&) noexcept = default;
-    UnionStorageAssignCopy& operator=(const UnionStorageAssignCopy&) noexcept = default;
+    constexpr UnionStorageAssignCopy(const UnionStorageAssignCopy&) noexcept = default;
+    constexpr UnionStorageAssignCopy& operator=(const UnionStorageAssignCopy&) noexcept = default;
 
-    UnionStorageAssignCopy(UnionStorageAssignCopy&&) noexcept = default;
-    UnionStorageAssignCopy& operator=(UnionStorageAssignCopy&&) noexcept = default;
+    constexpr UnionStorageAssignCopy(UnionStorageAssignCopy&&) noexcept = default;
+    constexpr UnionStorageAssignCopy& operator=(UnionStorageAssignCopy&&) noexcept = default;
 };
 
 template <typename SelfT, typename ...ArgsT>
 struct UnionStorageAssignCopy<_MaybeUninitDetails::Rule5Trait::NonTrivial, SelfT, ArgsT...>
     : UnionStorageConstructMove<_MaybeUninitDetails::rule5_move_constructible_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageAssignCopy() noexcept = default;
+    constexpr UnionStorageAssignCopy() noexcept = default;
 
-    UnionStorageAssignCopy(const UnionStorageAssignCopy&) noexcept = default;
+    constexpr UnionStorageAssignCopy(const UnionStorageAssignCopy&) noexcept = default;
 
-    UnionStorageAssignCopy& operator=(const UnionStorageAssignCopy& rhs) noexcept {
+    constexpr UnionStorageAssignCopy& operator=(const UnionStorageAssignCopy& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    UnionStorageAssignCopy(UnionStorageAssignCopy&&) noexcept = default;
-    UnionStorageAssignCopy& operator=(UnionStorageAssignCopy&&) noexcept = default;
+    constexpr UnionStorageAssignCopy(UnionStorageAssignCopy&&) noexcept = default;
+    constexpr UnionStorageAssignCopy& operator=(UnionStorageAssignCopy&&) noexcept = default;
 };
 
 template <_MaybeUninitDetails::Rule5Trait RULE5_TRAIT, typename ...ArgsT>
@@ -506,43 +507,43 @@ template <typename SelfT, typename ...ArgsT>
 struct UnionStorageConstructCopy<_MaybeUninitDetails::Rule5Trait::Deleted, SelfT, ArgsT...>
     : UnionStorageAssignCopy<_MaybeUninitDetails::rule5_copy_assignable_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageConstructCopy() noexcept = default;
+    constexpr UnionStorageConstructCopy() noexcept = default;
 
     UnionStorageConstructCopy(const UnionStorageConstructCopy&) noexcept = delete;
-    UnionStorageConstructCopy& operator=(const UnionStorageConstructCopy&) noexcept = default;
+    constexpr UnionStorageConstructCopy& operator=(const UnionStorageConstructCopy&) noexcept = default;
 
-    UnionStorageConstructCopy(UnionStorageConstructCopy&&) noexcept = default;
-    UnionStorageConstructCopy& operator=(UnionStorageConstructCopy&&) noexcept = default;
+    constexpr UnionStorageConstructCopy(UnionStorageConstructCopy&&) noexcept = default;
+    constexpr UnionStorageConstructCopy& operator=(UnionStorageConstructCopy&&) noexcept = default;
 };
 
 template <typename SelfT, typename ...ArgsT>
 struct UnionStorageConstructCopy<_MaybeUninitDetails::Rule5Trait::Trivial, SelfT, ArgsT...>
     : UnionStorageAssignCopy<_MaybeUninitDetails::rule5_copy_assignable_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageConstructCopy() noexcept = default;
+    constexpr UnionStorageConstructCopy() noexcept = default;
 
-    UnionStorageConstructCopy(const UnionStorageConstructCopy&) noexcept = default;
-    UnionStorageConstructCopy& operator=(const UnionStorageConstructCopy&) noexcept = default;
+    constexpr UnionStorageConstructCopy(const UnionStorageConstructCopy&) noexcept = default;
+    constexpr UnionStorageConstructCopy& operator=(const UnionStorageConstructCopy&) noexcept = default;
 
-    UnionStorageConstructCopy(UnionStorageConstructCopy&&) noexcept = default;
-    UnionStorageConstructCopy& operator=(UnionStorageConstructCopy&&) noexcept = default;
+    constexpr UnionStorageConstructCopy(UnionStorageConstructCopy&&) noexcept = default;
+    constexpr UnionStorageConstructCopy& operator=(UnionStorageConstructCopy&&) noexcept = default;
 };
 
 template <typename SelfT, typename ...ArgsT>
 struct UnionStorageConstructCopy<_MaybeUninitDetails::Rule5Trait::NonTrivial, SelfT, ArgsT...>
     : UnionStorageAssignCopy<_MaybeUninitDetails::rule5_copy_assignable_v<ArgsT...>, SelfT, ArgsT...>
 {
-    UnionStorageConstructCopy() noexcept = default;
+    constexpr UnionStorageConstructCopy() noexcept = default;
 
-    UnionStorageConstructCopy(const UnionStorageConstructCopy& rhs) noexcept {
+    constexpr UnionStorageConstructCopy(const UnionStorageConstructCopy& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    UnionStorageConstructCopy& operator=(const UnionStorageConstructCopy&) noexcept = default;
+    constexpr UnionStorageConstructCopy& operator=(const UnionStorageConstructCopy&) noexcept = default;
 
-    UnionStorageConstructCopy(UnionStorageConstructCopy&&) noexcept = default;
-    UnionStorageConstructCopy& operator=(UnionStorageConstructCopy&&) noexcept = default;
+    constexpr UnionStorageConstructCopy(UnionStorageConstructCopy&&) noexcept = default;
+    constexpr UnionStorageConstructCopy& operator=(UnionStorageConstructCopy&&) noexcept = default;
 };
 
 template <typename UnionOperator, typename Usize, typename ...ArgsT>
@@ -555,48 +556,48 @@ class UnionStorage
 {
 public:
 
-    UnionStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr UnionStorage() noexcept = default;
 
-    UnionStorage(Noval_t) noexcept
+    ALT_FORCE_INLINE constexpr UnionStorage(Noval_t) noexcept
     {}
 
-    constexpr static usize MaxInnerValueSizeOf() noexcept {
+    ALT_FORCE_INLINE constexpr static usize MaxInnerValueSizeOf() noexcept {
 
         return sizeof(UnionCore<ArgsT...>);
     }
 
-    constexpr static usize MaxInnerValueAlignOf() noexcept {
+    ALT_FORCE_INLINE constexpr static usize MaxInnerValueAlignOf() noexcept {
 
         return alignof(UnionCore<ArgsT...>);
     }
 
-    void Assign(Noval_t) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Noval_t) noexcept {
 
         UnionOperator::Destroy(*this, m_TypeIdx);
         m_TypeIdx = UnionOperator::INVALID_TYPE_IDX;
     }
 
-    usize GetTypeIdx() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetTypeIdx() const noexcept {
 
         return static_cast<usize>(m_TypeIdx);
     }
 
     template <usize TYPE_IDX, typename T>
-    void Construct(InnerRef_t, const T& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerRef_t, const T& val) noexcept {
 
         Memory::ConstructObject(UnionOperator::template Get<T>(*this), val);
         m_TypeIdx = static_cast<Usize>(TYPE_IDX);
     }
 
     template <usize TYPE_IDX, typename T>
-    void Construct(InnerValue_t, T&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerValue_t, T&& val) noexcept {
 
         Memory::ConstructObject(UnionOperator::template Get<T>(*this), std::forward<T>(val));
         m_TypeIdx = static_cast<Usize>(TYPE_IDX);
     }
 
     template <usize TYPE_IDX, typename T>
-    void Assign(InnerRef_t, const T& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerRef_t, const T& val) noexcept {
 
         const Usize typeIdx = static_cast<Usize>(TYPE_IDX);
         if (m_TypeIdx == typeIdx) {
@@ -613,7 +614,7 @@ public:
     }
 
     template <usize TYPE_IDX, typename T>
-    void Assign(InnerValue_t, T&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerValue_t, T&& val) noexcept {
 
         const Usize typeIdx = static_cast<Usize>(TYPE_IDX);
         if (m_TypeIdx == typeIdx) {
@@ -630,7 +631,7 @@ public:
     }
 
     template <typename UnionOperatorU, typename ...ArgsU>
-    void Construct(Rule5Copy_t, const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
 
         if (rhs.m_TypeIdx == UnionOperator::INVALID_TYPE_IDX) {
             return;
@@ -641,7 +642,7 @@ public:
     }
 
     template <typename UnionOperatorU, typename ...ArgsU>
-    void Assign(Rule5Copy_t, const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return;
@@ -660,7 +661,7 @@ public:
     }
 
     template <typename UnionOperatorU, typename ...ArgsU>
-    void Construct(Rule5Move_t, UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
 
         if (rhs.m_TypeIdx == UnionOperator::INVALID_TYPE_IDX) {
             return;
@@ -671,7 +672,7 @@ public:
     }
 
     template <typename UnionOperatorU, typename ...ArgsU>
-    void Assign(Rule5Move_t, UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return;
@@ -689,14 +690,14 @@ public:
         m_TypeIdx = rhs.m_TypeIdx;
     }
 
-    void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         UnionOperator::Destroy(*this, m_TypeIdx);
         m_TypeIdx = UnionOperator::INVALID_TYPE_IDX;
     }
 
     template <typename UnionOperatorU, typename ...ArgsU>
-    bool ConstructCloneFrom(const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructCloneFrom(const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
 
         const bool isOk = UnionOperator::ConstructCloneFrom(*this, rhs, rhs.m_TypeIdx);
         m_TypeIdx = isOk ? rhs.m_TypeIdx : UnionOperator::INVALID_TYPE_IDX;
@@ -705,7 +706,7 @@ public:
     }
 
     template <typename UnionOperatorU, typename ...ArgsU>
-    bool CloneFrom(const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr bool CloneFrom(const UnionStorage<UnionOperatorU, Usize, ArgsU...>& rhs) noexcept {
 
         if (m_TypeIdx == rhs.m_TypeIdx) {
 
@@ -767,12 +768,12 @@ private:
     using is_exist = typename UnionOperator::template is_exist<T>;
 
     template <typename T>
-    constexpr static bool is_exist_v = UnionOperator::template is_exist_v<T>;
+    constexpr static bool is_exist_v = is_exist<T>::value;
 
     constexpr static usize INVALID_TYPE_IDX = static_cast<usize>(UnionOperator::INVALID_TYPE_IDX);
 
     static_assert(!std::is_same_v<Usize, void>, "");
-    static_assert(ARGS_COUNT < Num::Desc<Usize>::Max(), "");
+    static_assert(ARGS_COUNT < Desc<Usize>::Max(), "");
 
 public:
 
@@ -796,7 +797,7 @@ public:
         std::enable_if_t<is_exist_v<T>>* = nullptr>
     ALT_NODISCARD ALT_FORCE_INLINE constexpr static usize GetTypeIdx() noexcept {
 
-        return static_cast<usize>(UnionOperator::template FindTypeIndex<0, T>());
+        return static_cast<usize>(UnionOperator::template FindIndexByType<0, T>());
     }
 
     /**
@@ -836,14 +837,14 @@ public:
      * 
      * Initializes the union in an Noval state.
      */
-    ALT_FORCE_INLINE Union() noexcept = default;
+    ALT_FORCE_INLINE constexpr Union() noexcept = default;
 
     /**
      * @brief Constructor for the Noval state.
      * 
      * @param val The Noval tag.
      */
-    ALT_FORCE_INLINE Union(Noval_t) noexcept
+    ALT_FORCE_INLINE constexpr Union(Noval_t) noexcept
         : m_Storage(Noval)
     {}
 
@@ -855,7 +856,7 @@ public:
      * @param val The Noval tag.
      * @return A reference to this Union.
      */
-    Union& operator=(Noval_t) noexcept {
+    constexpr Union& operator=(Noval_t) noexcept {
 
         m_Storage.Assign(Noval);
         return *this;
@@ -872,14 +873,14 @@ public:
      */
     template <typename T,
         std::enable_if_t<is_exist_v<T> && std::is_constructible_v<T, T&&>>* = nullptr>
-    Union(T&& val) noexcept {
+    constexpr Union(T&& val) noexcept {
 
         m_Storage.template Construct<GetTypeIdx<T>()>(_UnionDetails::InnerValue, std::forward<T>(val));
     }
 
     template <typename T,
         std::enable_if_t<is_exist_v<T> && !is_exist_v<T&> && std::is_constructible_v<T, const T&>>* = nullptr>
-    Union(const T& val) noexcept {
+    constexpr Union(const T& val) noexcept {
 
         m_Storage.template Construct<GetTypeIdx<T>()>(_UnionDetails::InnerRef, val);
     }
@@ -897,7 +898,7 @@ public:
      */
     template <typename T,
         std::enable_if_t<is_exist_v<T> && std::is_assignable_v<T, T&&>>* = nullptr>
-    Union& operator=(T&& val) noexcept {
+    constexpr Union& operator=(T&& val) noexcept {
 
         m_Storage.template Assign<GetTypeIdx<T>()>(_UnionDetails::InnerValue, std::forward<T>(val));
         return *this;
@@ -905,7 +906,7 @@ public:
 
     template <typename T,
         std::enable_if_t<is_exist_v<T> && !is_exist_v<T&> && std::is_assignable_v<T, const T&>>* = nullptr>
-    Union& operator=(const T& val) noexcept {
+    constexpr Union& operator=(const T& val) noexcept {
 
         m_Storage.template Assign<GetTypeIdx<T>()>(_UnionDetails::InnerRef, val);
         return *this;
@@ -935,14 +936,14 @@ public:
      */
     template <typename ...ArgsU,
         std::enable_if_t<!is_exist_v<Union<ArgsU...>> && std::conjunction_v<std::is_constructible<ArgsT, ArgsU&&>...>>* = nullptr>
-    Union(Union<ArgsU...>&& un) noexcept {
+    constexpr Union(Union<ArgsU...>&& un) noexcept {
 
         m_Storage.Construct(_UnionDetails::Rule5Move, un.m_Storage);
     }
 
     template <typename ...ArgsU,
         std::enable_if_t<!is_exist_v<Union<ArgsU...>> && std::conjunction_v<std::is_constructible<ArgsT, const ArgsU&>...>>* = nullptr>
-    Union(const Union<ArgsU...>& un) noexcept {
+    constexpr Union(const Union<ArgsU...>& un) noexcept {
 
         m_Storage.Construct(_UnionDetails::Rule5Copy, un.m_Storage);
     }
@@ -952,7 +953,7 @@ public:
             !is_exist_v<Union<ArgsU...>> &&
             std::conjunction_v<std::conjunction<std::is_assignable<ArgsT&, ArgsU&&>, std::is_constructible<ArgsT, ArgsU&&>>...>
         >* = nullptr>
-    Union& operator=(Union<ArgsU...>&& un) noexcept {
+    constexpr Union& operator=(Union<ArgsU...>&& un) noexcept {
 
         m_Storage.Assign(_UnionDetails::Rule5Move, un.m_Storage);
         return *this;
@@ -963,7 +964,7 @@ public:
             !is_exist_v<Union<ArgsU...>> &&
             std::conjunction_v<std::conjunction<std::is_assignable<ArgsT&, const ArgsU&>, std::is_constructible<ArgsT, const ArgsU&>>...>
         >* = nullptr>
-    Union& operator=(const Union<ArgsU...>& un) noexcept {
+    constexpr Union& operator=(const Union<ArgsU...>& un) noexcept {
 
         m_Storage.Assign(_UnionDetails::Rule5Copy, un.m_Storage);
         return *this;
@@ -999,7 +1000,7 @@ public:
                 >...
             >
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const Union<ArgsU...>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const Union<ArgsU...>& rhs) noexcept {
 
         return m_Storage.CloneFrom(rhs.m_Storage);
     }
@@ -1013,12 +1014,12 @@ public:
                 >...
             >
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const Union<ArgsU...>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const Union<ArgsU...>& rhs) noexcept {
 
         return m_Storage.ConstructCloneFrom(rhs.m_Storage);
     }
 
-    ALT_NODISCARD Alt::Optional<Union> Clone() const noexcept {
+    ALT_NODISCARD Optional<Union> Clone() const noexcept {
 
         struct Object {
 
@@ -1061,7 +1062,7 @@ public:
      * assert(un.GetTypeIdx().IsPopulated());
      * assert(*un.GetTypeIdx(), Alt::Union<s32, f32>::GetTypeIdx<s32>());
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<usize> GetTypeIdx() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<usize> GetTypeIdx() const noexcept {
 
         return m_Storage.GetTypeIdx() != INVALID_TYPE_IDX
             ? MakeOptional(m_Storage.GetTypeIdx())
@@ -1090,14 +1091,14 @@ public:
      */
     template <typename T,
         std::enable_if_t<is_exist_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE std::remove_reference_t<T>* Is() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::remove_reference_t<T>* Is() noexcept {
 
         using TypeValue = std::remove_reference_t<T>;
 
         if (m_Storage.GetTypeIdx() == GetTypeIdx<T>()) {
 
             T& val = UnionOperator::template Get<T>(m_Storage);
-            return static_cast<TypeValue*>(&val);
+            return static_cast<TypeValue*>(Addressof(val));
         }
 
         return nullptr;
@@ -1105,14 +1106,14 @@ public:
 
     template <typename T,
         std::enable_if_t<is_exist_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE const std::remove_reference_t<T>* Is() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const std::remove_reference_t<T>* Is() const noexcept {
 
         using TypeValue = std::remove_reference_t<T>;
 
         if (m_Storage.GetTypeIdx() == GetTypeIdx<T>()) {
 
             const T& val = UnionOperator::template Get<T>(m_Storage);
-            return static_cast<const TypeValue*>(&val);
+            return static_cast<const TypeValue*>(Addressof(val));
         }
 
         return nullptr;
@@ -1131,7 +1132,7 @@ public:
      * assert(un.Is<f32>())
      * assert(un.GetUnderlyingTypeIdx(), Alt::Union<s32, f32>::GetTypeIdx<f32>())
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetUnderlyingTypeIdx() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetUnderlyingTypeIdx() const noexcept {
 
         return m_Storage.GetTypeIdx();
     }

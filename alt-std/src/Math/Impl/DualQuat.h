@@ -30,13 +30,13 @@ public:
 
     using Type = T;
 
-    ALT_FORCE_INLINE DualQuat() noexcept = default;
+    ALT_FORCE_INLINE constexpr DualQuat() noexcept = default;
 
-    ALT_FORCE_INLINE explicit DualQuat(const Quat<T>& real) noexcept
+    ALT_FORCE_INLINE constexpr explicit DualQuat(const Quat<T>& real) noexcept
         : real{ real }
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE static DualQuat Identity() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static DualQuat Identity() noexcept {
 
         DualQuat dualQuat;
         dualQuat.real = Quat<T>::Identity();
@@ -45,7 +45,7 @@ public:
         return dualQuat;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static DualQuat FromQuatAndTranslation(const Quat<T>& quat, const Vec3<T>& translation) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static DualQuat FromQuatAndTranslation(const Quat<T>& quat, const Vec3<T>& translation) noexcept {
 
         DualQuat dualQuat;
 
@@ -60,15 +60,15 @@ public:
         return dualQuat;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static DualQuat FromMatrix44(const Matrix44<T>& m) noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static DualQuat FromMatrix44(const Matrix44<T>& m) noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Matrix44<T> ToMatrix44() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44<T> ToMatrix44() const noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE DualQuat Normalize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr DualQuat Normalize() const noexcept {
         return *this * Rsqrt(real.LengthSq());
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE DualQuat Conjugate() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr DualQuat Conjugate() const noexcept {
 
         DualQuat self;
         self.real = real.Conjugate();
@@ -77,7 +77,7 @@ public:
         return self;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE DualQuat Inverse() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr DualQuat Inverse() const noexcept {
 
         const DualQuat self = Conjugate();
 
@@ -88,13 +88,13 @@ public:
         return result;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE DualQuat Lerp(const Quat<T>& dst, T t) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr DualQuat Lerp(const Quat<T>& dst, T t) const noexcept {
 
         const T k = real.Dot(dst.real) < static_cast<T>(0.0) ? -t : t;
         return *this * (static_cast<T>(1) - t) + dst * k;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> GetTranslation() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3<T> GetTranslation() const noexcept {
 
         const Quat<T> quatReal = real.Conjugate();
         const Quat<T> quatDual = static_cast<T>(2.0) * dual;
@@ -106,15 +106,15 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize i) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize i) noexcept {
         return dualQuat[i];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T operator[](const usize i) const noexcept {
         return dualQuat[i];
     }
 
-    ALT_FORCE_INLINE DualQuat operator*(const DualQuat& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr DualQuat operator*(const DualQuat& rhs) const noexcept {
 
         DualQuat dualQuat;
         dualQuat.real = real * rhs.real;
@@ -123,9 +123,9 @@ public:
         return dualQuat;
     }
 
-    ALT_FORCE_INLINE Vec3<T> operator*(const Vec3<T>& rhs) const noexcept;
+    ALT_FORCE_INLINE constexpr Vec3<T> operator*(const Vec3<T>& rhs) const noexcept;
 
-    ALT_FORCE_INLINE DualQuat operator*(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr DualQuat operator*(const T s) const noexcept {
 
         DualQuat dualQuat;
         dualQuat.real = real * s;
@@ -134,11 +134,11 @@ public:
         return dualQuat;
     }
 
-    ALT_FORCE_INLINE DualQuat operator/(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr DualQuat operator/(const T s) const noexcept {
         return *this * SafeInv(s);
     }
 
-    ALT_FORCE_INLINE DualQuat operator+(const DualQuat& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr DualQuat operator+(const DualQuat& rhs) const noexcept {
 
         DualQuat dualQuat;
         dualQuat.real = real + rhs.real;
@@ -147,7 +147,7 @@ public:
         return dualQuat;
     }
 
-    ALT_FORCE_INLINE DualQuat operator-(const DualQuat& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr DualQuat operator-(const DualQuat& rhs) const noexcept {
 
         DualQuat dualQuat;
         dualQuat.real = real - rhs.real;
@@ -156,7 +156,7 @@ public:
         return dualQuat;
     }
 
-    ALT_FORCE_INLINE friend DualQuat operator*(const T s, const DualQuat& q) noexcept {
+    ALT_FORCE_INLINE constexpr friend DualQuat operator*(const T s, const DualQuat& q) noexcept {
         return q * s;
     }
 

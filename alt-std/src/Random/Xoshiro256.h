@@ -106,7 +106,7 @@ public:
         const u64 num = GenerateU64();
 
         u64 len = max - min;
-        if (Num::IsOverflowCheckAdd(len, 1, &len)) {
+        if (IsOverflowCheckAdd(len, 1, &len)) {
 
             return num;
         }
@@ -123,12 +123,12 @@ public:
     ALT_FORCE_INLINE s64 GenerateS64(const s64 min, const s64 max) noexcept {
         ALT_ASSERT(max >= min);
 
-        const u64 umin = static_cast<u64>(Num::ConvertSignedToUnsignedOrdered(min));
-        const u64 umax = static_cast<u64>(Num::ConvertSignedToUnsignedOrdered(max));
+        const u64 umin = static_cast<u64>(ConvertSignedToUnsignedOrdered(min));
+        const u64 umax = static_cast<u64>(ConvertSignedToUnsignedOrdered(max));
 
         const u64 unum = GenerateU64(umin, umax);
 
-        return Num::ConvertUnsignedToSignedOrdered(unum);
+        return ConvertUnsignedToSignedOrdered(unum);
     }
 
     // [-1.0, 1.0]

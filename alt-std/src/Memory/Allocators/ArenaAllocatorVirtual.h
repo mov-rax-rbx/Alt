@@ -268,10 +268,10 @@ public:
         // Reserve memory with 'CreateCapacity(...)'
         ALT_ASSERT(m_pMemory);
 
-        ALT_ASSERT(Num::IsPowerOf2(alignment));
+        ALT_ASSERT(IsPowerOf2(alignment));
 
         const usize alignmentOffset = Memory::Align(m_pMemory, alignment);
-        ALT_ASSERT(!Num::IsOverflowCheckAdd(alignment, sizeInBytes));
+        ALT_ASSERT(!IsOverflowCheckAdd(alignment, sizeInBytes));
 
         if (alignmentOffset + sizeInBytes <= m_AvailableSizeInBytes) {
 
@@ -286,21 +286,21 @@ public:
         const usize minSizeInBytes = GetMinSizeInBytes();
         const usize maxSizeInBytesReserved = GetMaxSizeInBytesReserved();
 
-        const usize sizeInBytesPerfectForNextGrow = Num::MulWrap(m_TotalSizeInBytes, GetGrowFactor());
-        const usize sizeInBytesPerfectGrow = Num::Clamp(sizeInBytesPerfectForNextGrow, minSizeInBytes, maxSizeInBytesReserved);
+        const usize sizeInBytesPerfectForNextGrow = MulWrap(m_TotalSizeInBytes, GetGrowFactor());
+        const usize sizeInBytesPerfectGrow = Clamp(sizeInBytesPerfectForNextGrow, minSizeInBytes, maxSizeInBytesReserved);
 
         const usize sizeInBytesOnDemand = alignmentOffset + sizeInBytes - m_AvailableSizeInBytes;
 
         usize totalSizeInBytes;
-        if (Num::IsOverflowCheckAdd(m_TotalSizeInBytes, sizeInBytesOnDemand, &totalSizeInBytes)) {
+        if (IsOverflowCheckAdd(m_TotalSizeInBytes, sizeInBytesOnDemand, &totalSizeInBytes)) {
             return nullptr;
         }
 
-        const usize totalSizeInBytesPerfectGrow = Num::AddWrap(m_TotalSizeInBytes, sizeInBytesPerfectGrow, maxSizeInBytesReserved);
+        const usize totalSizeInBytesPerfectGrow = AddWrap(m_TotalSizeInBytes, sizeInBytesPerfectGrow, maxSizeInBytesReserved);
 
         totalSizeInBytes = totalSizeInBytesPerfectGrow >= totalSizeInBytes
             ? totalSizeInBytesPerfectGrow
-            : Num::Max(Num::Min(Memory::RoundUpToPageSizeWrap(totalSizeInBytes), maxSizeInBytesReserved), totalSizeInBytes);
+            : Max(Min(Memory::RoundUpToPageSizeWrap(totalSizeInBytes), maxSizeInBytesReserved), totalSizeInBytes);
 
         return AllocateVirtualMemory(sizeInBytes, alignmentOffset, totalSizeInBytes);
     }
@@ -394,11 +394,11 @@ private:
     ALT_FORCE_INLINE void DecommitVirtualMemoryBytesAfter(const usize totalSizeInBytes_) noexcept {
 
         const usize totalSizeInBytesNew = Memory::RoundUpToPageSizeWrapPreserveZero(totalSizeInBytes_);
-        const usize sizeInBytesDiff = Num::SubWrap(m_TotalSizeInBytes, totalSizeInBytesNew);
+        const usize sizeInBytesDiff = SubWrap(m_TotalSizeInBytes, totalSizeInBytesNew);
 
         m_TotalSizeInBytes -= sizeInBytesDiff;
-        m_pMemory -= Num::SubWrap(sizeInBytesDiff, m_AvailableSizeInBytes);
-        m_AvailableSizeInBytes = Num::SubWrap(m_AvailableSizeInBytes, sizeInBytesDiff);
+        m_pMemory -= SubWrap(sizeInBytesDiff, m_AvailableSizeInBytes);
+        m_AvailableSizeInBytes = SubWrap(m_AvailableSizeInBytes, sizeInBytesDiff);
 
         u8* pMemory = m_pMemory + m_AvailableSizeInBytes;
 
@@ -621,8 +621,8 @@ public:
 
     ALT_NODISCARD static Optional<ArenaAllocatorVirtualDynamic> CreateCapacity(const MemoryDesc& desc_) noexcept {
 
-        const usize minSizeInBytes_ = Num::Min(desc_.minSizeInBytes, desc_.maxSizeInBytesReserved);
-        const usize maxSizeInBytes_ = Num::Max(desc_.minSizeInBytes, desc_.maxSizeInBytesReserved);
+        const usize minSizeInBytes_ = Min(desc_.minSizeInBytes, desc_.maxSizeInBytesReserved);
+        const usize maxSizeInBytes_ = Max(desc_.minSizeInBytes, desc_.maxSizeInBytesReserved);
 
         const usize minSizeInBytes = Memory::RoundUpToPageSizeWrapPreserveZero(minSizeInBytes_);
         const usize maxSizeInBytesReserved = Memory::RoundUpToPageSizeWrap(maxSizeInBytes_);

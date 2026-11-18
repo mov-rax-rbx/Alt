@@ -59,7 +59,7 @@ constexpr static usize UTF16_MASK1 = 3623934976; // { 0xD800, 0xDC00 }
 } // namespace _TableDetails
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 
-ALT_NODISCARD ALT_FORCE_INLINE bool IsValidUtf32(const u32 utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsValidUtf32(const u32 utf32) noexcept {
 
     // 3.9.1 UTF-32
     //return !(utf32 > 0x0010FFFF || (utf32 >= 0x0000D800 && utf32 <= 0x0000DFFF));
@@ -81,7 +81,7 @@ ALT_NODISCARD ALT_FORCE_INLINE bool IsValidUtf32(const u32 utf32) noexcept {
     return (utf32 ^ 0x0000D800) - 0x00000800 <= 0x0010FFFF - 0x00000800;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE usize LengthUtf32ToUtf8(const u32 utf32) {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize LengthUtf32ToUtf8(const u32 utf32) {
 
     // Table 3-7
 
@@ -93,7 +93,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize LengthUtf32ToUtf8(const u32 utf32) {
     return result;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE usize LengthUtf32ToUtf16(const u32 utf32) {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize LengthUtf32ToUtf16(const u32 utf32) {
 
     // Table 3-5
 
@@ -103,7 +103,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize LengthUtf32ToUtf16(const u32 utf32) {
     return result;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf8IgnoreErrors(const u32 utf32, u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf32ToUtf8IgnoreErrors(const u32 utf32, u8 (&utf8)[4]) noexcept {
 
     // Table 3-6
 
@@ -171,7 +171,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf8IgnoreErrors(const u32 utf32, u
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf8(const u32 utf32, u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf32ToUtf8(const u32 utf32, u8 (&utf8)[4]) noexcept {
 
     // Table 3-6
 
@@ -241,7 +241,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf8(const u32 utf32, u8 (&utf8)[4]
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf8Replace(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf32ToUtf8Replace(
     u32 utf32, u8 (&utf8)[4], const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -313,7 +313,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf8Replace(
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf16IgnoreErrors(u32 utf32, u16 (&utf16)[2]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf32ToUtf16IgnoreErrors(u32 utf32, u16 (&utf16)[2]) noexcept {
 
     // Table 3-5
 
@@ -378,7 +378,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf16IgnoreErrors(u32 utf32, u16 (&
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf16(u32 utf32, u16 (&utf16)[2]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf32ToUtf16(u32 utf32, u16 (&utf16)[2]) noexcept {
 
     // Table 3-5
 
@@ -447,7 +447,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf16(u32 utf32, u16 (&utf16)[2]) n
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf32ToUtf16Replace(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf32ToUtf16Replace(
     u32 utf32, u16 (&utf16)[2], const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 

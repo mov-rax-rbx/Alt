@@ -121,27 +121,27 @@ template <typename T, usize SIZE, typename Usize>
 class StaticVectorStorageCore {
 public:
 
-    ALT_FORCE_INLINE T* GetMemoryBeginImpl() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBeginImpl() noexcept {
 
         return m_Memory->GetPtr();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBeginImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBeginImpl() const noexcept {
 
         return m_Memory->GetPtr();
     }
 
-    ALT_FORCE_INLINE usize GetSizeImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeImpl() const noexcept {
 
         return static_cast<usize>(m_Size);
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRefImpl() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRefImpl() noexcept {
 
         return m_Size;
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRefImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRefImpl() const noexcept {
 
         return m_Size;
     }
@@ -156,27 +156,27 @@ template <typename T, typename Usize>
 class StaticVectorStorageCore<T, 0, Usize> {
 public:
 
-    ALT_FORCE_INLINE T* GetMemoryBeginImpl() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBeginImpl() noexcept {
 
         return nullptr;
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBeginImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBeginImpl() const noexcept {
 
         return nullptr;
     }
 
-    ALT_FORCE_INLINE usize GetSizeImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeImpl() const noexcept {
 
         return static_cast<usize>(m_Size);
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRefImpl() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRefImpl() noexcept {
 
         return m_Size;
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRefImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRefImpl() const noexcept {
 
         return m_Size;
     }
@@ -199,13 +199,13 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageDestruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticVectorStorageCore<T, SIZE, Usize>
 {
-    StaticVectorStorageDestruct() noexcept = default;
+    constexpr StaticVectorStorageDestruct() noexcept = default;
 
-    StaticVectorStorageDestruct(const StaticVectorStorageDestruct&) noexcept = default;
-    StaticVectorStorageDestruct& operator=(const StaticVectorStorageDestruct&) noexcept = default;
+    constexpr StaticVectorStorageDestruct(const StaticVectorStorageDestruct&) noexcept = default;
+    constexpr StaticVectorStorageDestruct& operator=(const StaticVectorStorageDestruct&) noexcept = default;
 
-    StaticVectorStorageDestruct(StaticVectorStorageDestruct&&) noexcept = default;
-    StaticVectorStorageDestruct& operator=(StaticVectorStorageDestruct&&) noexcept = default;
+    constexpr StaticVectorStorageDestruct(StaticVectorStorageDestruct&&) noexcept = default;
+    constexpr StaticVectorStorageDestruct& operator=(StaticVectorStorageDestruct&&) noexcept = default;
 
     ~StaticVectorStorageDestruct() noexcept = delete;
 };
@@ -214,13 +214,13 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageDestruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticVectorStorageCore<T, SIZE, Usize>
 {
-    StaticVectorStorageDestruct() noexcept = default;
+    constexpr StaticVectorStorageDestruct() noexcept = default;
 
-    StaticVectorStorageDestruct(const StaticVectorStorageDestruct&) noexcept = default;
-    StaticVectorStorageDestruct& operator=(const StaticVectorStorageDestruct&) noexcept = default;
+    constexpr StaticVectorStorageDestruct(const StaticVectorStorageDestruct&) noexcept = default;
+    constexpr StaticVectorStorageDestruct& operator=(const StaticVectorStorageDestruct&) noexcept = default;
 
-    StaticVectorStorageDestruct(StaticVectorStorageDestruct&&) noexcept = default;
-    StaticVectorStorageDestruct& operator=(StaticVectorStorageDestruct&&) noexcept = default;
+    constexpr StaticVectorStorageDestruct(StaticVectorStorageDestruct&&) noexcept = default;
+    constexpr StaticVectorStorageDestruct& operator=(StaticVectorStorageDestruct&&) noexcept = default;
 
     ~StaticVectorStorageDestruct() noexcept = default;
 };
@@ -229,13 +229,13 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageDestruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticVectorStorageCore<T, SIZE, Usize>
 {
-    StaticVectorStorageDestruct() noexcept = default;
+    constexpr StaticVectorStorageDestruct() noexcept = default;
 
-    StaticVectorStorageDestruct(const StaticVectorStorageDestruct&) noexcept = default;
-    StaticVectorStorageDestruct& operator=(const StaticVectorStorageDestruct&) noexcept = default;
+    constexpr StaticVectorStorageDestruct(const StaticVectorStorageDestruct&) noexcept = default;
+    constexpr StaticVectorStorageDestruct& operator=(const StaticVectorStorageDestruct&) noexcept = default;
 
-    StaticVectorStorageDestruct(StaticVectorStorageDestruct&&) noexcept = default;
-    StaticVectorStorageDestruct& operator=(StaticVectorStorageDestruct&&) noexcept = default;
+    constexpr StaticVectorStorageDestruct(StaticVectorStorageDestruct&&) noexcept = default;
+    constexpr StaticVectorStorageDestruct& operator=(StaticVectorStorageDestruct&&) noexcept = default;
 
     ~StaticVectorStorageDestruct() noexcept {
 
@@ -256,12 +256,12 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageMoveAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticVectorStorageDestruct<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageMoveAssign() noexcept = default;
+    constexpr StaticVectorStorageMoveAssign() noexcept = default;
 
-    StaticVectorStorageMoveAssign(const StaticVectorStorageMoveAssign&) noexcept = default;
-    StaticVectorStorageMoveAssign& operator=(const StaticVectorStorageMoveAssign&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign(const StaticVectorStorageMoveAssign&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign& operator=(const StaticVectorStorageMoveAssign&) noexcept = default;
 
-    StaticVectorStorageMoveAssign(StaticVectorStorageMoveAssign&&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign(StaticVectorStorageMoveAssign&&) noexcept = default;
     StaticVectorStorageMoveAssign& operator=(StaticVectorStorageMoveAssign&&) noexcept = delete;
 };
 
@@ -269,14 +269,14 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageMoveAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticVectorStorageDestruct<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageMoveAssign() noexcept = default;
+    constexpr StaticVectorStorageMoveAssign() noexcept = default;
 
-    StaticVectorStorageMoveAssign(const StaticVectorStorageMoveAssign&) noexcept = default;
-    StaticVectorStorageMoveAssign& operator=(const StaticVectorStorageMoveAssign&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign(const StaticVectorStorageMoveAssign&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign& operator=(const StaticVectorStorageMoveAssign&) noexcept = default;
 
-    StaticVectorStorageMoveAssign(StaticVectorStorageMoveAssign&&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign(StaticVectorStorageMoveAssign&&) noexcept = default;
 
-    StaticVectorStorageMoveAssign& operator=(StaticVectorStorageMoveAssign&& rhs) noexcept {
+    constexpr StaticVectorStorageMoveAssign& operator=(StaticVectorStorageMoveAssign&& rhs) noexcept {
 
         // we can do better - move only "active" elements
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
@@ -288,14 +288,14 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageMoveAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticVectorStorageDestruct<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageMoveAssign() noexcept = default;
+    constexpr StaticVectorStorageMoveAssign() noexcept = default;
 
-    StaticVectorStorageMoveAssign(const StaticVectorStorageMoveAssign&) noexcept = default;
-    StaticVectorStorageMoveAssign& operator=(const StaticVectorStorageMoveAssign&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign(const StaticVectorStorageMoveAssign&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign& operator=(const StaticVectorStorageMoveAssign&) noexcept = default;
 
-    StaticVectorStorageMoveAssign(StaticVectorStorageMoveAssign&&) noexcept = default;
+    constexpr StaticVectorStorageMoveAssign(StaticVectorStorageMoveAssign&&) noexcept = default;
 
-    StaticVectorStorageMoveAssign& operator=(StaticVectorStorageMoveAssign&& rhs) noexcept {
+    constexpr StaticVectorStorageMoveAssign& operator=(StaticVectorStorageMoveAssign&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
         return *this;
@@ -315,48 +315,48 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageMoveConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticVectorStorageMoveAssign<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageMoveConstruct() noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct() noexcept = default;
 
-    StaticVectorStorageMoveConstruct(const StaticVectorStorageMoveConstruct&) noexcept = default;
-    StaticVectorStorageMoveConstruct& operator=(const StaticVectorStorageMoveConstruct&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct(const StaticVectorStorageMoveConstruct&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct& operator=(const StaticVectorStorageMoveConstruct&) noexcept = default;
 
     StaticVectorStorageMoveConstruct(StaticVectorStorageMoveConstruct&&) noexcept = delete;
-    StaticVectorStorageMoveConstruct& operator=(StaticVectorStorageMoveConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct& operator=(StaticVectorStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageMoveConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticVectorStorageMoveAssign<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageMoveConstruct() noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct() noexcept = default;
 
-    StaticVectorStorageMoveConstruct(const StaticVectorStorageMoveConstruct&) noexcept = default;
-    StaticVectorStorageMoveConstruct& operator=(const StaticVectorStorageMoveConstruct&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct(const StaticVectorStorageMoveConstruct&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct& operator=(const StaticVectorStorageMoveConstruct&) noexcept = default;
 
-    StaticVectorStorageMoveConstruct(StaticVectorStorageMoveConstruct&& rhs) noexcept {
+    constexpr StaticVectorStorageMoveConstruct(StaticVectorStorageMoveConstruct&& rhs) noexcept {
 
         // we can do better - move only "active" elements
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    StaticVectorStorageMoveConstruct& operator=(StaticVectorStorageMoveConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct& operator=(StaticVectorStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageMoveConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticVectorStorageMoveAssign<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageMoveConstruct() noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct() noexcept = default;
 
-    StaticVectorStorageMoveConstruct(const StaticVectorStorageMoveConstruct&) noexcept = default;
-    StaticVectorStorageMoveConstruct& operator=(const StaticVectorStorageMoveConstruct&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct(const StaticVectorStorageMoveConstruct&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct& operator=(const StaticVectorStorageMoveConstruct&) noexcept = default;
 
-    StaticVectorStorageMoveConstruct(StaticVectorStorageMoveConstruct&& rhs) noexcept {
+    constexpr StaticVectorStorageMoveConstruct(StaticVectorStorageMoveConstruct&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    StaticVectorStorageMoveConstruct& operator=(StaticVectorStorageMoveConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageMoveConstruct& operator=(StaticVectorStorageMoveConstruct&&) noexcept = default;
 };
 
 template <
@@ -372,50 +372,50 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageCopyAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticVectorStorageMoveConstruct<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageCopyAssign() noexcept = default;
+    constexpr StaticVectorStorageCopyAssign() noexcept = default;
 
-    StaticVectorStorageCopyAssign(const StaticVectorStorageCopyAssign&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign(const StaticVectorStorageCopyAssign&) noexcept = default;
     StaticVectorStorageCopyAssign& operator=(const StaticVectorStorageCopyAssign&) noexcept = delete;
 
-    StaticVectorStorageCopyAssign(StaticVectorStorageCopyAssign&&) noexcept = default;
-    StaticVectorStorageCopyAssign& operator=(StaticVectorStorageCopyAssign&&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign(StaticVectorStorageCopyAssign&&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign& operator=(StaticVectorStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageCopyAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticVectorStorageMoveConstruct<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageCopyAssign() noexcept = default;
+    constexpr StaticVectorStorageCopyAssign() noexcept = default;
 
-    StaticVectorStorageCopyAssign(const StaticVectorStorageCopyAssign&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign(const StaticVectorStorageCopyAssign&) noexcept = default;
 
-    StaticVectorStorageCopyAssign& operator=(const StaticVectorStorageCopyAssign& rhs) noexcept {
+    constexpr StaticVectorStorageCopyAssign& operator=(const StaticVectorStorageCopyAssign& rhs) noexcept {
 
         // we can do better - copy only "active" elements
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    StaticVectorStorageCopyAssign(StaticVectorStorageCopyAssign&&) noexcept = default;
-    StaticVectorStorageCopyAssign& operator=(StaticVectorStorageCopyAssign&&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign(StaticVectorStorageCopyAssign&&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign& operator=(StaticVectorStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageCopyAssign<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticVectorStorageMoveConstruct<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageCopyAssign() noexcept = default;
+    constexpr StaticVectorStorageCopyAssign() noexcept = default;
 
-    StaticVectorStorageCopyAssign(const StaticVectorStorageCopyAssign&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign(const StaticVectorStorageCopyAssign&) noexcept = default;
 
-    StaticVectorStorageCopyAssign& operator=(const StaticVectorStorageCopyAssign& rhs) noexcept {
+    constexpr StaticVectorStorageCopyAssign& operator=(const StaticVectorStorageCopyAssign& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    StaticVectorStorageCopyAssign(StaticVectorStorageCopyAssign&&) noexcept = default;
-    StaticVectorStorageCopyAssign& operator=(StaticVectorStorageCopyAssign&&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign(StaticVectorStorageCopyAssign&&) noexcept = default;
+    constexpr StaticVectorStorageCopyAssign& operator=(StaticVectorStorageCopyAssign&&) noexcept = default;
 };
 
 template <
@@ -431,48 +431,48 @@ template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageCopyConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Deleted>
     : StaticVectorStorageCopyAssign<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageCopyConstruct() noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct() noexcept = default;
 
     StaticVectorStorageCopyConstruct(const StaticVectorStorageCopyConstruct&) noexcept = delete;
-    StaticVectorStorageCopyConstruct& operator=(const StaticVectorStorageCopyConstruct&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct& operator=(const StaticVectorStorageCopyConstruct&) noexcept = default;
 
-    StaticVectorStorageCopyConstruct(StaticVectorStorageCopyConstruct&&) noexcept = default;
-    StaticVectorStorageCopyConstruct& operator=(StaticVectorStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct(StaticVectorStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct& operator=(StaticVectorStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageCopyConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::Trivial>
     : StaticVectorStorageCopyAssign<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageCopyConstruct() noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct() noexcept = default;
 
-    StaticVectorStorageCopyConstruct(const StaticVectorStorageCopyConstruct& rhs) noexcept {
+    constexpr StaticVectorStorageCopyConstruct(const StaticVectorStorageCopyConstruct& rhs) noexcept {
 
         // we can do better - copy only "active" elements
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    StaticVectorStorageCopyConstruct& operator=(const StaticVectorStorageCopyConstruct&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct& operator=(const StaticVectorStorageCopyConstruct&) noexcept = default;
 
-    StaticVectorStorageCopyConstruct(StaticVectorStorageCopyConstruct&&) noexcept = default;
-    StaticVectorStorageCopyConstruct& operator=(StaticVectorStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct(StaticVectorStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct& operator=(StaticVectorStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE, typename Usize>
 struct StaticVectorStorageCopyConstruct<SelfT, T, SIZE, Usize, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : StaticVectorStorageCopyAssign<SelfT, T, SIZE, Usize>
 {
-    StaticVectorStorageCopyConstruct() noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct() noexcept = default;
 
-    StaticVectorStorageCopyConstruct(const StaticVectorStorageCopyConstruct& rhs) noexcept {
+    constexpr StaticVectorStorageCopyConstruct(const StaticVectorStorageCopyConstruct& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    StaticVectorStorageCopyConstruct& operator=(const StaticVectorStorageCopyConstruct&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct& operator=(const StaticVectorStorageCopyConstruct&) noexcept = default;
 
-    StaticVectorStorageCopyConstruct(StaticVectorStorageCopyConstruct&&) noexcept = default;
-    StaticVectorStorageCopyConstruct& operator=(StaticVectorStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct(StaticVectorStorageCopyConstruct&&) noexcept = default;
+    constexpr StaticVectorStorageCopyConstruct& operator=(StaticVectorStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename T, usize SIZE, typename Usize>
@@ -517,46 +517,46 @@ public:
         RHS_SIZE <= SIZE
     ;
 
-    ALT_FORCE_INLINE StaticVectorStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr StaticVectorStorage() noexcept = default;
 
-    ALT_FORCE_INLINE T* GetMemoryBegin() noexcept {
-
-        return this->GetMemoryBeginImpl();
-    }
-
-    ALT_FORCE_INLINE const T* GetMemoryBegin() const noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBegin() noexcept {
 
         return this->GetMemoryBeginImpl();
     }
 
-    ALT_FORCE_INLINE T* GetMemoryEnd() noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBegin() const noexcept {
+
+        return this->GetMemoryBeginImpl();
+    }
+
+    ALT_FORCE_INLINE constexpr T* GetMemoryEnd() noexcept {
 
         return this->GetMemoryBeginImpl() + GetSize();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryEnd() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryEnd() const noexcept {
 
         return this->GetMemoryBeginImpl() + GetSize();
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRef() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRef() noexcept {
 
         return this->GetSizeRefImpl();
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRef() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRef() const noexcept {
 
         return this->GetSizeRefImpl();
     }
 
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         return this->GetSizeImpl();
     }
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_copy_constructible_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(_StaticVectorDetails::Rule5Copy_t, const StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(_StaticVectorDetails::Rule5Copy_t, const StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         const T* pCopyEnd = Memory::CopyConstructObjectsNonOverlap(GetMemoryBegin(), rhs.GetMemoryBegin(), rhs.GetMemoryEnd());
         GetSizeRef() = static_cast<Usize>(pCopyEnd - GetMemoryBegin());
@@ -564,7 +564,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_copy_assignable_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(_StaticVectorDetails::Rule5Copy_t, const StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(_StaticVectorDetails::Rule5Copy_t, const StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return;
@@ -573,7 +573,7 @@ public:
         const usize size = GetSize();
         const usize rhsSize = rhs.GetSize();
 
-        const usize sizeToCopy = Num::Min(size, rhsSize);
+        const usize sizeToCopy = Min(size, rhsSize);
 
         T* pCopyEnd = Memory::CopyObjectsNonOverlap(GetMemoryBegin(), rhs.GetMemoryBegin(), rhs.GetMemoryBegin() + sizeToCopy);
         Memory::DestroyObjects(pCopyEnd, GetMemoryEnd());
@@ -584,7 +584,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_move_constructible_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(_StaticVectorDetails::Rule5Move_t, StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(_StaticVectorDetails::Rule5Move_t, StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(GetMemoryBegin(), rhs.GetMemoryBegin(), rhs.GetMemoryEnd());
 
@@ -594,7 +594,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<is_move_assignable_v<U, RHS_SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(_StaticVectorDetails::Rule5Move_t, StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(_StaticVectorDetails::Rule5Move_t, StaticVectorStorage<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return;
@@ -603,7 +603,7 @@ public:
         const usize size = GetSize();
         const usize rhsSize = rhs.GetSize();
 
-        const usize sizeToMove = Num::Min(size, rhsSize);
+        const usize sizeToMove = Min(size, rhsSize);
 
         Memory::MoveFromFirstElementResult<T> result = Memory::MoveDestructibleObjectsFromFirstElementNonOverlap(
             GetMemoryBegin(), rhs.GetMemoryBegin(), rhs.GetMemoryBegin() + sizeToMove
@@ -615,7 +615,7 @@ public:
         GetSizeRef() = static_cast<Usize>(Exchange(rhs.GetSizeRef(), 0));
     }
 
-    ALT_FORCE_INLINE void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         Memory::DestroyObjects(GetMemoryBegin(), GetMemoryEnd());
         GetSizeRef() = 0;
@@ -633,21 +633,21 @@ public:
 
     using CArray = T[SIZE];
 
-    ALT_FORCE_INLINE T* GetMemoryBeginImpl() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBeginImpl() noexcept {
 
         return m_Memory.GetVal();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBeginImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBeginImpl() const noexcept {
 
         return m_Memory.GetVal();
     }
 
-    ALT_FORCE_INLINE operator CArray&() noexcept {
+    ALT_FORCE_INLINE constexpr operator CArray&() noexcept {
         return m_Memory.GetVal();
     }
 
-    ALT_FORCE_INLINE operator const CArray&() const noexcept {
+    ALT_FORCE_INLINE constexpr operator const CArray&() const noexcept {
         return m_Memory.GetVal();
     }
 
@@ -660,12 +660,12 @@ template <typename T>
 class ArrayStorageCore<T, 0> {
 public:
 
-    ALT_FORCE_INLINE T* GetMemoryBeginImpl() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBeginImpl() noexcept {
 
         return nullptr;
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBeginImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBeginImpl() const noexcept {
 
         return nullptr;
     }
@@ -683,13 +683,13 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageDestruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ArrayStorageCore<T, SIZE>
 {
-    ArrayStorageDestruct() noexcept = default;
+    constexpr ArrayStorageDestruct() noexcept = default;
 
-    ArrayStorageDestruct(const ArrayStorageDestruct&) noexcept = default;
-    ArrayStorageDestruct& operator=(const ArrayStorageDestruct&) noexcept = default;
+    constexpr ArrayStorageDestruct(const ArrayStorageDestruct&) noexcept = default;
+    constexpr ArrayStorageDestruct& operator=(const ArrayStorageDestruct&) noexcept = default;
 
-    ArrayStorageDestruct(ArrayStorageDestruct&&) noexcept = default;
-    ArrayStorageDestruct& operator=(ArrayStorageDestruct&&) noexcept = default;
+    constexpr ArrayStorageDestruct(ArrayStorageDestruct&&) noexcept = default;
+    constexpr ArrayStorageDestruct& operator=(ArrayStorageDestruct&&) noexcept = default;
 
     ~ArrayStorageDestruct() noexcept = delete;
 };
@@ -698,13 +698,13 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageDestruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ArrayStorageCore<T, SIZE>
 {
-    ArrayStorageDestruct() noexcept = default;
+    constexpr ArrayStorageDestruct() noexcept = default;
 
-    ArrayStorageDestruct(const ArrayStorageDestruct&) noexcept = default;
-    ArrayStorageDestruct& operator=(const ArrayStorageDestruct&) noexcept = default;
+    constexpr ArrayStorageDestruct(const ArrayStorageDestruct&) noexcept = default;
+    constexpr ArrayStorageDestruct& operator=(const ArrayStorageDestruct&) noexcept = default;
 
-    ArrayStorageDestruct(ArrayStorageDestruct&&) noexcept = default;
-    ArrayStorageDestruct& operator=(ArrayStorageDestruct&&) noexcept = default;
+    constexpr ArrayStorageDestruct(ArrayStorageDestruct&&) noexcept = default;
+    constexpr ArrayStorageDestruct& operator=(ArrayStorageDestruct&&) noexcept = default;
 
     ~ArrayStorageDestruct() noexcept = default;
 };
@@ -713,13 +713,13 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageDestruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ArrayStorageCore<T, SIZE>
 {
-    ArrayStorageDestruct() noexcept = default;
+    constexpr ArrayStorageDestruct() noexcept = default;
 
-    ArrayStorageDestruct(const ArrayStorageDestruct&) noexcept = default;
-    ArrayStorageDestruct& operator=(const ArrayStorageDestruct&) noexcept = default;
+    constexpr ArrayStorageDestruct(const ArrayStorageDestruct&) noexcept = default;
+    constexpr ArrayStorageDestruct& operator=(const ArrayStorageDestruct&) noexcept = default;
 
-    ArrayStorageDestruct(ArrayStorageDestruct&&) noexcept = default;
-    ArrayStorageDestruct& operator=(ArrayStorageDestruct&&) noexcept = default;
+    constexpr ArrayStorageDestruct(ArrayStorageDestruct&&) noexcept = default;
+    constexpr ArrayStorageDestruct& operator=(ArrayStorageDestruct&&) noexcept = default;
 
     ~ArrayStorageDestruct() noexcept {
 
@@ -739,12 +739,12 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageMoveAssign<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ArrayStorageDestruct<SelfT, T, SIZE>
 {
-    ArrayStorageMoveAssign() noexcept = default;
+    constexpr ArrayStorageMoveAssign() noexcept = default;
 
-    ArrayStorageMoveAssign(const ArrayStorageMoveAssign&) noexcept = default;
-    ArrayStorageMoveAssign& operator=(const ArrayStorageMoveAssign&) noexcept = default;
+    constexpr ArrayStorageMoveAssign(const ArrayStorageMoveAssign&) noexcept = default;
+    constexpr ArrayStorageMoveAssign& operator=(const ArrayStorageMoveAssign&) noexcept = default;
 
-    ArrayStorageMoveAssign(ArrayStorageMoveAssign&&) noexcept = default;
+    constexpr ArrayStorageMoveAssign(ArrayStorageMoveAssign&&) noexcept = default;
     ArrayStorageMoveAssign& operator=(ArrayStorageMoveAssign&&) noexcept = delete;
 };
 
@@ -752,27 +752,27 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageMoveAssign<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ArrayStorageDestruct<SelfT, T, SIZE>
 {
-    ArrayStorageMoveAssign() noexcept = default;
+    constexpr ArrayStorageMoveAssign() noexcept = default;
 
-    ArrayStorageMoveAssign(const ArrayStorageMoveAssign&) noexcept = default;
-    ArrayStorageMoveAssign& operator=(const ArrayStorageMoveAssign&) noexcept = default;
+    constexpr ArrayStorageMoveAssign(const ArrayStorageMoveAssign&) noexcept = default;
+    constexpr ArrayStorageMoveAssign& operator=(const ArrayStorageMoveAssign&) noexcept = default;
 
-    ArrayStorageMoveAssign(ArrayStorageMoveAssign&&) noexcept = default;
-    ArrayStorageMoveAssign& operator=(ArrayStorageMoveAssign&&) noexcept = default;
+    constexpr ArrayStorageMoveAssign(ArrayStorageMoveAssign&&) noexcept = default;
+    constexpr ArrayStorageMoveAssign& operator=(ArrayStorageMoveAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageMoveAssign<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ArrayStorageDestruct<SelfT, T, SIZE>
 {
-    ArrayStorageMoveAssign() noexcept = default;
+    constexpr ArrayStorageMoveAssign() noexcept = default;
 
-    ArrayStorageMoveAssign(const ArrayStorageMoveAssign&) noexcept = default;
-    ArrayStorageMoveAssign& operator=(const ArrayStorageMoveAssign&) noexcept = default;
+    constexpr ArrayStorageMoveAssign(const ArrayStorageMoveAssign&) noexcept = default;
+    constexpr ArrayStorageMoveAssign& operator=(const ArrayStorageMoveAssign&) noexcept = default;
 
-    ArrayStorageMoveAssign(ArrayStorageMoveAssign&&) noexcept = default;
+    constexpr ArrayStorageMoveAssign(ArrayStorageMoveAssign&&) noexcept = default;
 
-    ArrayStorageMoveAssign& operator=(ArrayStorageMoveAssign&& rhs) noexcept {
+    constexpr ArrayStorageMoveAssign& operator=(ArrayStorageMoveAssign&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
         return *this;
@@ -791,43 +791,43 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageMoveConstruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ArrayStorageMoveAssign<SelfT, T, SIZE>
 {
-    ArrayStorageMoveConstruct() noexcept = default;
+    constexpr ArrayStorageMoveConstruct() noexcept = default;
 
-    ArrayStorageMoveConstruct(const ArrayStorageMoveConstruct&) noexcept = default;
-    ArrayStorageMoveConstruct& operator=(const ArrayStorageMoveConstruct&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct(const ArrayStorageMoveConstruct&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct& operator=(const ArrayStorageMoveConstruct&) noexcept = default;
 
     ArrayStorageMoveConstruct(ArrayStorageMoveConstruct&&) noexcept = delete;
-    ArrayStorageMoveConstruct& operator=(ArrayStorageMoveConstruct&&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct& operator=(ArrayStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageMoveConstruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ArrayStorageMoveAssign<SelfT, T, SIZE>
 {
-    ArrayStorageMoveConstruct() noexcept = default;
+    constexpr ArrayStorageMoveConstruct() noexcept = default;
 
-    ArrayStorageMoveConstruct(const ArrayStorageMoveConstruct&) noexcept = default;
-    ArrayStorageMoveConstruct& operator=(const ArrayStorageMoveConstruct&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct(const ArrayStorageMoveConstruct&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct& operator=(const ArrayStorageMoveConstruct&) noexcept = default;
 
-    ArrayStorageMoveConstruct(ArrayStorageMoveConstruct&&) noexcept = default;
-    ArrayStorageMoveConstruct& operator=(ArrayStorageMoveConstruct&&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct(ArrayStorageMoveConstruct&&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct& operator=(ArrayStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageMoveConstruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ArrayStorageMoveAssign<SelfT, T, SIZE>
 {
-    ArrayStorageMoveConstruct() noexcept = default;
+    constexpr ArrayStorageMoveConstruct() noexcept = default;
 
-    ArrayStorageMoveConstruct(const ArrayStorageMoveConstruct&) noexcept = default;
-    ArrayStorageMoveConstruct& operator=(const ArrayStorageMoveConstruct&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct(const ArrayStorageMoveConstruct&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct& operator=(const ArrayStorageMoveConstruct&) noexcept = default;
 
-    ArrayStorageMoveConstruct(ArrayStorageMoveConstruct&& rhs) noexcept {
+    constexpr ArrayStorageMoveConstruct(ArrayStorageMoveConstruct&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    ArrayStorageMoveConstruct& operator=(ArrayStorageMoveConstruct&&) noexcept = default;
+    constexpr ArrayStorageMoveConstruct& operator=(ArrayStorageMoveConstruct&&) noexcept = default;
 };
 
 template <
@@ -842,44 +842,44 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageCopyAssign<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ArrayStorageMoveConstruct<SelfT, T, SIZE>
 {
-    ArrayStorageCopyAssign() noexcept = default;
+    constexpr ArrayStorageCopyAssign() noexcept = default;
 
-    ArrayStorageCopyAssign(const ArrayStorageCopyAssign&) noexcept = default;
+    constexpr ArrayStorageCopyAssign(const ArrayStorageCopyAssign&) noexcept = default;
     ArrayStorageCopyAssign& operator=(const ArrayStorageCopyAssign&) noexcept = delete;
 
-    ArrayStorageCopyAssign(ArrayStorageCopyAssign&&) noexcept = default;
-    ArrayStorageCopyAssign& operator=(ArrayStorageCopyAssign&&) noexcept = default;
+    constexpr ArrayStorageCopyAssign(ArrayStorageCopyAssign&&) noexcept = default;
+    constexpr ArrayStorageCopyAssign& operator=(ArrayStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageCopyAssign<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ArrayStorageMoveConstruct<SelfT, T, SIZE>
 {
-    ArrayStorageCopyAssign() noexcept = default;
+    constexpr ArrayStorageCopyAssign() noexcept = default;
 
-    ArrayStorageCopyAssign(const ArrayStorageCopyAssign&) noexcept = default;
-    ArrayStorageCopyAssign& operator=(const ArrayStorageCopyAssign&) noexcept = default;
+    constexpr ArrayStorageCopyAssign(const ArrayStorageCopyAssign&) noexcept = default;
+    constexpr ArrayStorageCopyAssign& operator=(const ArrayStorageCopyAssign&) noexcept = default;
 
-    ArrayStorageCopyAssign(ArrayStorageCopyAssign&&) noexcept = default;
-    ArrayStorageCopyAssign& operator=(ArrayStorageCopyAssign&&) noexcept = default;
+    constexpr ArrayStorageCopyAssign(ArrayStorageCopyAssign&&) noexcept = default;
+    constexpr ArrayStorageCopyAssign& operator=(ArrayStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageCopyAssign<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ArrayStorageMoveConstruct<SelfT, T, SIZE>
 {
-    ArrayStorageCopyAssign() noexcept = default;
+    constexpr ArrayStorageCopyAssign() noexcept = default;
 
-    ArrayStorageCopyAssign(const ArrayStorageCopyAssign&) noexcept = default;
+    constexpr ArrayStorageCopyAssign(const ArrayStorageCopyAssign&) noexcept = default;
 
-    ArrayStorageCopyAssign& operator=(const ArrayStorageCopyAssign& rhs) noexcept {
+    constexpr ArrayStorageCopyAssign& operator=(const ArrayStorageCopyAssign& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    ArrayStorageCopyAssign(ArrayStorageCopyAssign&&) noexcept = default;
-    ArrayStorageCopyAssign& operator=(ArrayStorageCopyAssign&&) noexcept = default;
+    constexpr ArrayStorageCopyAssign(ArrayStorageCopyAssign&&) noexcept = default;
+    constexpr ArrayStorageCopyAssign& operator=(ArrayStorageCopyAssign&&) noexcept = default;
 };
 
 template <
@@ -894,43 +894,43 @@ template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageCopyConstruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Deleted>
     : ArrayStorageCopyAssign<SelfT, T, SIZE>
 {
-    ArrayStorageCopyConstruct() noexcept = default;
+    constexpr ArrayStorageCopyConstruct() noexcept = default;
 
     ArrayStorageCopyConstruct(const ArrayStorageCopyConstruct&) noexcept = delete;
-    ArrayStorageCopyConstruct& operator=(const ArrayStorageCopyConstruct&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct& operator=(const ArrayStorageCopyConstruct&) noexcept = default;
 
-    ArrayStorageCopyConstruct(ArrayStorageCopyConstruct&&) noexcept = default;
-    ArrayStorageCopyConstruct& operator=(ArrayStorageCopyConstruct&&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct(ArrayStorageCopyConstruct&&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct& operator=(ArrayStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageCopyConstruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::Trivial>
     : ArrayStorageCopyAssign<SelfT, T, SIZE>
 {
-    ArrayStorageCopyConstruct() noexcept = default;
+    constexpr ArrayStorageCopyConstruct() noexcept = default;
 
-    ArrayStorageCopyConstruct(const ArrayStorageCopyConstruct&) noexcept = default;
-    ArrayStorageCopyConstruct& operator=(const ArrayStorageCopyConstruct&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct(const ArrayStorageCopyConstruct&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct& operator=(const ArrayStorageCopyConstruct&) noexcept = default;
 
-    ArrayStorageCopyConstruct(ArrayStorageCopyConstruct&&) noexcept = default;
-    ArrayStorageCopyConstruct& operator=(ArrayStorageCopyConstruct&&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct(ArrayStorageCopyConstruct&&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct& operator=(ArrayStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, usize SIZE>
 struct ArrayStorageCopyConstruct<SelfT, T, SIZE, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : ArrayStorageCopyAssign<SelfT, T, SIZE>
 {
-    ArrayStorageCopyConstruct() noexcept = default;
+    constexpr ArrayStorageCopyConstruct() noexcept = default;
 
-    ArrayStorageCopyConstruct(const ArrayStorageCopyConstruct& rhs) noexcept {
+    constexpr ArrayStorageCopyConstruct(const ArrayStorageCopyConstruct& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    ArrayStorageCopyConstruct& operator=(const ArrayStorageCopyConstruct&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct& operator=(const ArrayStorageCopyConstruct&) noexcept = default;
 
-    ArrayStorageCopyConstruct(ArrayStorageCopyConstruct&&) noexcept = default;
-    ArrayStorageCopyConstruct& operator=(ArrayStorageCopyConstruct&&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct(ArrayStorageCopyConstruct&&) noexcept = default;
+    constexpr ArrayStorageCopyConstruct& operator=(ArrayStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename T, usize SIZE>
@@ -963,29 +963,29 @@ public:
         std::is_same_v<U, T> && std::is_assignable_v<T&, U&&> && RHS_SIZE <= SIZE
     ;
 
-    ALT_FORCE_INLINE T* GetMemoryBegin() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBegin() noexcept {
 
         return this->GetMemoryBeginImpl();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBegin() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBegin() const noexcept {
 
         return this->GetMemoryBeginImpl();
     }
 
-    ALT_FORCE_INLINE T* GetMemoryEnd() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryEnd() noexcept {
 
         return this->GetMemoryBeginImpl() + SIZE;
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryEnd() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryEnd() const noexcept {
 
         return this->GetMemoryBeginImpl() + SIZE;
     }
 
     template <typename U = T,
         std::enable_if_t<is_copy_constructible_v<U, SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(Rule5Copy_t, const ArrayStorage<U, SIZE>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const ArrayStorage<U, SIZE>& rhs) noexcept {
 
         ALT_MAYBE_UNUSED const T* pCopyPossibleEnd = Memory::CopyConstructObjectsNonOverlap(
             GetMemoryBegin(), rhs.GetMemoryBegin(), rhs.GetMemoryEnd()
@@ -994,7 +994,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<is_copy_assignable_v<U, SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(Rule5Copy_t, const ArrayStorage<U, SIZE>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const ArrayStorage<U, SIZE>& rhs) noexcept {
 
         if (this == &rhs) {
             return;
@@ -1007,14 +1007,14 @@ public:
 
     template <typename U = T,
         std::enable_if_t<is_move_constructible_v<U, SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Construct(Rule5Move_t, ArrayStorage<U, SIZE>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, ArrayStorage<U, SIZE>& rhs) noexcept {
 
         Memory::MoveConstructObjectsFromFirstElementNonOverlap(GetMemoryBegin(), rhs.GetMemoryBegin(), rhs.GetMemoryEnd());
     }
 
     template <typename U = T,
         std::enable_if_t<is_move_assignable_v<U, SIZE>>* = nullptr>
-    ALT_FORCE_INLINE void Assign(Rule5Move_t, ArrayStorage<U, SIZE>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, ArrayStorage<U, SIZE>& rhs) noexcept {
 
         if (this == &rhs) {
             return;
@@ -1023,7 +1023,7 @@ public:
         Memory::MoveObjectsFromFirstElementNonOverlap(GetMemoryBegin(), rhs.GetMemoryBegin(), rhs.GetMemoryEnd());
     }
 
-    ALT_FORCE_INLINE void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         Memory::DestroyObjects(GetMemoryBegin(), GetMemoryEnd());
     }
@@ -1096,7 +1096,7 @@ public:
      */
     template <usize SIZE_, typename U = T,
         std::enable_if_t<SIZE_ != 0 && SIZE_ <= SIZE && std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD static StaticVector Create() noexcept {
+    ALT_NODISCARD constexpr static StaticVector Create() noexcept {
 
         StaticVector result{};
         ALT_MAYBE_UNUSED const bool isOk = result.Resize(SIZE_);
@@ -1109,7 +1109,7 @@ public:
 
     template <usize SIZE_, typename U = T,
         std::enable_if_t<SIZE_ == 0>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE static StaticVector Create() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static StaticVector Create() noexcept {
 
         return StaticVector{};
     }
@@ -1130,7 +1130,7 @@ public:
      */
     template <usize SIZE_, typename U = T,
         std::enable_if_t<SIZE_ <= SIZE && (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)>* = nullptr>
-    ALT_NODISCARD static StaticVector Create(const U& val) noexcept {
+    ALT_NODISCARD constexpr static StaticVector Create(const U& val) noexcept {
 
         StaticVector result{};
         ALT_MAYBE_UNUSED const bool isOk = result.Resize(SIZE_, val);
@@ -1156,7 +1156,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticVector> Create(const usize size = 0) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticVector> Create(const usize size = 0) noexcept {
         iferr_scope;
 
         StaticVector result{};
@@ -1183,7 +1183,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticVector> Create(const usize size, const U& val) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticVector> Create(const usize size, const U& val) noexcept {
         iferr_scope;
 
         StaticVector result{};
@@ -1207,7 +1207,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<(is_populated_v<ArgsT...> && sizeof...(ArgsT) <= SIZE) && std::conjunction_v<is_pushable_t<ArgsT&&>...>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticVector> CreatePush(ArgsT&&... args) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticVector> CreatePush(ArgsT&&... args) noexcept {
         iferr_scope;
 
         StaticVector self;
@@ -1224,7 +1224,7 @@ public:
      * assert(vec.IsEmpty());
      * assert(vec.GetCapacity() == 10);
      */
-    ALT_FORCE_INLINE StaticVector() noexcept = default;
+    ALT_FORCE_INLINE constexpr StaticVector() noexcept = default;
 
     /**
      * @brief Creates a StaticVector using a variadic list of arguments.
@@ -1241,7 +1241,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<(sizeof...(ArgsT) <= SIZE) && std::conjunction_v<std::is_constructible<T, ArgsT&&>...>>* = nullptr>
-    StaticVector(ArgsT&&... args) noexcept {
+    constexpr StaticVector(ArgsT&&... args) noexcept {
 
         ALT_MAYBE_UNUSED const bool isOk = PushVariadicImpl(*this, std::forward<ArgsT>(args)...);
 
@@ -1261,7 +1261,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<Storage::template is_copy_constructible_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector(const StaticVector<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    constexpr StaticVector(const StaticVector<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         m_Storage.Construct(_StaticVectorDetails::Rule5Copy, rhs.m_Storage);
     }
@@ -1282,7 +1282,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<Storage::template is_copy_assignable_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector& operator=(const StaticVector<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    constexpr StaticVector& operator=(const StaticVector<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
 
         m_Storage.Assign(_StaticVectorDetails::Rule5Copy, rhs.m_Storage);
         return *this;
@@ -1301,7 +1301,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<Storage::template is_move_constructible_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector(StaticVector<U, RHS_SIZE, RHSUsize>&& rhs) noexcept {
+    constexpr StaticVector(StaticVector<U, RHS_SIZE, RHSUsize>&& rhs) noexcept {
 
         m_Storage.Construct(_StaticVectorDetails::Rule5Move, rhs.m_Storage);
     }
@@ -1322,7 +1322,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE, typename RHSUsize = Usize,
         std::enable_if_t<Storage::template is_move_assignable_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector& operator=(StaticVector<U, RHS_SIZE, RHSUsize>&& rhs) noexcept {
+    constexpr StaticVector& operator=(StaticVector<U, RHS_SIZE, RHSUsize>&& rhs) noexcept {
 
         m_Storage.Assign(_StaticVectorDetails::Rule5Move, rhs.m_Storage);
         return *this;
@@ -1332,7 +1332,7 @@ public:
      * @brief Returns the number of elements currently in the vector.
      * @return The size of the vector.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         return m_Storage.GetSize();
     }
@@ -1350,7 +1350,7 @@ public:
      * @brief Checks if the vector contains no elements.
      * @return True if empty, false otherwise.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
 
         return GetSize() == 0;
     }
@@ -1359,7 +1359,7 @@ public:
      * @brief Checks if the vector contains at least one element.
      * @return True if populated, false otherwise.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsPopulated() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsPopulated() const noexcept {
 
         return !IsEmpty();
     }
@@ -1368,7 +1368,7 @@ public:
      * @brief Checks if the vector full - any push will return false.
      * @return True if full, false otherwise.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsFull() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsFull() const noexcept {
 
         return GetSize() == SIZE;
     }
@@ -1377,7 +1377,7 @@ public:
      * @brief Removes all elements from the vector.
      * @details Destroys all existing objects.
      */
-    void Clear() noexcept {
+    constexpr void Clear() noexcept {
 
         m_Storage.Destroy();
     }
@@ -1392,13 +1392,13 @@ public:
      * assert(vec[0] == 0);
      * assert(vec[1] == 2);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize i) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         return *(GetMemoryBegin() + i);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& operator[](const usize i) const noexcept {
         ALT_ASSERT(i < GetSize());
 
         return *(GetMemoryBegin() + i);
@@ -1408,13 +1408,13 @@ public:
      * @brief Returns a reference to the first element.
      * @return Reference to the first element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetFirst() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetFirst() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetMemoryBegin();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetFirst() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetFirst() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetMemoryBegin();
@@ -1425,13 +1425,13 @@ public:
      * @return Reference to the last element.
      * @note Asserts that the vector is not empty.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetLast() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetLast() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(GetMemoryEnd() - 1);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetLast() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetLast() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(GetMemoryEnd() - 1);
@@ -1441,12 +1441,12 @@ public:
      * @brief Returns a pointer to the beginning.
      * @return Pointer to the first element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T* Data() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T* Data() noexcept {
 
         return GetMemoryBegin();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T* Data() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* Data() const noexcept {
 
         return GetMemoryBegin();
     }
@@ -1455,12 +1455,12 @@ public:
      * @brief Returns a raw pointer to the end of the vector.
      * @return Pointer to the next after last element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T* DataEnd() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T* DataEnd() noexcept {
 
         return GetMemoryEnd();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T* DataEnd() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* DataEnd() const noexcept {
 
         return GetMemoryEnd();
     }
@@ -1469,7 +1469,7 @@ public:
      * @brief Returns a mutable iterator for the vector.
      * @return An `VectorIterator`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE VectorIterator<T> GetIterator() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr VectorIterator<T> GetIterator() noexcept {
 
         return VectorIterator<T>{ *this };
     }
@@ -1478,7 +1478,7 @@ public:
      * @brief Returns a constant iterator for the vector.
      * @return An `VectorIteratorConst`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE VectorIteratorConst<T> GetIterator() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr VectorIteratorConst<T> GetIterator() const noexcept {
 
         return VectorIteratorConst<T>{ *this };
     }
@@ -1508,7 +1508,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || (std::is_assignable_v<T&, const U&> && std::is_constructible_v<T, const U&>))
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
 
         if (static_cast<const void*>(this) == &vector) {
             return true;
@@ -1523,7 +1523,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || (std::is_assignable_v<T&, const U&> && std::is_constructible_v<T, const U&>))
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
 
         if (static_cast<const void*>(this) == &vector) {
             return true;
@@ -1539,7 +1539,7 @@ public:
             std::is_same_v<InnerU, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const InnerU&> || (std::is_assignable_v<T&, const InnerU&> && std::is_constructible_v<T, const InnerU&>))
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(U&& rhs) noexcept {
 
         const Slice<const T> slice = rhs;
         ALT_ASSERT(!Memory::IsOverlap(GetMemoryBegin(), GetMemoryEnd(), slice.Data(), slice.DataEnd()));
@@ -1551,7 +1551,7 @@ public:
             return false;
         }
 
-        const usize sizeToClone = Num::Min(size, sliceSize);
+        const usize sizeToClone = Min(size, sliceSize);
 
         Memory::CloneFromFirstElementResult<T> result = Memory::CloneObjectsFromFirstElementNonOverlap(
             GetMemoryBegin(), slice.Data(), slice.Data() + sizeToClone
@@ -1574,7 +1574,7 @@ public:
         return result.isOk;
     }
 
-    ALT_NODISCARD bool CloneFrom(const T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const T* pBegin, const usize size) noexcept {
 
         const Slice<const T> slice{ pBegin, size };
         return CloneFrom(slice);
@@ -1585,7 +1585,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const StaticVector<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const StaticVector<U, RHS_SIZE, RHSUsize>& rhs) noexcept {
         ALT_ASSERT(static_cast<const void*>(this) != &rhs);
 
         const usize rhsSize = rhs.GetSize();
@@ -1608,7 +1608,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD Optional<StaticVector> Clone() const noexcept {
+    ALT_NODISCARD constexpr Optional<StaticVector> Clone() const noexcept {
         iferr_scope;
 
         MaybeUninit<StaticVector> valueToConstruct;
@@ -1637,7 +1637,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE, typename RHSUsize,
         std::enable_if_t<std::is_same_v<U, T> && std::is_assignable_v<T&, U&&> && std::is_constructible_v<T, U&&>>* = nullptr>
-    bool MoveFrom(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
+    constexpr bool MoveFrom(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
 
         if (static_cast<const void*>(this) == &vector) {
             return true;
@@ -1649,7 +1649,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE, typename RHSUsize,
         std::enable_if_t<std::is_same_v<U, T> && std::is_assignable_v<T&, U&&> && std::is_constructible_v<T, U&&>>* = nullptr>
-    bool MoveFrom(StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
+    constexpr bool MoveFrom(StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
 
         if (static_cast<const void*>(this) == &vector) {
             return true;
@@ -1665,7 +1665,7 @@ public:
             std::is_same_v<InnerU, T> &&
             std::is_assignable_v<T&, InnerU&&> && std::is_constructible_v<T, InnerU&&>
         >* = nullptr>
-    ALT_NODISCARD bool MoveFrom(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool MoveFrom(U&& rhs) noexcept {
 
         Slice<T> slice = rhs;
         ALT_ASSERT(!Memory::IsOverlap(GetMemoryBegin(), GetMemoryEnd(), slice.Data(), slice.DataEnd()));
@@ -1677,7 +1677,7 @@ public:
             return false;
         }
 
-        const usize sizeToMove = Num::Min(size, sliceSize);
+        const usize sizeToMove = Min(size, sliceSize);
 
         Memory::MoveFromFirstElementResult<T> result = Memory::MoveObjectsFromFirstElementNonOverlap(
             GetMemoryBegin(), slice.Data(), slice.Data() + sizeToMove
@@ -1692,7 +1692,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD bool MoveFrom(T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool MoveFrom(T* pBegin, const usize size) noexcept {
 
         Slice<T> slice{ pBegin, size };
         return MoveFrom(slice);
@@ -1716,7 +1716,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendClone(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
+    ALT_NODISCARD constexpr bool AppendClone(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
 
         const Slice<const T> slice = vector;
         return AppendClone(slice);
@@ -1727,7 +1727,7 @@ public:
             std::is_same_v<U, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendClone(const StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
+    ALT_NODISCARD constexpr bool AppendClone(const StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
 
         const Slice<const T> slice = vector;
         return AppendClone(slice);
@@ -1739,7 +1739,7 @@ public:
             std::is_same_v<InnerU, T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, const InnerU&> || std::is_constructible_v<T, const InnerU&>)
         >* = nullptr>
-    ALT_NODISCARD bool AppendClone(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool AppendClone(U&& rhs) noexcept {
         iferr_scope;
 
         const Slice<const T> slice = rhs;
@@ -1750,7 +1750,7 @@ public:
             return true;
         }
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeToAppend) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeToAppend) iferr_return false;
         if (size > GetCapacity()) {
             return false;
         }
@@ -1764,7 +1764,7 @@ public:
         return result.isOk;
     }
 
-    ALT_NODISCARD bool AppendClone(const T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool AppendClone(const T* pBegin, const usize size) noexcept {
 
         const Slice<const T> slice{ pBegin, size };
         return AppendClone(slice);
@@ -1787,7 +1787,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE, typename RHSUsize,
         std::enable_if_t<std::is_same_v<U, T> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool AppendMove(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
+    ALT_NODISCARD constexpr bool AppendMove(StaticVector<U, RHS_SIZE, RHSUsize>&& vector) noexcept {
 
         Slice<T> slice = vector;
         return AppendMove(slice);
@@ -1795,7 +1795,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE, typename RHSUsize,
         std::enable_if_t<std::is_same_v<U, T> && std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_NODISCARD bool AppendMove(StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
+    ALT_NODISCARD constexpr bool AppendMove(StaticVector<U, RHS_SIZE, RHSUsize>& vector) noexcept {
 
         Slice<T> slice = vector;
         return AppendMove(slice);
@@ -1807,7 +1807,7 @@ public:
             std::is_same_v<InnerU, T> &&
             std::is_constructible_v<T, InnerU&&>
         >* = nullptr>
-    ALT_NODISCARD bool AppendMove(U&& rhs) noexcept {
+    ALT_NODISCARD constexpr bool AppendMove(U&& rhs) noexcept {
         iferr_scope;
 
         Slice<T> slice = rhs;
@@ -1818,7 +1818,7 @@ public:
             return true;
         }
 
-        const usize sizeNew = Num::AddOverflowCheck(GetSize(), sizeToAppend) iferr_return false;
+        const usize sizeNew = AddOverflowCheck(GetSize(), sizeToAppend) iferr_return false;
         if (sizeNew > GetCapacity()) {
             return false;
         }
@@ -1829,7 +1829,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD bool AppendMove(T* pBegin, const usize size) noexcept {
+    ALT_NODISCARD constexpr bool AppendMove(T* pBegin, const usize size) noexcept {
 
         Slice<T> slice{ pBegin, size };
         return AppendMove(slice);
@@ -1850,7 +1850,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_pushable_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool Push(U&& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool Push(U&& val) noexcept {
 
         if (IsFull()) {
 
@@ -1881,12 +1881,12 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<is_populated_v<ArgsT...> && std::conjunction_v<is_pushable_t<ArgsT&&>...>>* = nullptr>
-    ALT_NODISCARD bool Push(ArgsT&&... vals) noexcept {
+    ALT_NODISCARD constexpr bool Push(ArgsT&&... vals) noexcept {
         iferr_scope;
 
         constexpr usize sizeToPush = sizeof...(ArgsT);
 
-        const usize sizeNew = Num::AddOverflowCheck(GetSize(), sizeToPush) iferr_return false;
+        const usize sizeNew = AddOverflowCheck(GetSize(), sizeToPush) iferr_return false;
         if (sizeNew > GetCapacity()) {
             return false;
         }
@@ -1908,7 +1908,7 @@ public:
      * usize val = vec.Pop();
      * assert(val == 4);
      */
-    ALT_FORCE_INLINE T Pop() noexcept {
+    ALT_FORCE_INLINE constexpr T Pop() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         GetSizeRef() -= 1;
@@ -1936,7 +1936,7 @@ public:
             std::is_default_constructible_v<T> &&
             (TypeTraits::is_only_clonable_to_from_v<T, U&&> || std::is_constructible_v<T, U&&>)
         >* = nullptr>
-    ALT_NODISCARD bool Insert(const usize i, U&& val) noexcept {
+    ALT_NODISCARD constexpr bool Insert(const usize i, U&& val) noexcept {
 
         return InsertImpl(i, std::forward<U>(val));
     }
@@ -1966,10 +1966,10 @@ public:
             std::is_default_constructible_v<U> &&
             std::conjunction_v<std::is_convertible<ArgsT&&, usize>...>
         >* = nullptr>
-    ALT_NODISCARD bool ResizeAddition(ArgsT&&... sizeAdditions) noexcept {
+    ALT_NODISCARD constexpr bool ResizeAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return Resize(size);
     }
@@ -1993,7 +1993,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD bool Resize(const usize size) noexcept {
+    ALT_NODISCARD constexpr bool Resize(const usize size) noexcept {
 
         const usize sizeOld = GetSize();
         if (size < sizeOld) {
@@ -2019,7 +2019,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>>* = nullptr>
-    ALT_NODISCARD bool Resize(const usize size, const U& val) noexcept {
+    ALT_NODISCARD constexpr bool Resize(const usize size, const U& val) noexcept {
 
         const usize sizeOld = GetSize();
         if (size < sizeOld) {
@@ -2062,7 +2062,7 @@ public:
      * assert(first == 0);
      * assert(vec[0] == 16);
      */
-    T RemoveSwapLast(const usize i) noexcept {
+    constexpr T RemoveSwapLast(const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         T result = Algorithms::RemoveSwapLast(GetMemoryBegin(), GetMemoryEnd(), GetMemoryBegin() + i);
@@ -2086,7 +2086,7 @@ public:
      * assert(first == 0);
      * assert(vec[0] == 2);
      */
-    T Remove(const usize i) noexcept {
+    constexpr T Remove(const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         T result = Algorithms::Remove(GetMemoryBegin(), GetMemoryEnd(), GetMemoryBegin() + i);
@@ -2117,41 +2117,41 @@ public:
      * assert(pBS3 == vec.DataEnd());
      */
     template <typename FuncT>
-    ALT_NODISCARD T* BinarySearch(FuncT&& cmp) noexcept {
+    ALT_NODISCARD constexpr T* BinarySearch(FuncT&& cmp) noexcept {
 
         return Algorithms::BinarySearch(GetMemoryBegin(), GetMemoryEnd(), std::forward<FuncT>(cmp));
     }
 
     template <typename FuncT>
-    ALT_NODISCARD const T* BinarySearch(FuncT&& cmp) const noexcept {
+    ALT_NODISCARD constexpr const T* BinarySearch(FuncT&& cmp) const noexcept {
 
         return Algorithms::BinarySearch(GetMemoryBegin(), GetMemoryEnd(), std::forward<FuncT>(cmp));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD T* BinarySearchLowerBound(U&& x) noexcept {
+    ALT_NODISCARD constexpr T* BinarySearchLowerBound(U&& x) noexcept {
 
         return Algorithms::BinarySearchLowerBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD const T* BinarySearchLowerBound(U&& x) const noexcept {
+    ALT_NODISCARD constexpr const T* BinarySearchLowerBound(U&& x) const noexcept {
 
         return Algorithms::BinarySearchLowerBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD T* BinarySearchUpperBound(U&& x) noexcept {
+    ALT_NODISCARD constexpr T* BinarySearchUpperBound(U&& x) noexcept {
 
         return Algorithms::BinarySearchUpperBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD const T* BinarySearchUpperBound(U&& x) const noexcept {
+    ALT_NODISCARD constexpr const T* BinarySearchUpperBound(U&& x) const noexcept {
 
         return Algorithms::BinarySearchUpperBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
@@ -2191,7 +2191,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator==(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(U&& rhs_) const noexcept {
 
         Slice<const T> rhs = rhs_;
         return Algorithms::CompareEQ(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -2199,7 +2199,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator!=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(U&& rhs_) const noexcept {
 
         Slice<const T> rhs = rhs_;
         return Algorithms::CompareNE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -2207,7 +2207,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator<(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(U&& rhs_) const noexcept {
 
         Slice<const T> rhs = rhs_;
         return Algorithms::CompareLT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -2215,7 +2215,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator<=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(U&& rhs_) const noexcept {
 
         Slice<const T> rhs = rhs_;
         return Algorithms::CompareLE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -2223,7 +2223,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator>(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(U&& rhs_) const noexcept {
 
         Slice<const T> rhs = rhs_;
         return Algorithms::CompareGT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -2231,7 +2231,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && std::is_same_v<InnerU, T>>* = nullptr>
-    ALT_NODISCARD bool operator>=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(U&& rhs_) const noexcept {
 
         Slice<const T> rhs = rhs_;
         return Algorithms::CompareGE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -2241,61 +2241,61 @@ private:
 
     template <typename U = Usize,
         std::enable_if_t<std::is_same_v<U, usize>>* = nullptr>
-    ALT_FORCE_INLINE static bool IsCanOverflowSizeInc(const U x) noexcept {
+    ALT_FORCE_INLINE constexpr static bool IsCanOverflowSizeInc(const U x) noexcept {
 
-        return Num::IsOverflowCheckAdd(x, 1);
+        return IsOverflowCheckAdd(x, 1);
     }
 
     template <typename U = Usize,
         std::enable_if_t<!std::is_same_v<U, usize>>* = nullptr>
-    ALT_FORCE_INLINE static bool IsCanOverflowSizeInc(const U) noexcept {
+    ALT_FORCE_INLINE constexpr static bool IsCanOverflowSizeInc(const U) noexcept {
 
         return false;
     }
 
-    ALT_FORCE_INLINE T* GetMemoryBegin() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBegin() noexcept {
 
         return m_Storage.GetMemoryBegin();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBegin() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBegin() const noexcept {
 
         return m_Storage.GetMemoryBegin();
     }
 
-    ALT_FORCE_INLINE T* GetMemoryEnd() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryEnd() noexcept {
 
         return m_Storage.GetMemoryEnd();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryEnd() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryEnd() const noexcept {
 
         return m_Storage.GetMemoryEnd();
     }
 
-    ALT_FORCE_INLINE Usize& GetSizeRef() noexcept {
+    ALT_FORCE_INLINE constexpr Usize& GetSizeRef() noexcept {
 
         return m_Storage.GetSizeRef();
     }
 
-    ALT_FORCE_INLINE const Usize& GetSizeRef() const noexcept {
+    ALT_FORCE_INLINE constexpr const Usize& GetSizeRef() const noexcept {
 
         return m_Storage.GetSizeRef();
     }
 
     template <typename HeadT, typename ...TailT>
-    ALT_FORCE_INLINE static bool PushVariadicImpl(StaticVector& self, HeadT&& head, TailT&&... tail) noexcept {
+    ALT_FORCE_INLINE constexpr static bool PushVariadicImpl(StaticVector& self, HeadT&& head, TailT&&... tail) noexcept {
         iferr_scope;
 
         self.Push(std::forward<HeadT>(head)) iferr_return false;
         return PushVariadicImpl(self, std::forward<TailT>(tail)...);
     }
 
-    ALT_FORCE_INLINE static bool PushVariadicImpl(StaticVector&) noexcept { return true; }
+    ALT_FORCE_INLINE constexpr static bool PushVariadicImpl(StaticVector&) noexcept { return true; }
 
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, const U&> && !std::is_constructible_v<T, const U&>>* = nullptr>
-    ALT_FORCE_INLINE bool InsertImpl(const usize i, const U& val_) noexcept {
+    ALT_FORCE_INLINE constexpr bool InsertImpl(const usize i, const U& val_) noexcept {
         iferr_scope;
 
         U val = val_.Clone() iferr_return false;
@@ -2304,7 +2304,7 @@ private:
 
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T, U&&>>* = nullptr>
-    ALT_FORCE_INLINE bool InsertImpl(const usize i, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr bool InsertImpl(const usize i, U&& val) noexcept {
 
         const usize size = GetSize();
 
@@ -2330,7 +2330,7 @@ private:
 
             T* pMemoryInsertConstruct = GetMemoryBegin() + i;
 
-            if (TypeTraits::is_trivially_reallocatable_v<T>) {
+            if (!ALT_IS_CONSTANT_EVALUATED && TypeTraits::is_trivially_reallocatable_v<T>) {
 
                 std::memmove(pMemoryInsertConstruct + 1, pMemoryInsertConstruct, (size - i) * sizeof(T));
                 Memory::ConstructObject(pMemoryInsertConstruct, std::forward<U>(val));
@@ -2408,14 +2408,14 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<SIZE != 0 && std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD static StaticVector Create() noexcept {
+    ALT_NODISCARD constexpr static StaticVector Create() noexcept {
 
         return StaticVector{};
     }
 
     template <typename U = T,
         std::enable_if_t<SIZE == 0 && std::is_same_v<U, T>>* = nullptr>
-    ALT_NODISCARD static StaticVector Create() noexcept {
+    ALT_NODISCARD constexpr static StaticVector Create() noexcept {
 
         return StaticVector{};
     }
@@ -2436,7 +2436,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticVector> Create(const U& val) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticVector> Create(const U& val) noexcept {
 
         StaticVector result{ Unitialized };
 
@@ -2467,7 +2467,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<(sizeof...(ArgsT) == SIZE) && std::conjunction_v<is_pushable_t<ArgsT&&>...>>* = nullptr>
-    ALT_NODISCARD static Optional<StaticVector> CreatePush(ArgsT&&... args) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticVector> CreatePush(ArgsT&&... args) noexcept {
         iferr_scope;
 
         StaticVector result{ Unitialized };
@@ -2481,7 +2481,7 @@ public:
             std::conjunction_v<is_pushable_t<ArgsT&&>...> &&
             ((sizeof...(ArgsT) < SIZE) && std::is_default_constructible_v<T>)
         >* = nullptr>
-    ALT_NODISCARD static Optional<StaticVector> CreatePush(ArgsT&&... args) noexcept {
+    ALT_NODISCARD constexpr static Optional<StaticVector> CreatePush(ArgsT&&... args) noexcept {
         iferr_scope;
 
         const usize size = sizeof...(ArgsT);
@@ -2506,7 +2506,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<SIZE != 0 && std::is_default_constructible_v<U>>* = nullptr>
-    StaticVector() noexcept
+    constexpr StaticVector() noexcept
         : StaticVector(Unitialized)
     {
         Memory::FillConstructDefaultObjects(GetMemoryBegin(), GetMemoryEnd());
@@ -2514,7 +2514,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<SIZE == 0 && std::is_same_v<U, T>>* = nullptr>
-    StaticVector() noexcept
+    constexpr StaticVector() noexcept
         : StaticVector(Unitialized)
     {}
 
@@ -2535,7 +2535,7 @@ public:
             (sizeof...(ArgsT) == SIZE) &&
             std::conjunction_v<std::is_constructible<T, ArgsT&&>...>
         >* = nullptr>
-    StaticVector(ArgsT&&... args) noexcept
+    constexpr StaticVector(ArgsT&&... args) noexcept
         : StaticVector(Unitialized)
     {
         ALT_MAYBE_UNUSED const bool isOk = ConstructVariadicImpl(*this, 0, std::forward<ArgsT>(args)...);
@@ -2549,7 +2549,7 @@ public:
             std::conjunction_v<std::is_constructible<T, ArgsT&&>...> &&
             ((sizeof...(ArgsT) < SIZE) && std::is_default_constructible_v<T>)
         >* = nullptr>
-    StaticVector(ArgsT&&... args) noexcept
+    constexpr StaticVector(ArgsT&&... args) noexcept
         : StaticVector(Unitialized)
     {
         const usize size = sizeof...(ArgsT);
@@ -2564,7 +2564,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<std::is_constructible_v<T, U&&>>* = nullptr>
-    StaticVector(U&& val) noexcept
+    constexpr StaticVector(U&& val) noexcept
         : StaticVector(Unitialized)
     {
         Memory::FillCopyConstructObjects(GetMemoryBegin(), GetMemoryEnd(), val);
@@ -2581,7 +2581,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_copy_constructible_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector(const Array<U, SIZE>& rhs) noexcept
+    constexpr StaticVector(const Array<U, SIZE>& rhs) noexcept
         : StaticVector(Unitialized)
     {
         m_Storage.Construct(_StaticVectorDetails::Rule5Copy, rhs.m_Storage);
@@ -2601,7 +2601,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_copy_assignable_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector& operator=(const Array<U, SIZE>& rhs) noexcept {
+    constexpr StaticVector& operator=(const Array<U, SIZE>& rhs) noexcept {
 
         m_Storage.Assign(_StaticVectorDetails::Rule5Copy, rhs.m_Storage);
         return *this;
@@ -2618,7 +2618,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_move_constructible_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector(Array<U, SIZE>&& rhs) noexcept
+    constexpr StaticVector(Array<U, SIZE>&& rhs) noexcept
         : StaticVector(Unitialized)
     {
         m_Storage.Construct(_StaticVectorDetails::Rule5Move, rhs.m_Storage);
@@ -2638,7 +2638,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<Storage::template is_move_assignable_v<U, RHS_SIZE>>* = nullptr>
-    StaticVector& operator=(Array<U, SIZE>&& rhs) noexcept {
+    constexpr StaticVector& operator=(Array<U, SIZE>&& rhs) noexcept {
 
         m_Storage.Assign(_StaticVectorDetails::Rule5Move, rhs.m_Storage);
         return *this;
@@ -2662,7 +2662,7 @@ public:
             (RHS_SIZE == SIZE || (RHS_SIZE < SIZE && std::is_default_constructible_v<T>)) &&
             (RHS_SIZE == 0 || std::is_constructible_v<T, const T&>)
         >* = nullptr>
-    StaticVector(const T (&rhs)[RHS_SIZE]) noexcept
+    constexpr StaticVector(const T (&rhs)[RHS_SIZE]) noexcept
         : StaticVector(Unitialized)
     {
         Memory::CopyConstructObjectsNonOverlap(GetMemoryBegin(), rhs, rhs + RHS_SIZE);
@@ -2674,7 +2674,7 @@ public:
             (RHS_SIZE == SIZE || (RHS_SIZE < SIZE && std::is_default_constructible_v<T>)) &&
             (RHS_SIZE == 0 || std::is_assignable_v<T&, const T&>)
         >* = nullptr>
-    StaticVector& operator=(const T (&rhs)[RHS_SIZE]) noexcept {
+    constexpr StaticVector& operator=(const T (&rhs)[RHS_SIZE]) noexcept {
 
         CloneFrom(rhs);
         return *this;
@@ -2733,13 +2733,13 @@ public:
      * On x86 platform conflicts with `operator CArray&()`
      */
 
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize i) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize i) noexcept {
         ALT_ASSERT(i < GetSize());
 
         return *(GetMemoryBegin() + i);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& operator[](const usize i) const noexcept {
         ALT_ASSERT(i < GetSize());
 
         return *(GetMemoryBegin() + i);
@@ -2756,11 +2756,11 @@ public:
      * Alt::Array<usize, 4> vec{ 0, 2 };
      * func(vec);
      */
-    ALT_FORCE_INLINE operator CArray&() noexcept {
+    ALT_FORCE_INLINE constexpr operator CArray&() noexcept {
         return m_Storage;
     }
 
-    ALT_FORCE_INLINE operator const CArray&() const noexcept {
+    ALT_FORCE_INLINE constexpr operator const CArray&() const noexcept {
         return m_Storage;
     }
 
@@ -2768,13 +2768,13 @@ public:
      * @brief Returns a reference to the first element.
      * @return Reference to the first element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetFirst() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetFirst() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetMemoryBegin();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetFirst() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetFirst() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *GetMemoryBegin();
@@ -2785,13 +2785,13 @@ public:
      * @return Reference to the last element.
      * @note Asserts that the vector is not empty.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetLast() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetLast() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(GetMemoryEnd() - 1);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetLast() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetLast() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(GetMemoryEnd() - 1);
@@ -2801,12 +2801,12 @@ public:
      * @brief Returns a pointer to the beginning.
      * @return Pointer to the first element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T* Data() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T* Data() noexcept {
 
         return GetMemoryBegin();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T* Data() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* Data() const noexcept {
 
         return GetMemoryBegin();
     }
@@ -2815,12 +2815,12 @@ public:
      * @brief Returns a raw pointer to the end of the vector.
      * @return Pointer to the next after last element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T* DataEnd() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T* DataEnd() noexcept {
 
         return GetMemoryEnd();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T* DataEnd() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T* DataEnd() const noexcept {
 
         return GetMemoryEnd();
     }
@@ -2829,7 +2829,7 @@ public:
      * @brief Returns a mutable iterator for the vector.
      * @return An `VectorIterator`/`ArrayIterator`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE ArrayIterator<T> GetIterator() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr ArrayIterator<T> GetIterator() noexcept {
 
         return ArrayIterator<T>{ *this };
     }
@@ -2838,7 +2838,7 @@ public:
      * @brief Returns a constant iterator for the vector.
      * @return An `VectorIteratorConst`/`ArrayIteratorConst`.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE ArrayIteratorConst<T> GetIterator() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr ArrayIteratorConst<T> GetIterator() const noexcept {
 
         return ArrayIteratorConst<T>{ *this };
     }
@@ -2869,7 +2869,7 @@ public:
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_assignable_v<T&, const U&>) &&
             RHS_SIZE <= SIZE
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const Array<U, RHS_SIZE>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const Array<U, RHS_SIZE>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return true;
@@ -2889,7 +2889,7 @@ public:
             (TypeTraits::is_only_clonable_to_from_v<T, const T&> || std::is_assignable_v<T&, const T&>) &&
             RHS_SIZE <= SIZE
         >* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const T (&rhs)[RHS_SIZE]) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const T (&rhs)[RHS_SIZE]) noexcept {
         ALT_ASSERT(!Memory::IsOverlap(GetMemoryBegin(), GetMemoryEnd(), rhs, rhs + RHS_SIZE));
 
         const Memory::CloneFromFirstElementResult<T> result = Memory::CloneObjectsFromFirstElementNonOverlap(
@@ -2907,7 +2907,7 @@ public:
             (TypeTraits::is_only_clonable_to_from_v<T, const U&> || std::is_constructible_v<T, const U&>) &&
             RHS_SIZE <= SIZE
         >* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const Array<U, RHS_SIZE>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const Array<U, RHS_SIZE>& rhs) noexcept {
         ALT_ASSERT(static_cast<const void*>(this) != &rhs);
 
         const Memory::CloneFromFirstElementResult<T> result = Memory::CloneConstructObjectsFromFirstElementNonOverlap(
@@ -2926,7 +2926,7 @@ public:
         return true;
     }
 
-    ALT_NODISCARD Optional<StaticVector> Clone() const noexcept {
+    ALT_NODISCARD constexpr Optional<StaticVector> Clone() const noexcept {
         iferr_scope;
 
         MaybeUninit<StaticVector> valueToConstruct;
@@ -2955,7 +2955,7 @@ public:
      */
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_assignable_v<T&, U&&> && RHS_SIZE <= SIZE>* = nullptr>
-    bool MoveFrom(Array<U, RHS_SIZE>&& rhs) noexcept {
+    constexpr bool MoveFrom(Array<U, RHS_SIZE>&& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return true;
@@ -2966,7 +2966,7 @@ public:
 
     template <typename U = T, usize RHS_SIZE = SIZE,
         std::enable_if_t<std::is_same_v<U, T> && std::is_assignable_v<T&, U&&> && RHS_SIZE <= SIZE>* = nullptr>
-    bool MoveFrom(Array<U, RHS_SIZE>& rhs) noexcept {
+    constexpr bool MoveFrom(Array<U, RHS_SIZE>& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return true;
@@ -2980,7 +2980,7 @@ public:
 
     template <usize RHS_SIZE = SIZE,
         std::enable_if_t<std::is_assignable_v<T&, T&&> && RHS_SIZE <= SIZE>* = nullptr>
-    bool MoveFrom(T (&rhs)[RHS_SIZE]) noexcept {
+    constexpr bool MoveFrom(T (&rhs)[RHS_SIZE]) noexcept {
         ALT_ASSERT(!Memory::IsOverlap(GetMemoryBegin(), GetMemoryEnd(), rhs, rhs + RHS_SIZE));
 
         Memory::MoveObjectsFromFirstElementNonOverlap(GetMemoryBegin(), rhs, rhs + RHS_SIZE);
@@ -3009,41 +3009,41 @@ public:
      * assert(pBS3 == vec.DataEnd());
      */
     template <typename FuncT>
-    ALT_NODISCARD T* BinarySearch(FuncT&& cmp) noexcept {
+    ALT_NODISCARD constexpr T* BinarySearch(FuncT&& cmp) noexcept {
 
         return Algorithms::BinarySearch(GetMemoryBegin(), GetMemoryEnd(), std::forward<FuncT>(cmp));
     }
 
     template <typename FuncT>
-    ALT_NODISCARD const T* BinarySearch(FuncT&& cmp) const noexcept {
+    ALT_NODISCARD constexpr const T* BinarySearch(FuncT&& cmp) const noexcept {
 
         return Algorithms::BinarySearch(GetMemoryBegin(), GetMemoryEnd(), std::forward<FuncT>(cmp));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD T* BinarySearchLowerBound(U&& x) noexcept {
+    ALT_NODISCARD constexpr T* BinarySearchLowerBound(U&& x) noexcept {
 
         return Algorithms::BinarySearchLowerBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD const T* BinarySearchLowerBound(U&& x) const noexcept {
+    ALT_NODISCARD constexpr const T* BinarySearchLowerBound(U&& x) const noexcept {
 
         return Algorithms::BinarySearchLowerBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD T* BinarySearchUpperBound(U&& x) noexcept {
+    ALT_NODISCARD constexpr T* BinarySearchUpperBound(U&& x) noexcept {
 
         return Algorithms::BinarySearchUpperBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
 
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U, T>>* = nullptr>
-    ALT_NODISCARD const T* BinarySearchUpperBound(U&& x) const noexcept {
+    ALT_NODISCARD constexpr const T* BinarySearchUpperBound(U&& x) const noexcept {
 
         return Algorithms::BinarySearchUpperBound(GetMemoryBegin(), GetMemoryEnd(), std::forward<U>(x));
     }
@@ -3083,143 +3083,143 @@ public:
      */
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE == RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator==(const Array<T, RHS_SIZE>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(const Array<T, RHS_SIZE>& rhs) const noexcept {
 
         return Algorithms::CompareEQ(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE != RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator==(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(const Array<T, RHS_SIZE>&) const noexcept {
 
         return false;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE == RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator!=(const Array<T, RHS_SIZE>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(const Array<T, RHS_SIZE>& rhs) const noexcept {
 
         return Algorithms::CompareNE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE != RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator!=(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(const Array<T, RHS_SIZE>&) const noexcept {
 
         return true;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE == RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator<(const Array<T, RHS_SIZE>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(const Array<T, RHS_SIZE>& rhs) const noexcept {
 
         return Algorithms::CompareLT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE < RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator<(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(const Array<T, RHS_SIZE>&) const noexcept {
 
         return true;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE > RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator<(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(const Array<T, RHS_SIZE>&) const noexcept {
 
         return false;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE == RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator<=(const Array<T, RHS_SIZE>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(const Array<T, RHS_SIZE>& rhs) const noexcept {
 
         return Algorithms::CompareLE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE < RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator<=(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(const Array<T, RHS_SIZE>&) const noexcept {
 
         return true;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE > RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator<=(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(const Array<T, RHS_SIZE>&) const noexcept {
 
         return false;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE == RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator>(const Array<T, RHS_SIZE>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(const Array<T, RHS_SIZE>& rhs) const noexcept {
 
         return Algorithms::CompareGT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE < RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator>(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(const Array<T, RHS_SIZE>&) const noexcept {
 
         return false;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE > RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator>(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(const Array<T, RHS_SIZE>&) const noexcept {
 
         return true;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<SIZE == RHS_SIZE>* = nullptr>
-    ALT_NODISCARD bool operator>=(const Array<T, RHS_SIZE>& rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(const Array<T, RHS_SIZE>& rhs) const noexcept {
 
         return Algorithms::CompareGE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE < RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator>=(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(const Array<T, RHS_SIZE>&) const noexcept {
 
         return false;
     }
 
     template <usize RHS_SIZE,
         std::enable_if_t<(SIZE > RHS_SIZE)>* = nullptr>
-    ALT_NODISCARD bool operator>=(const Array<T, RHS_SIZE>&) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(const Array<T, RHS_SIZE>&) const noexcept {
 
         return true;
     }
 
 private:
 
-    ALT_FORCE_INLINE StaticVector(Unitialized_t) noexcept
+    ALT_FORCE_INLINE constexpr StaticVector(Unitialized_t) noexcept
     {}
 
-    ALT_FORCE_INLINE T* GetMemoryBegin() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryBegin() noexcept {
 
         return m_Storage.GetMemoryBegin();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryBegin() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryBegin() const noexcept {
 
         return m_Storage.GetMemoryBegin();
     }
 
-    ALT_FORCE_INLINE T* GetMemoryEnd() noexcept {
+    ALT_FORCE_INLINE constexpr T* GetMemoryEnd() noexcept {
 
         return m_Storage.GetMemoryEnd();
     }
 
-    ALT_FORCE_INLINE const T* GetMemoryEnd() const noexcept {
+    ALT_FORCE_INLINE constexpr const T* GetMemoryEnd() const noexcept {
 
         return m_Storage.GetMemoryEnd();
     }
 
     template <typename HeadT, typename ...TailT>
-    ALT_FORCE_INLINE static bool ConstructVariadicImpl(StaticVector& self, const usize i, HeadT&& head, TailT&&... tail) noexcept {
+    ALT_FORCE_INLINE constexpr static bool ConstructVariadicImpl(StaticVector& self, const usize i, HeadT&& head, TailT&&... tail) noexcept {
 
         T* pDst = self.GetMemoryBegin() + i;
         T* pResult = Memory::CloneConstructOrMoveConstructObject(pDst, std::forward<HeadT>(head));
@@ -3231,7 +3231,7 @@ private:
         return ConstructVariadicImpl(self, i + 1, std::forward<TailT>(tail)...);
     }
 
-    ALT_FORCE_INLINE static bool ConstructVariadicImpl(StaticVector&, const usize) noexcept { return true; }
+    ALT_FORCE_INLINE constexpr static bool ConstructVariadicImpl(StaticVector&, const usize) noexcept { return true; }
 
 private:
 
@@ -3258,7 +3258,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<std::is_assignable_v<T&, U>>* = nullptr>
-    static bool ExtendMove(SelfT& self, IteratorInterface<U, IIteratorForwardTrait> iter) noexcept {
+    constexpr static bool ExtendMove(SelfT& self, IteratorInterface<U, IIteratorForwardTrait> iter) noexcept {
         iferr_scope;
 
         while (Optional<U> val = iter.Next()) {
@@ -3278,8 +3278,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<std::is_assignable_v<T&, U>>* = nullptr>
-    static bool ExtendMove(SelfT& self, IteratorInterface<U, IIteratorForwardTrait> iter) noexcept {
-        iferr_scope;
+    constexpr static bool ExtendMove(SelfT& self, IteratorInterface<U, IIteratorForwardTrait> iter) noexcept {
 
         usize i = 0;
         while (Optional<U> val = iter.Next()) {

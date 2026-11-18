@@ -19,7 +19,7 @@
  *         static bool ExtendMove(SelfT& self, IteratorInterface<U, IIteratorForwardTrait> iter) noexcept {
  *             iferr_scope;
  * 
- *             const usize reserve = Num::AddWrap(self.GetSize(), iter.GetSizeHint());
+ *             const usize reserve = AddWrap(self.GetSize(), iter.GetSizeHint());
  *             self.Reserve(reserve) iferr_return false;
  * 
  *             while (Optional<U> val = iter.Next()) {

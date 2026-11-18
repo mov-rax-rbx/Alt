@@ -58,7 +58,7 @@ private:
     struct Rule5Move_t {};
     constexpr static Rule5Move_t Rule5Move = Rule5Move_t{};
 
-    static_assert(MIN_ELEMENT_CAPACITY_ON_ALLOCATE == 0 || Num::IsPowerOf2(MIN_ELEMENT_CAPACITY_ON_ALLOCATE), "");
+    static_assert(MIN_ELEMENT_CAPACITY_ON_ALLOCATE == 0 || IsPowerOf2(MIN_ELEMENT_CAPACITY_ON_ALLOCATE), "");
 
 public:
 
@@ -158,7 +158,7 @@ public:
         iferr_scope;
 
         Queue result{};
-        result.Reserve(Num::Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.Reserve(Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -178,7 +178,7 @@ public:
         iferr_scope;
 
         Queue result{};
-        result.ReserveExact(Num::Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.ReserveExact(Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -203,7 +203,7 @@ public:
         constexpr usize size = sizeof...(ArgsT);
 
         Queue result{};
-        result.Reserve(Num::Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.Reserve(Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         PushBackVariadicImpl(result, std::forward<ArgsT>(args)...) iferr_return Nullopt;
 
@@ -275,7 +275,7 @@ public:
     void Clear() noexcept {
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
         Memory::DestroyObjects(m_pQueueBegin, m_pQueueBegin + sizeBottom);
         Memory::DestroyObjects(m_pMemoryBegin, m_pMemoryBegin + m_Size - sizeBottom);
@@ -446,21 +446,21 @@ public:
         m_Size = 0;
 
         const usize sizeBottom0Capacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom0 = Num::Min(sizeBottom0Capacity, size0);
+        const usize sizeBottom0 = Min(sizeBottom0Capacity, size0);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(sizeBottom1Capacity, size1);
+        const usize sizeBottom1 = Min(sizeBottom1Capacity, size1);
         const usize sizeTop1 = size1 - sizeBottom1;
 
         Memory::CloneFromFirstElementResult<T> resultBottom;
         Memory::CloneFromFirstElementResult<T> resultTop;
 
-        const usize sizeBottomToClone = Num::Min(sizeBottom0, sizeBottom1);
-        const usize sizeTopToClone = Num::Min(sizeBottom0 - sizeBottomToClone, sizeTop1);
+        const usize sizeBottomToClone = Min(sizeBottom0, sizeBottom1);
+        const usize sizeTopToClone = Min(sizeBottom0 - sizeBottomToClone, sizeTop1);
         const usize sizeBottom0CapacityRemainder = sizeBottom0Capacity - sizeBottom0;
-        const usize sizeBottomToConstruct = Num::Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToClone);
-        const usize sizeTopToConstruct = Num::Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToClone);
+        const usize sizeBottomToConstruct = Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToClone);
+        const usize sizeTopToConstruct = Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToClone);
 
         {
             resultBottom = Memory::CloneObjectsFromFirstElementNonOverlap(
@@ -527,7 +527,7 @@ public:
         const usize sizeTop1Remainder = sizeTop1 - sizeTopToClone - sizeTopToConstruct;
 
         {
-            const usize sizeBottomToClone = Num::Min(sizeTop0, sizeBottom1Remainder);
+            const usize sizeBottomToClone = Min(sizeTop0, sizeBottom1Remainder);
             resultBottom = Memory::CloneObjectsFromFirstElementNonOverlap(
                 m_pMemoryBegin,
                 resultBottom.pSrcObjectWhereCloneFailedOrEnd,
@@ -542,7 +542,7 @@ public:
                 return false;
             }
 
-            const usize sizeTopToClone = Num::Min(sizeTop0 - sizeBottomToClone, sizeTop1Remainder);
+            const usize sizeTopToClone = Min(sizeTop0 - sizeBottomToClone, sizeTop1Remainder);
             resultTop = Memory::CloneObjectsFromFirstElementNonOverlap(
                 resultBottom.pDstObjectWhereCloneFailedOrEnd,
                 resultTop.pSrcObjectWhereCloneFailedOrEnd,
@@ -605,9 +605,9 @@ public:
         Reserve(sliceSize) iferr_return false;
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(sizeBottomCapacity, size);
+        const usize sizeBottom = Min(sizeBottomCapacity, size);
 
-        const usize sizeBottomToClone = Num::Min(sliceSize, sizeBottom);
+        const usize sizeBottomToClone = Min(sliceSize, sizeBottom);
         Memory::CloneFromFirstElementResult<T> result = Memory::CloneObjectsFromFirstElementNonOverlap(
             m_pQueueBegin, slice.Data(), slice.Data() + sizeBottomToClone
         );
@@ -621,7 +621,7 @@ public:
         }
 
         T* pDst = result.pDstObjectWhereCloneFailedOrEnd;
-        const usize sizeBottomToConstruct = Num::Min(sliceSize, sizeBottomCapacity);
+        const usize sizeBottomToConstruct = Min(sliceSize, sizeBottomCapacity);
         result = Memory::CloneConstructObjectsFromFirstElementNonOverlap(
             pDst, result.pSrcObjectWhereCloneFailedOrEnd, slice.Data() + sizeBottomToConstruct
         );
@@ -632,7 +632,7 @@ public:
         }
 
         const usize sizeTop = size - sizeBottom;
-        const usize sizeTopToClone = Num::Min(sliceSize - sizeBottomToConstruct, sizeTop);
+        const usize sizeTopToClone = Min(sliceSize - sizeBottomToConstruct, sizeTop);
 
         result = Memory::CloneObjectsFromFirstElementNonOverlap(
             m_pMemoryBegin, result.pSrcObjectWhereCloneFailedOrEnd, result.pSrcObjectWhereCloneFailedOrEnd + sizeTopToClone
@@ -681,7 +681,7 @@ public:
         const usize offset = static_cast<usize>(queue.m_pQueueBegin - queue.m_pMemoryBegin);
         const usize sizeBottomCapacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
 
-        const usize sizeBottom = Num::Min(queue.m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(queue.m_Size, sizeBottomCapacity);
 
         m_pQueueBegin = m_pMemoryBegin + offset;
 
@@ -761,21 +761,21 @@ public:
         Reserve(size1) iferr_return false;
 
         const usize sizeBottom0Capacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom0 = Num::Min(sizeBottom0Capacity, size0);
+        const usize sizeBottom0 = Min(sizeBottom0Capacity, size0);
         const usize sizeTop0 = size0 - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(sizeBottom1Capacity, size1);
+        const usize sizeBottom1 = Min(sizeBottom1Capacity, size1);
         const usize sizeTop1 = size1 - sizeBottom1;
 
         Memory::MoveFromFirstElementResult<T> resultBottom;
         Memory::MoveFromFirstElementResult<T> resultTop;
 
-        const usize sizeBottomToMove = Num::Min(sizeBottom0, sizeBottom1);
-        const usize sizeTopToMove = Num::Min(sizeBottom0 - sizeBottomToMove, sizeTop1);
+        const usize sizeBottomToMove = Min(sizeBottom0, sizeBottom1);
+        const usize sizeTopToMove = Min(sizeBottom0 - sizeBottomToMove, sizeTop1);
         const usize sizeBottom0CapacityRemainder = sizeBottom0Capacity - sizeBottom0;
-        const usize sizeBottomToConstruct = Num::Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToMove);
-        const usize sizeTopToConstruct = Num::Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToMove);
+        const usize sizeBottomToConstruct = Min(sizeBottom0CapacityRemainder, sizeBottom1 - sizeBottomToMove);
+        const usize sizeTopToConstruct = Min(sizeBottom0CapacityRemainder - sizeBottomToConstruct, sizeTop1 - sizeTopToMove);
 
         {
             resultBottom = Memory::MoveObjectsFromFirstElementNonOverlap(
@@ -801,12 +801,12 @@ public:
         const usize sizeTop1Remainder = sizeTop1 - sizeTopToMove - sizeTopToConstruct;
 
         {
-            const usize sizeBottomToMove = Num::Min(sizeTop0, sizeBottom1Remainder);
+            const usize sizeBottomToMove = Min(sizeTop0, sizeBottom1Remainder);
             resultBottom = Memory::MoveObjectsFromFirstElementNonOverlap(
                 m_pMemoryBegin, resultBottom.pSrcEnd, resultBottom.pSrcEnd + sizeBottomToMove
             );
 
-            const usize sizeTopToMove = Num::Min(sizeTop0 - sizeBottomToMove, sizeTop1Remainder);
+            const usize sizeTopToMove = Min(sizeTop0 - sizeBottomToMove, sizeTop1Remainder);
             resultTop = Memory::MoveObjectsFromFirstElementNonOverlap(
                 resultBottom.pDstEnd, resultTop.pSrcEnd, resultTop.pSrcEnd + sizeTopToMove
             );
@@ -846,23 +846,23 @@ public:
         Reserve(sliceSize) iferr_return false;
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(sizeBottomCapacity, size);
+        const usize sizeBottom = Min(sizeBottomCapacity, size);
 
-        const usize sizeBottomToMove = Num::Min(sliceSize, sizeBottom);
+        const usize sizeBottomToMove = Min(sliceSize, sizeBottom);
         Memory::MoveFromFirstElementResult<T> result = Memory::MoveObjectsFromFirstElementNonOverlap(
             m_pQueueBegin, slice.Data(), slice.Data() + sizeBottomToMove
         );
 
         Memory::DestroyObjects(result.pDstEnd, m_pQueueBegin + sizeBottom);
 
-        const usize sizeBottomToConstruct = Num::Min(sliceSize, sizeBottomCapacity);
+        const usize sizeBottomToConstruct = Min(sliceSize, sizeBottomCapacity);
         result = Memory::MoveConstructObjectsFromFirstElementNonOverlap(
             result.pDstEnd, result.pSrcEnd, slice.Data() + sizeBottomToConstruct
         );
 
         const usize sizeTop = size - sizeBottom;
 
-        const usize sizeTopToMove = Num::Min(sliceSize - sizeBottomToConstruct, sizeTop);
+        const usize sizeTopToMove = Min(sliceSize - sizeBottomToConstruct, sizeTop);
         result = Memory::MoveObjectsFromFirstElementNonOverlap(
             m_pMemoryBegin, result.pSrcEnd, result.pSrcEnd + sizeTopToMove
         );
@@ -927,12 +927,12 @@ public:
 
         const usize size0 = m_Size;
         const usize sizeBottom0Capacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom0 = Num::Min(size0, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(size0, sizeBottom0Capacity);
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
 
-        const usize sizeBottom = Num::Min(sizeBottom1, sizeBottom0);
+        const usize sizeBottom = Min(sizeBottom1, sizeBottom0);
         T* pQueueBottomBegin = m_pQueueBegin + sizeBottom0;
         T* pQueueTopBegin = m_pMemoryBegin + size0 - sizeBottom0;
 
@@ -964,7 +964,7 @@ public:
         }
 
         const usize sizeTop1 = size1 - sizeBottom1;
-        const usize sizeBottomRemainder = Num::Min(sizeTop1, sizeBottom0 - sizeBottom);
+        const usize sizeBottomRemainder = Min(sizeTop1, sizeBottom0 - sizeBottom);
 
         {
             T* pBegin = queue.m_pMemoryBegin;
@@ -1015,10 +1015,10 @@ public:
         ReserveAddition(sizeToAppend) iferr_return false;
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
         T* pQueueBottomBegin = m_pQueueBegin + sizeBottom;
-        const usize sizeBottomAppend = Num::Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
+        const usize sizeBottomAppend = Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
         Memory::CloneFromFirstElementResult<T> result = Memory::CloneConstructObjectsFromFirstElementNonOverlap(
             pQueueBottomBegin, slice.Data(), slice.Data() + sizeBottomAppend
         );
@@ -1089,10 +1089,10 @@ public:
         const usize sizeTop0Capacity = static_cast<usize>(m_pQueueBegin - m_pMemoryBegin);
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
         const usize sizeTop1 = size1 - sizeBottom1;
 
-        const usize sizeTop = Num::Min(sizeTop0Capacity, sizeTop1);
+        const usize sizeTop = Min(sizeTop0Capacity, sizeTop1);
         T* pQueueBottomBegin = m_pQueueBegin - sizeTop;
         T* pQueueBottomEnd = m_pMemoryEnd - sizeTop1 + sizeTop;
 
@@ -1134,7 +1134,7 @@ public:
             }
         }
 
-        const usize sizeTopRemainder = Num::Min(sizeBottom1, sizeTop0Capacity - sizeTop);
+        const usize sizeTopRemainder = Min(sizeBottom1, sizeTop0Capacity - sizeTop);
         pQueueBottomBegin -= sizeTopRemainder;
         pQueueBottomEnd -= sizeBottom1 - sizeTopRemainder;
 
@@ -1202,7 +1202,7 @@ public:
         ReserveAddition(sizeToAppend) iferr_return false;
 
         const usize sizeTopCapacity = static_cast<usize>(m_pQueueBegin - m_pMemoryBegin);
-        const usize size = Num::Min(sizeToAppend, sizeTopCapacity);
+        const usize size = Min(sizeToAppend, sizeTopCapacity);
 
         T* pQueueBeginTop = m_pQueueBegin - size;
         const Memory::CloneFromLastElementResult<T> resultTop = Memory::CloneConstructObjectsFromLastElementNonOverlap(
@@ -1280,12 +1280,12 @@ public:
 
         const usize size0 = m_Size;
         const usize sizeBottom0Capacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom0 = Num::Min(size0, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(size0, sizeBottom0Capacity);
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
 
-        const usize sizeBottom = Num::Min(sizeBottom1, sizeBottom0);
+        const usize sizeBottom = Min(sizeBottom1, sizeBottom0);
         T* pQueueBottomBegin = m_pQueueBegin + sizeBottom0;
         T* pQueueTopBegin = m_pMemoryBegin + size0 - sizeBottom0;
 
@@ -1301,7 +1301,7 @@ public:
         }
 
         const usize sizeTop1 = size1 - sizeBottom1;
-        const usize sizeBottomRemainder = Num::Min(sizeTop1, sizeBottom0 - sizeBottom);
+        const usize sizeBottomRemainder = Min(sizeTop1, sizeBottom0 - sizeBottom);
 
         {
             T* pBegin = queue.m_pMemoryBegin;
@@ -1335,10 +1335,10 @@ public:
         ReserveAddition(sizeToAppend) iferr_return false;
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
         T* pQueueBottomBegin = m_pQueueBegin + sizeBottom;
-        const usize sizeBottomAppend = Num::Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
+        const usize sizeBottomAppend = Min(sizeToAppend, sizeBottomCapacity - sizeBottom);
         Memory::MoveConstructObjectsFromFirstElementNonOverlap(pQueueBottomBegin, slice.Data(), slice.Data() + sizeBottomAppend);
 
         T* pQueueTopBegin = m_pMemoryBegin + m_Size - sizeBottom;
@@ -1393,10 +1393,10 @@ public:
         const usize sizeTop0Capacity = static_cast<usize>(m_pQueueBegin - m_pMemoryBegin);
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(size1, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(size1, sizeBottom1Capacity);
         const usize sizeTop1 = size1 - sizeBottom1;
 
-        const usize sizeTop = Num::Min(sizeTop0Capacity, sizeTop1);
+        const usize sizeTop = Min(sizeTop0Capacity, sizeTop1);
         T* pQueueBottomBegin = m_pQueueBegin - sizeTop;
         T* pQueueBottomEnd = m_pMemoryEnd - sizeTop1 + sizeTop;
 
@@ -1408,7 +1408,7 @@ public:
             Memory::MoveConstructObjectsFromFirstElementNonOverlap(pQueueBottomEnd, queue.m_pMemoryBegin, pBegin);
         }
 
-        const usize sizeTopRemainder = Num::Min(sizeBottom1, sizeTop0Capacity - sizeTop);
+        const usize sizeTopRemainder = Min(sizeBottom1, sizeTop0Capacity - sizeTop);
         pQueueBottomBegin -= sizeTopRemainder;
         pQueueBottomEnd -= sizeBottom1 - sizeTopRemainder;
 
@@ -1449,7 +1449,7 @@ public:
 
         const usize sizeTopCapacity = static_cast<usize>(m_pQueueBegin - m_pMemoryBegin);
 
-        const usize size = Num::Min(sizeToAppend, sizeTopCapacity);
+        const usize size = Min(sizeToAppend, sizeTopCapacity);
 
         T* pQueueBeginTop = m_pQueueBegin - size;
         Memory::MoveConstructObjectsFromFirstElementNonOverlap(pQueueBeginTop, slice.DataEnd() - size, slice.DataEnd());
@@ -1677,7 +1677,7 @@ public:
     bool ResizeBackAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return ResizeBack(size);
     }
@@ -1691,8 +1691,8 @@ public:
 
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(m_Size, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(m_Size, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = m_pQueueBegin + sizeBottom1;
             T* pQueueBottomEnd = m_pQueueBegin + sizeBottom0;
@@ -1709,8 +1709,8 @@ public:
             const usize sizeOld = m_Size;
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(sizeOld, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(sizeOld, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = m_pQueueBegin + sizeBottom0;
             T* pQueueBottomEnd = m_pQueueBegin + sizeBottom1;
@@ -1735,8 +1735,8 @@ public:
 
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(m_Size, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(m_Size, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = m_pQueueBegin + sizeBottom1;
             T* pQueueBottomEnd = m_pQueueBegin + sizeBottom0;
@@ -1755,8 +1755,8 @@ public:
             const usize sizeOld = m_Size;
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
 
-            const usize sizeBottom0 = Num::Min(sizeOld, sizeBottomCapacity);
-            const usize sizeBottom1 = Num::Min(size, sizeBottomCapacity);
+            const usize sizeBottom0 = Min(sizeOld, sizeBottomCapacity);
+            const usize sizeBottom1 = Min(size, sizeBottomCapacity);
 
             T* pQueueBottomBegin = m_pQueueBegin + sizeBottom0;
             T* pQueueBottomEnd = m_pQueueBegin + sizeBottom1;
@@ -1813,7 +1813,7 @@ public:
     bool ResizeFrontAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return ResizeFront(size);
     }
@@ -1828,7 +1828,7 @@ public:
             const usize sizeToDestroy = m_Size - size;
 
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-            const usize sizeBottom = Num::Min(sizeToDestroy, sizeBottomCapacity);
+            const usize sizeBottom = Min(sizeToDestroy, sizeBottomCapacity);
 
             T* pQueueBeginBottom = m_pQueueBegin + sizeBottom;
             Memory::DestroyObjects(m_pQueueBegin, pQueueBeginBottom);
@@ -1847,7 +1847,7 @@ public:
             const usize sizeToConstruct = size - m_Size;
 
             const usize sizeTopCapacity = static_cast<usize>(m_pQueueBegin - m_pMemoryBegin);
-            const usize sizeTop = Num::Min(sizeToConstruct, sizeTopCapacity);
+            const usize sizeTop = Min(sizeToConstruct, sizeTopCapacity);
 
             T* pQueueBeginTop = m_pQueueBegin - sizeTop;
             Memory::FillConstructDefaultObjects(pQueueBeginTop, m_pQueueBegin);
@@ -1875,7 +1875,7 @@ public:
             const usize sizeToDestroy = m_Size - size;
 
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-            const usize sizeBottom = Num::Min(sizeToDestroy, sizeBottomCapacity);
+            const usize sizeBottom = Min(sizeToDestroy, sizeBottomCapacity);
 
             T* pQueueBeginBottom = m_pQueueBegin + sizeBottom;
             Memory::DestroyObjects(m_pQueueBegin, pQueueBeginBottom);
@@ -1896,7 +1896,7 @@ public:
             const usize sizeToConstruct = size - m_Size;
 
             const usize sizeTopCapacity = static_cast<usize>(m_pQueueBegin - m_pMemoryBegin);
-            const usize sizeTop = Num::Min(sizeToConstruct, sizeTopCapacity);
+            const usize sizeTop = Min(sizeToConstruct, sizeTopCapacity);
 
             T* pQueueBeginTop = m_pQueueBegin - sizeTop;
             Memory::CloneFromLastElementResult<T> result = Memory::FillCloneConstructObjectsFromLastElement(
@@ -1976,7 +1976,7 @@ public:
     bool ReserveAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return Reserve(size);
     }
@@ -2022,7 +2022,7 @@ public:
     bool ReserveExactAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return ReserveExact(size);
     }
@@ -2062,7 +2062,7 @@ public:
         }
 
         usize offset = static_cast<usize>(m_pQueueBegin - m_pMemoryBegin);
-        usize capacity = Num::Max(offset + size, capacityNew);
+        usize capacity = Max(offset + size, capacityNew);
 
         T* pMemory = nullptr;
         if (capacity == 0) {
@@ -2082,7 +2082,7 @@ public:
                 Memory::ReallocBits::InPlace | bits
             ) iferr {
 
-                capacity = Num::Max(size, capacityNew);
+                capacity = Max(size, capacityNew);
 
                 pMemory = Memory::ChooseAlignedMalloc<T>(capacity) iferr_return false;
                 Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(pMemory, m_pQueueBegin, m_pQueueBegin + size);
@@ -2201,7 +2201,7 @@ public:
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
 
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
         const usize sizeTop = m_Size - sizeBottom;
 
         m_Size -= 1;
@@ -2242,7 +2242,7 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
         const bool isEQ = Algorithms::CompareEQ(m_pQueueBegin, m_pQueueBegin + sizeBottom, rhs.Data(), rhs.Data() + sizeBottom);
         if (!isEQ) {
@@ -2261,14 +2261,14 @@ public:
         }
 
         const usize sizeBottom0Capacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom0 = Num::Min(m_Size, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(m_Size, sizeBottom0Capacity);
         const usize sizeTop0 = m_Size - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(queue.m_Size, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(queue.m_Size, sizeBottom1Capacity);
         const usize sizeTop1 = queue.m_Size - sizeBottom1;
 
-        const usize sizeBottom = Num::Min(sizeBottom0, sizeBottom1);
+        const usize sizeBottom = Min(sizeBottom0, sizeBottom1);
 
         const T* pQueueBottom0Begin = m_pQueueBegin + sizeBottom;
         const T* pQueueBottom1Begin = queue.m_pQueueBegin + sizeBottom;
@@ -2278,7 +2278,7 @@ public:
             return false;
         }
 
-        usize sizeBottomRemainder = Num::Min(sizeBottom0 - sizeBottom, sizeTop1);
+        usize sizeBottomRemainder = Min(sizeBottom0 - sizeBottom, sizeTop1);
         const T* pQueueTop1Begin = queue.m_pMemoryBegin + sizeBottomRemainder;
 
         isEQ = Algorithms::CompareEQ(pQueueBottom0Begin, pQueueBottom0Begin + sizeBottomRemainder, queue.m_pMemoryBegin, pQueueTop1Begin);
@@ -2286,7 +2286,7 @@ public:
             return false;
         }
 
-        sizeBottomRemainder = Num::Min(sizeBottom1 - sizeBottom, sizeTop0);
+        sizeBottomRemainder = Min(sizeBottom1 - sizeBottom, sizeTop0);
         const T* pQueueTop0Begin = m_pMemoryBegin + sizeBottomRemainder;
 
         isEQ = Algorithms::CompareEQ(m_pMemoryBegin, pQueueTop0Begin, pQueueBottom1Begin, pQueueBottom1Begin + sizeBottomRemainder);
@@ -2322,7 +2322,7 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
         const ssize cmp = Algorithms::Compare(m_pQueueBegin, m_pQueueBegin + sizeBottom, rhs.Data(), rhs.Data() + sizeBottom);
 
@@ -2353,14 +2353,14 @@ public:
         }
 
         const usize sizeBottom0Capacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom0 = Num::Min(m_Size, sizeBottom0Capacity);
+        const usize sizeBottom0 = Min(m_Size, sizeBottom0Capacity);
         const usize sizeTop0 = m_Size - sizeBottom0;
 
         const usize sizeBottom1Capacity = static_cast<usize>(queue.m_pMemoryEnd - queue.m_pQueueBegin);
-        const usize sizeBottom1 = Num::Min(queue.m_Size, sizeBottom1Capacity);
+        const usize sizeBottom1 = Min(queue.m_Size, sizeBottom1Capacity);
         const usize sizeTop1 = queue.m_Size - sizeBottom1;
 
-        const usize sizeBottom = Num::Min(sizeBottom0, sizeBottom1);
+        const usize sizeBottom = Min(sizeBottom0, sizeBottom1);
 
         const T* pQueueBottom0Begin = m_pQueueBegin + sizeBottom;
         const T* pQueueBottom1Begin = queue.m_pQueueBegin + sizeBottom;
@@ -2381,7 +2381,7 @@ public:
         }
         }
 
-        usize sizeBottomRemainder = Num::Min(sizeBottom0 - sizeBottom, sizeTop1);
+        usize sizeBottomRemainder = Min(sizeBottom0 - sizeBottom, sizeTop1);
         const T* pQueueTop1Begin = queue.m_pMemoryBegin + sizeBottomRemainder;
 
         cmp = Algorithms::Compare(pQueueBottom0Begin, pQueueBottom0Begin + sizeBottomRemainder, queue.m_pMemoryBegin, pQueueTop1Begin);
@@ -2401,7 +2401,7 @@ public:
         }
         }
 
-        sizeBottomRemainder = Num::Min(sizeBottom1 - sizeBottom, sizeTop0);
+        sizeBottomRemainder = Min(sizeBottom1 - sizeBottom, sizeTop0);
         const T* pQueueTop0Begin = m_pMemoryBegin + sizeBottomRemainder;
 
         cmp = Algorithms::Compare(m_pMemoryBegin, pQueueTop0Begin, pQueueBottom1Begin, pQueueBottom1Begin + sizeBottomRemainder);
@@ -2435,7 +2435,7 @@ public:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
         const ssize cmp = Algorithms::Compare(m_pQueueBegin, m_pQueueBegin + sizeBottom, rhs.Data(), rhs.Data() + sizeBottom);
 
@@ -2496,7 +2496,7 @@ private:
 
     ALT_FORCE_INLINE static usize GetNextSize(const usize size) noexcept {
 
-        return Num::Max(Num::RoundUpToPowerOf2(size), MIN_ELEMENT_CAPACITY_ON_ALLOCATE);
+        return Max(RoundUpToPowerOf2(size), MIN_ELEMENT_CAPACITY_ON_ALLOCATE);
     }
 
     template <typename HeadT, typename ...TailT>
@@ -2522,10 +2522,10 @@ private:
     ALT_FORCE_INLINE bool ReallocateToNextGrow(const usize size) noexcept {
 
         const usize sizeNext = GetNextSize(size);
-        return Reallocate(sizeNext, Num::Max(size, Num::Desc<usize>::Max() / sizeof(T)));
+        return Reallocate(sizeNext, Max(size, Desc<usize>::Max() / sizeof(T)));
     }
 
-    ALT_FORCE_INLINE bool Reallocate(const usize size, const usize wrapSize = Num::Desc<usize>::Max() / sizeof(T)) noexcept {
+    ALT_FORCE_INLINE bool Reallocate(const usize size, const usize wrapSize = Desc<usize>::Max() / sizeof(T)) noexcept {
         iferr_scope;
 
         ALT_ASSERT(size > GetCapacity());
@@ -2555,7 +2555,7 @@ private:
                 const usize sizeTopOld = m_Size - sizeBottomOld;
                 const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
 
-                const usize size0 = Num::Min(sizeTopOld, sizeBottomCapacity - sizeBottomOld);
+                const usize size0 = Min(sizeTopOld, sizeBottomCapacity - sizeBottomOld);
                 Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(m_pQueueBegin + sizeBottomOld, m_pMemoryBegin, m_pMemoryBegin + size0);
 
                 if (TypeTraits::is_trivially_reallocatable_v<T>) {
@@ -2589,7 +2589,7 @@ private:
             result = Memory::ChooseAlignedMallocWrap<T>(size, wrapSize) iferr_return false;
 
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-            const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+            const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
             Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(result.pMemory, m_pQueueBegin, m_pQueueBegin + sizeBottom);
             Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(result.pMemory + sizeBottomCapacity, m_pMemoryBegin, m_pMemoryBegin + m_Size - sizeBottom);
@@ -2622,7 +2622,7 @@ private:
         if (m_pMemoryBegin) {
 
             const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-            const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+            const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
             Memory::DestroyObjects(m_pQueueBegin, m_pQueueBegin + sizeBottom);
             Memory::DestroyObjects(m_pMemoryBegin, m_pMemoryBegin + m_Size - sizeBottom);
@@ -2643,7 +2643,7 @@ private:
         }
 
         const usize sizeBottomCapacity = static_cast<usize>(m_pMemoryEnd - m_pQueueBegin);
-        const usize sizeBottom = Num::Min(m_Size, sizeBottomCapacity);
+        const usize sizeBottom = Min(m_Size, sizeBottomCapacity);
 
         Memory::DestroyObjects(m_pQueueBegin, m_pQueueBegin + sizeBottom);
         Memory::DestroyObjects(m_pMemoryBegin, m_pMemoryBegin + m_Size - sizeBottom);
@@ -2747,7 +2747,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -2779,7 +2779,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const U& val : iter) {
 
@@ -2834,7 +2834,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const T& val : iter) {
 
@@ -2865,7 +2865,7 @@ public:
 
             auto iter = vals
                 .GetIterator()
-                .Take(Num::SubWrap(vals.GetSize(), 1));
+                .Take(SubWrap(vals.GetSize(), 1));
 
             for (const T& val : iter) {
 

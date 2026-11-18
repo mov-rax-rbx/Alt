@@ -18,7 +18,7 @@
 namespace Alt {
 namespace Utf {
 
-ALT_NODISCARD inline usize ValidateUtf8(const Slice<const u8> bytes) {
+ALT_NODISCARD constexpr inline usize ValidateUtf8(const Slice<const u8> bytes) {
 
     usize advance = 4;
 
@@ -41,7 +41,7 @@ ALT_NODISCARD inline usize ValidateUtf8(const Slice<const u8> bytes) {
     return static_cast<usize>(pBytes - bytes.Data());
 }
 
-ALT_NODISCARD inline usize ValidateUtf8NullTermAware(const Slice<const u8> bytes) {
+ALT_NODISCARD constexpr inline usize ValidateUtf8NullTermAware(const Slice<const u8> bytes) {
 
     usize advance = 4;
 
@@ -66,7 +66,7 @@ ALT_NODISCARD inline usize ValidateUtf8NullTermAware(const Slice<const u8> bytes
     return static_cast<usize>(pBytes - bytes.Data());
 }
 
-ALT_NODISCARD inline usize ValidateUtf16(const Slice<const u16> bytes) {
+ALT_NODISCARD constexpr inline usize ValidateUtf16(const Slice<const u16> bytes) {
 
     usize advance = 2;
 
@@ -87,7 +87,7 @@ ALT_NODISCARD inline usize ValidateUtf16(const Slice<const u16> bytes) {
     return static_cast<usize>(pBytes - bytes.Data());
 }
 
-ALT_NODISCARD inline usize ValidateUtf16NullTermAware(const Slice<const u16> bytes) {
+ALT_NODISCARD constexpr inline usize ValidateUtf16NullTermAware(const Slice<const u16> bytes) {
 
     usize advance = 2;
 
@@ -110,7 +110,7 @@ ALT_NODISCARD inline usize ValidateUtf16NullTermAware(const Slice<const u16> byt
     return static_cast<usize>(pBytes - bytes.Data());
 }
 
-ALT_NODISCARD inline usize ValidateUtf32(const Slice<const u32> utf32s) {
+ALT_NODISCARD constexpr inline usize ValidateUtf32(const Slice<const u32> utf32s) {
 
     bool isValidUtf32 = true;
 
@@ -126,7 +126,7 @@ ALT_NODISCARD inline usize ValidateUtf32(const Slice<const u32> utf32s) {
     return static_cast<usize>(pUtf32 - utf32s.Data());
 }
 
-ALT_NODISCARD inline usize ValidateUtf32NullTermAware(const Slice<const u32> utf32s) {
+ALT_NODISCARD constexpr inline usize ValidateUtf32NullTermAware(const Slice<const u32> utf32s) {
 
     bool isValidUtf32 = true;
 
@@ -165,9 +165,26 @@ constexpr static usize bytesConsumedByBomTable[6]{
     4,
 };
 
+constexpr static Bom bomMaskTable[5]{
+    Bom{ 0xFF, 0xFF, 0xFF, 0x00 },
+    Bom{ 0xFF, 0xFF, 0x00, 0x00 },
+    Bom{ 0xFF, 0xFF, 0xFF, 0xFF },
+    Bom{ 0xFF, 0xFF, 0x00, 0x00 },
+    Bom{ 0xFF, 0xFF, 0xFF, 0xFF },
+};
+
+constexpr static Encoding encodingTable[6]{
+    Encoding::Unknown,
+    Encoding::Utf8,
+    Encoding::Utf16, // le
+    Encoding::Utf32, // le
+    Encoding::Utf16, // be
+    Encoding::Utf32, // be
+};
+
 } // namespace _UtfDetails
 
-ALT_NODISCARD ALT_FORCE_INLINE Slice<const u8> EncodingToBom(const Encoding encoding, const bool isLittleEndian = Platform::IsLittleEndian()) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<const u8> EncodingToBom(const Encoding encoding, const bool isLittleEndian = Platform::IsLittleEndian()) noexcept {
 
     usize type = static_cast<usize>(encoding);
     const usize offset = type < 2 || isLittleEndian ? 0 : 2;
@@ -182,24 +199,7 @@ struct DetectEncodingByBomResult {
     usize bytesConsumedByBom = 0;
     bool isLittleEndian = true; // if `isLittleEndian != Alt::Platform::IsLittleEndian()` - manually swap bytes
 };
-ALT_NODISCARD ALT_FORCE_INLINE DetectEncodingByBomResult DetectEncodingByBom(const Slice<const u8> bytes_) noexcept {
-
-    constexpr static _UtfDetails::Bom bomMaskTable[5]{
-        _UtfDetails::Bom{ 0xFF, 0xFF, 0xFF, 0x00 },
-        _UtfDetails::Bom{ 0xFF, 0xFF, 0x00, 0x00 },
-        _UtfDetails::Bom{ 0xFF, 0xFF, 0xFF, 0xFF },
-        _UtfDetails::Bom{ 0xFF, 0xFF, 0x00, 0x00 },
-        _UtfDetails::Bom{ 0xFF, 0xFF, 0xFF, 0xFF },
-    };
-
-    constexpr static Encoding encodingTable[6]{
-        Encoding::Unknown,
-        Encoding::Utf8,
-        Encoding::Utf16, // le
-        Encoding::Utf32, // le
-        Encoding::Utf16, // be
-        Encoding::Utf32, // be
-    };
+ALT_NODISCARD ALT_FORCE_INLINE constexpr DetectEncodingByBomResult DetectEncodingByBom(const Slice<const u8> bytes_) noexcept {
 
     const u8 bytes[4]{
         0 < bytes_.GetSize() ? bytes_[0] : static_cast<u8>(0x01),
@@ -211,47 +211,47 @@ ALT_NODISCARD ALT_FORCE_INLINE DetectEncodingByBomResult DetectEncodingByBom(con
     usize resultIdx = 0;
 
     resultIdx =
-            (bytes[0] & bomMaskTable[0].bom[0]) == _UtfDetails::bomTable[0].bom[0] &&
-            (bytes[1] & bomMaskTable[0].bom[1]) == _UtfDetails::bomTable[0].bom[1] &&
-            (bytes[2] & bomMaskTable[0].bom[2]) == _UtfDetails::bomTable[0].bom[2] &&
-            (bytes[3] & bomMaskTable[0].bom[3]) == _UtfDetails::bomTable[0].bom[3]
+            (bytes[0] & _UtfDetails::bomMaskTable[0].bom[0]) == _UtfDetails::bomTable[0].bom[0] &&
+            (bytes[1] & _UtfDetails::bomMaskTable[0].bom[1]) == _UtfDetails::bomTable[0].bom[1] &&
+            (bytes[2] & _UtfDetails::bomMaskTable[0].bom[2]) == _UtfDetails::bomTable[0].bom[2] &&
+            (bytes[3] & _UtfDetails::bomMaskTable[0].bom[3]) == _UtfDetails::bomTable[0].bom[3]
         ? 1
         : resultIdx;
 
     resultIdx =
-            (bytes[0] & bomMaskTable[1].bom[0]) == _UtfDetails::bomTable[1].bom[0] &&
-            (bytes[1] & bomMaskTable[1].bom[1]) == _UtfDetails::bomTable[1].bom[1] &&
-            (bytes[2] & bomMaskTable[1].bom[2]) == _UtfDetails::bomTable[1].bom[2] &&
-            (bytes[3] & bomMaskTable[1].bom[3]) == _UtfDetails::bomTable[1].bom[3]
+            (bytes[0] & _UtfDetails::bomMaskTable[1].bom[0]) == _UtfDetails::bomTable[1].bom[0] &&
+            (bytes[1] & _UtfDetails::bomMaskTable[1].bom[1]) == _UtfDetails::bomTable[1].bom[1] &&
+            (bytes[2] & _UtfDetails::bomMaskTable[1].bom[2]) == _UtfDetails::bomTable[1].bom[2] &&
+            (bytes[3] & _UtfDetails::bomMaskTable[1].bom[3]) == _UtfDetails::bomTable[1].bom[3]
         ? 2
         : resultIdx;
 
     resultIdx =
-            (bytes[0] & bomMaskTable[2].bom[0]) == _UtfDetails::bomTable[2].bom[0] &&
-            (bytes[1] & bomMaskTable[2].bom[1]) == _UtfDetails::bomTable[2].bom[1] &&
-            (bytes[2] & bomMaskTable[2].bom[2]) == _UtfDetails::bomTable[2].bom[2] &&
-            (bytes[3] & bomMaskTable[2].bom[3]) == _UtfDetails::bomTable[2].bom[3]
+            (bytes[0] & _UtfDetails::bomMaskTable[2].bom[0]) == _UtfDetails::bomTable[2].bom[0] &&
+            (bytes[1] & _UtfDetails::bomMaskTable[2].bom[1]) == _UtfDetails::bomTable[2].bom[1] &&
+            (bytes[2] & _UtfDetails::bomMaskTable[2].bom[2]) == _UtfDetails::bomTable[2].bom[2] &&
+            (bytes[3] & _UtfDetails::bomMaskTable[2].bom[3]) == _UtfDetails::bomTable[2].bom[3]
         ? 3
         : resultIdx;
 
     resultIdx =
-            (bytes[0] & bomMaskTable[3].bom[0]) == _UtfDetails::bomTable[3].bom[0] &&
-            (bytes[1] & bomMaskTable[3].bom[1]) == _UtfDetails::bomTable[3].bom[1] &&
-            (bytes[2] & bomMaskTable[3].bom[2]) == _UtfDetails::bomTable[3].bom[2] &&
-            (bytes[3] & bomMaskTable[3].bom[3]) == _UtfDetails::bomTable[3].bom[3]
+            (bytes[0] & _UtfDetails::bomMaskTable[3].bom[0]) == _UtfDetails::bomTable[3].bom[0] &&
+            (bytes[1] & _UtfDetails::bomMaskTable[3].bom[1]) == _UtfDetails::bomTable[3].bom[1] &&
+            (bytes[2] & _UtfDetails::bomMaskTable[3].bom[2]) == _UtfDetails::bomTable[3].bom[2] &&
+            (bytes[3] & _UtfDetails::bomMaskTable[3].bom[3]) == _UtfDetails::bomTable[3].bom[3]
         ? 4
         : resultIdx;
 
     resultIdx =
-            (bytes[0] & bomMaskTable[4].bom[0]) == _UtfDetails::bomTable[4].bom[0] &&
-            (bytes[1] & bomMaskTable[4].bom[1]) == _UtfDetails::bomTable[4].bom[1] &&
-            (bytes[2] & bomMaskTable[4].bom[2]) == _UtfDetails::bomTable[4].bom[2] &&
-            (bytes[3] & bomMaskTable[4].bom[3]) == _UtfDetails::bomTable[4].bom[3]
+            (bytes[0] & _UtfDetails::bomMaskTable[4].bom[0]) == _UtfDetails::bomTable[4].bom[0] &&
+            (bytes[1] & _UtfDetails::bomMaskTable[4].bom[1]) == _UtfDetails::bomTable[4].bom[1] &&
+            (bytes[2] & _UtfDetails::bomMaskTable[4].bom[2]) == _UtfDetails::bomTable[4].bom[2] &&
+            (bytes[3] & _UtfDetails::bomMaskTable[4].bom[3]) == _UtfDetails::bomTable[4].bom[3]
         ? 5
         : resultIdx;
 
     DetectEncodingByBomResult result;
-    result.encoding = encodingTable[resultIdx];
+    result.encoding = _UtfDetails::encodingTable[resultIdx];
     result.bytesConsumedByBom = _UtfDetails::bytesConsumedByBomTable[resultIdx];
     result.isLittleEndian = resultIdx <= 3 ? true : false;
 
@@ -271,7 +271,7 @@ ALT_ENUM_CLASS_BIT_FLAGS_IMPL(GuessedEncoding);
 
 namespace _UtfDetails {
 
-ALT_NODISCARD ALT_FORCE_INLINE GuessedEncoding EncodingToGuessedEncoding(const Encoding encoding) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr GuessedEncoding EncodingToGuessedEncoding(const Encoding encoding) noexcept {
 
     return encoding == Encoding::Unknown
         ? GuessedEncoding::Unknown
@@ -280,7 +280,7 @@ ALT_NODISCARD ALT_FORCE_INLINE GuessedEncoding EncodingToGuessedEncoding(const E
 
 } // namespace _UtfDetails
 
-ALT_NODISCARD ALT_FORCE_INLINE Encoding GuessedEncodingToFirstEncoding(const GuessedEncoding guessed) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Encoding GuessedEncodingToFirstEncoding(const GuessedEncoding guessed) noexcept {
 
     if (BitFlag::IsSetEnumFlags(guessed, GuessedEncoding::Utf8)) {
         return Encoding::Utf8;
@@ -304,7 +304,7 @@ struct GuessEncodingResult {
     bool isLittleEndian = Platform::IsLittleEndian(); // if `isLittleEndian != Alt::Platform::IsLittleEndian()` - manually swap bytes
 };
 
-ALT_NODISCARD inline GuessEncodingResult GuessEncoding(const Slice<const u8> bytes) {
+ALT_NODISCARD constexpr inline GuessEncodingResult GuessEncoding(const Slice<const u8> bytes) {
 
     const DetectEncodingByBomResult resultByBom = DetectEncodingByBom(bytes);
     if (resultByBom.encoding != Encoding::Unknown) {
@@ -356,7 +356,7 @@ ALT_NODISCARD inline GuessEncodingResult GuessEncoding(const Slice<const u8> byt
     return result;
 }
 
-ALT_NODISCARD inline GuessEncodingResult GuessEncodingNullTermAware(const Slice<const u8> bytes) {
+ALT_NODISCARD constexpr inline GuessEncodingResult GuessEncodingNullTermAware(const Slice<const u8> bytes) {
 
     const DetectEncodingByBomResult resultByBom = DetectEncodingByBom(bytes);
     if (resultByBom.encoding != Encoding::Unknown) {
@@ -408,7 +408,7 @@ ALT_NODISCARD inline GuessEncodingResult GuessEncodingNullTermAware(const Slice<
     return result;
 }
 
-ALT_NODISCARD inline usize LengthUtf32ToUtf8IgnoreErrors(const Slice<const u32> utf32s) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf32ToUtf8IgnoreErrors(const Slice<const u32> utf32s) noexcept {
 
     usize size = 0;
 
@@ -421,7 +421,7 @@ ALT_NODISCARD inline usize LengthUtf32ToUtf8IgnoreErrors(const Slice<const u32> 
     return size;
 }
 
-ALT_NODISCARD inline Result LengthUtf32ToUtf8(const Slice<const u32> utf32s) noexcept {
+ALT_NODISCARD constexpr inline Result LengthUtf32ToUtf8(const Slice<const u32> utf32s) noexcept {
 
     Result result{};
 
@@ -447,7 +447,7 @@ ALT_NODISCARD inline Result LengthUtf32ToUtf8(const Slice<const u32> utf32s) noe
     return result;
 }
 
-ALT_NODISCARD inline usize LengthUtf32ToUtf8Replace(
+ALT_NODISCARD constexpr inline usize LengthUtf32ToUtf8Replace(
     const Slice<const u32> utf32s, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -468,7 +468,7 @@ ALT_NODISCARD inline usize LengthUtf32ToUtf8Replace(
     return resultSize;
 }
 
-inline void Utf32ToUtf8IgnoreErrors(const Slice<const u32> utf32s, u8* pBytes, usize& capacity) noexcept {
+constexpr inline void Utf32ToUtf8IgnoreErrors(const Slice<const u32> utf32s, u8* pBytes, usize& capacity) noexcept {
 
     if (!pBytes) {
 
@@ -484,7 +484,7 @@ inline void Utf32ToUtf8IgnoreErrors(const Slice<const u32> utf32s, u8* pBytes, u
 
     while (capacity > 0 && consumed != 0 && pUtf32 != pUtf32End) {
 
-        u8 utf8[4];
+        u8 utf8[4]{};
         Result result = _32::Utf32ToUtf8IgnoreErrors(*pUtf32, utf8);
 
         isOk = result.consumed <= capacity;
@@ -501,7 +501,7 @@ inline void Utf32ToUtf8IgnoreErrors(const Slice<const u32> utf32s, u8* pBytes, u
     }
 }
 
-ALT_NODISCARD inline bool Utf32ToUtf8(const Slice<const u32> utf32s, u8* pBytes, usize& capacity) noexcept {
+ALT_NODISCARD constexpr inline bool Utf32ToUtf8(const Slice<const u32> utf32s, u8* pBytes, usize& capacity) noexcept {
 
     if (!pBytes) {
 
@@ -517,7 +517,7 @@ ALT_NODISCARD inline bool Utf32ToUtf8(const Slice<const u32> utf32s, u8* pBytes,
 
     while (capacity > 0 && consumed != 0 && pUtf32 != pUtf32End) {
 
-        u8 utf8[4];
+        u8 utf8[4]{};
         Result result = _32::Utf32ToUtf8(*pUtf32, utf8);
 
         isOk = result.consumed <= capacity;
@@ -536,7 +536,7 @@ ALT_NODISCARD inline bool Utf32ToUtf8(const Slice<const u32> utf32s, u8* pBytes,
     return isOk && consumed != 0;
 }
 
-inline void Utf32ToUtf8Replace(
+constexpr inline void Utf32ToUtf8Replace(
     const Slice<const u32> utf32s, u8* pBytes, usize& capacity, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -554,7 +554,7 @@ inline void Utf32ToUtf8Replace(
 
     while (capacity > 0 && consumed != 0 && pUtf32 != pUtf32End) {
 
-        u8 utf8[4];
+        u8 utf8[4]{};
         Result result = _32::Utf32ToUtf8Replace(*pUtf32, utf8, replaceUtf32);
 
         isOk = result.consumed <= capacity;
@@ -571,7 +571,7 @@ inline void Utf32ToUtf8Replace(
     }
 }
 
-ALT_NODISCARD inline usize LengthUtf32ToUtf16IgnoreErrors(const Slice<const u32> utf32s) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf32ToUtf16IgnoreErrors(const Slice<const u32> utf32s) noexcept {
 
     usize size = 0;
 
@@ -584,7 +584,7 @@ ALT_NODISCARD inline usize LengthUtf32ToUtf16IgnoreErrors(const Slice<const u32>
     return size;
 }
 
-ALT_NODISCARD inline Result LengthUtf32ToUtf16(const Slice<const u32> utf32s) noexcept {
+ALT_NODISCARD constexpr inline Result LengthUtf32ToUtf16(const Slice<const u32> utf32s) noexcept {
 
     Result result{};
 
@@ -610,7 +610,7 @@ ALT_NODISCARD inline Result LengthUtf32ToUtf16(const Slice<const u32> utf32s) no
     return result;
 }
 
-ALT_NODISCARD inline usize LengthUtf32ToUtf16Replace(
+ALT_NODISCARD constexpr inline usize LengthUtf32ToUtf16Replace(
     const Slice<const u32> utf32s, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -631,7 +631,7 @@ ALT_NODISCARD inline usize LengthUtf32ToUtf16Replace(
     return resultSize;
 }
 
-inline void Utf32ToUtf16IgnoreErrors(const Slice<const u32> utf32s, u16* pBytes, usize& capacity) noexcept {
+constexpr inline void Utf32ToUtf16IgnoreErrors(const Slice<const u32> utf32s, u16* pBytes, usize& capacity) noexcept {
 
     if (!pBytes) {
 
@@ -647,7 +647,7 @@ inline void Utf32ToUtf16IgnoreErrors(const Slice<const u32> utf32s, u16* pBytes,
 
     while (capacity > 0 && consumed != 0 && pUtf32 != pUtf32End) {
 
-        u16 utf16[2];
+        u16 utf16[2]{};
         Result result = _32::Utf32ToUtf16IgnoreErrors(*pUtf32, utf16);
 
         isOk = result.consumed <= capacity;
@@ -662,7 +662,7 @@ inline void Utf32ToUtf16IgnoreErrors(const Slice<const u32> utf32s, u16* pBytes,
     }
 }
 
-ALT_NODISCARD inline bool Utf32ToUtf16(const Slice<const u32> utf32s, u16* pBytes, usize& capacity) noexcept {
+ALT_NODISCARD constexpr inline bool Utf32ToUtf16(const Slice<const u32> utf32s, u16* pBytes, usize& capacity) noexcept {
 
     if (!pBytes) {
 
@@ -678,7 +678,7 @@ ALT_NODISCARD inline bool Utf32ToUtf16(const Slice<const u32> utf32s, u16* pByte
 
     while (capacity > 0 && consumed != 0 && pUtf32 != pUtf32End) {
 
-        u16 utf16[2];
+        u16 utf16[2]{};
         Result result = _32::Utf32ToUtf16(*pUtf32, utf16);
 
         isOk = result.consumed <= capacity;
@@ -695,7 +695,7 @@ ALT_NODISCARD inline bool Utf32ToUtf16(const Slice<const u32> utf32s, u16* pByte
     return isOk && consumed != 0;
 }
 
-inline void Utf32ToUtf16Replace(
+constexpr inline void Utf32ToUtf16Replace(
     const Slice<const u32> utf32s, u16* pBytes, usize& capacity, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -713,7 +713,7 @@ inline void Utf32ToUtf16Replace(
 
     while (capacity > 0 && consumed != 0 && pUtf32 != pUtf32End) {
 
-        u16 utf16[2];
+        u16 utf16[2]{};
         Result result = _32::Utf32ToUtf16Replace(*pUtf32, utf16, replaceUtf32);
 
         isOk = result.consumed <= capacity;
@@ -728,7 +728,7 @@ inline void Utf32ToUtf16Replace(
     }
 }
 
-ALT_NODISCARD inline usize LengthUtf16ToUtf32IgnoreErrors(const Slice<const u16> bytes) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf16ToUtf32IgnoreErrors(const Slice<const u16> bytes) noexcept {
 
     usize size = 0;
 
@@ -752,7 +752,7 @@ ALT_NODISCARD inline usize LengthUtf16ToUtf32IgnoreErrors(const Slice<const u16>
     return size;
 }
 
-ALT_NODISCARD inline Result LengthUtf16ToUtf32(const Slice<const u16> bytes) noexcept {
+ALT_NODISCARD constexpr inline Result LengthUtf16ToUtf32(const Slice<const u16> bytes) noexcept {
 
     Result result{};
 
@@ -784,7 +784,7 @@ ALT_NODISCARD inline Result LengthUtf16ToUtf32(const Slice<const u16> bytes) noe
     return result;
 }
 
-ALT_NODISCARD inline usize LengthUtf16ToUtf32Replace(const Slice<const u16> bytes) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf16ToUtf32Replace(const Slice<const u16> bytes) noexcept {
 
     usize size = 0;
 
@@ -808,7 +808,7 @@ ALT_NODISCARD inline usize LengthUtf16ToUtf32Replace(const Slice<const u16> byte
     return size;
 }
 
-inline void Utf16ToUtf32IgnoreErrors(const Slice<const u16> bytes, u32* pUtf32, usize& capacity) noexcept {
+constexpr inline void Utf16ToUtf32IgnoreErrors(const Slice<const u16> bytes, u32* pUtf32, usize& capacity) noexcept {
 
     if (!pUtf32) {
 
@@ -829,7 +829,7 @@ inline void Utf16ToUtf32IgnoreErrors(const Slice<const u16> bytes, u32* pUtf32, 
             pBytes + 1 < pBytesEnd ? *(pBytes + 1) : static_cast<u16>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         Result result = _16::Utf16ToUtf32IgnoreErrors(utf16, utf32);
 
         consumed = result.consumed;
@@ -843,7 +843,7 @@ inline void Utf16ToUtf32IgnoreErrors(const Slice<const u16> bytes, u32* pUtf32, 
     }
 }
 
-ALT_NODISCARD inline bool Utf16ToUtf32(const Slice<const u16> bytes, u32* pUtf32, usize& capacity) noexcept {
+ALT_NODISCARD constexpr inline bool Utf16ToUtf32(const Slice<const u16> bytes, u32* pUtf32, usize& capacity) noexcept {
 
     if (!pUtf32) {
 
@@ -864,7 +864,7 @@ ALT_NODISCARD inline bool Utf16ToUtf32(const Slice<const u16> bytes, u32* pUtf32
             pBytes + 1 < pBytesEnd ? *(pBytes + 1) : static_cast<u16>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         Result result = _16::Utf16ToUtf32(utf16, utf32);
 
         consumed = result.consumed;
@@ -880,7 +880,7 @@ ALT_NODISCARD inline bool Utf16ToUtf32(const Slice<const u16> bytes, u32* pUtf32
     return isOk && consumed != 0;
 }
 
-inline void Utf16ToUtf32Replace(
+constexpr inline void Utf16ToUtf32Replace(
     const Slice<const u16> bytes, u32* pUtf32, usize& capacity, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -903,7 +903,7 @@ inline void Utf16ToUtf32Replace(
             pBytes + 1 < pBytesEnd ? *(pBytes + 1) : static_cast<u16>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         Result result = _16::Utf16ToUtf32Replace(utf16, utf32, replaceUtf32);
 
         consumed = result.consumed;
@@ -917,7 +917,7 @@ inline void Utf16ToUtf32Replace(
     }
 }
 
-ALT_NODISCARD inline usize LengthUtf16ToUtf8IgnoreErrors(const Slice<const u16> bytes) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf16ToUtf8IgnoreErrors(const Slice<const u16> bytes) noexcept {
 
     usize totalSize = 0;
 
@@ -939,7 +939,7 @@ ALT_NODISCARD inline usize LengthUtf16ToUtf8IgnoreErrors(const Slice<const u16> 
     return totalSize;
 }
 
-ALT_NODISCARD inline Result LengthUtf16ToUtf8(const Slice<const u16> bytes) noexcept {
+ALT_NODISCARD constexpr inline Result LengthUtf16ToUtf8(const Slice<const u16> bytes) noexcept {
 
     Result result{};
 
@@ -974,7 +974,7 @@ ALT_NODISCARD inline Result LengthUtf16ToUtf8(const Slice<const u16> bytes) noex
     return result;
 }
 
-ALT_NODISCARD inline usize LengthUtf16ToUtf8Replace(
+ALT_NODISCARD constexpr inline usize LengthUtf16ToUtf8Replace(
     const Slice<const u16> bytes, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -1007,7 +1007,7 @@ ALT_NODISCARD inline usize LengthUtf16ToUtf8Replace(
     return resultSize;
 }
 
-inline void Utf16ToUtf8IgnoreErrors(const Slice<const u16> bytes, u8* pBytesOut, usize& capacity) noexcept {
+constexpr inline void Utf16ToUtf8IgnoreErrors(const Slice<const u16> bytes, u8* pBytesOut, usize& capacity) noexcept {
 
     if (!pBytesOut) {
 
@@ -1028,7 +1028,7 @@ inline void Utf16ToUtf8IgnoreErrors(const Slice<const u16> bytes, u8* pBytesOut,
             pBytes + 1 < pBytesEnd ? *(pBytes + 1) : static_cast<u16>(0),
         };
 
-        u8 utf8[4];
+        u8 utf8[4]{};
         Result result = _16::Utf16ToUtf8IgnoreErrors(utf16, utf8);
 
         isOk = result.consumed <= capacity;
@@ -1045,7 +1045,7 @@ inline void Utf16ToUtf8IgnoreErrors(const Slice<const u16> bytes, u8* pBytesOut,
     }
 }
 
-ALT_NODISCARD inline bool Utf16ToUtf8(const Slice<const u16> bytes, u8* pBytesOut, usize& capacity) noexcept {
+ALT_NODISCARD constexpr inline bool Utf16ToUtf8(const Slice<const u16> bytes, u8* pBytesOut, usize& capacity) noexcept {
 
     if (!pBytesOut) {
 
@@ -1066,7 +1066,7 @@ ALT_NODISCARD inline bool Utf16ToUtf8(const Slice<const u16> bytes, u8* pBytesOu
             pBytes + 1 < pBytesEnd ? *(pBytes + 1) : static_cast<u16>(0),
         };
 
-        u8 utf8[4];
+        u8 utf8[4]{};
         Result result = _16::Utf16ToUtf8(utf16, utf8);
 
         isOk = result.consumed <= capacity;
@@ -1085,7 +1085,7 @@ ALT_NODISCARD inline bool Utf16ToUtf8(const Slice<const u16> bytes, u8* pBytesOu
     return isOk && consumed != 0;
 }
 
-inline void Utf16ToUtf8Replace(
+constexpr inline void Utf16ToUtf8Replace(
     const Slice<const u16> bytes, u8* pBytesOut, usize& capacity, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -1108,7 +1108,7 @@ inline void Utf16ToUtf8Replace(
             pBytes + 1 < pBytesEnd ? *(pBytes + 1) : static_cast<u16>(0),
         };
 
-        u8 utf8[4];
+        u8 utf8[4]{};
         Result result = _16::Utf16ToUtf8Replace(utf16, utf8, replaceUtf32);
 
         isOk = result.consumed <= capacity;
@@ -1125,7 +1125,7 @@ inline void Utf16ToUtf8Replace(
     }
 }
 
-ALT_NODISCARD inline usize LengthUtf8ToUtf32IgnoreErrors(const Slice<const u8> bytes) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf8ToUtf32IgnoreErrors(const Slice<const u8> bytes) noexcept {
 
     usize size = 0;
 
@@ -1147,7 +1147,7 @@ ALT_NODISCARD inline usize LengthUtf8ToUtf32IgnoreErrors(const Slice<const u8> b
     return size;
 }
 
-ALT_NODISCARD inline Result LengthUtf8ToUtf32(const Slice<const u8> bytes) noexcept {
+ALT_NODISCARD constexpr inline Result LengthUtf8ToUtf32(const Slice<const u8> bytes) noexcept {
 
     Result result{};
 
@@ -1169,7 +1169,7 @@ ALT_NODISCARD inline Result LengthUtf8ToUtf32(const Slice<const u8> bytes) noexc
         advance = _8::ForwardUtf8(utf8);
 
         isValidUtf8 = advance != 0;
-        advance = Num::Max(advance, 1);
+        advance = Max(advance, 1);
 
         result.consumed += isValidUtf8 ? 1 : 0;
         pBytes += advance;
@@ -1181,7 +1181,7 @@ ALT_NODISCARD inline Result LengthUtf8ToUtf32(const Slice<const u8> bytes) noexc
     return result;
 }
 
-ALT_NODISCARD inline usize LengthUtf8ToUtf32Replace(const Slice<const u8> bytes) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf8ToUtf32Replace(const Slice<const u8> bytes) noexcept {
 
     usize size = 0;
 
@@ -1197,7 +1197,7 @@ ALT_NODISCARD inline usize LengthUtf8ToUtf32Replace(const Slice<const u8> bytes)
         };
 
         usize advance = _8::ForwardUtf8(utf8);
-        advance = Num::Max(advance, 1);
+        advance = Max(advance, 1);
 
         size += 1;
         pBytes += advance;
@@ -1206,7 +1206,7 @@ ALT_NODISCARD inline usize LengthUtf8ToUtf32Replace(const Slice<const u8> bytes)
     return size;
 }
 
-inline void Utf8ToUtf32IgnoreErrors(const Slice<const u8> bytes, u32* pUtf32, usize& capacity) noexcept {
+constexpr inline void Utf8ToUtf32IgnoreErrors(const Slice<const u8> bytes, u32* pUtf32, usize& capacity) noexcept {
 
     if (!pUtf32) {
 
@@ -1229,7 +1229,7 @@ inline void Utf8ToUtf32IgnoreErrors(const Slice<const u8> bytes, u32* pUtf32, us
             pBytes + 3 < pBytesEnd ? *(pBytes + 3) : static_cast<u8>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         Result result = _8::Utf8ToUtf32IgnoreErrors(utf8, utf32);
 
         consumed = result.consumed;
@@ -1243,7 +1243,7 @@ inline void Utf8ToUtf32IgnoreErrors(const Slice<const u8> bytes, u32* pUtf32, us
     }
 }
 
-ALT_NODISCARD inline bool Utf8ToUtf32(const Slice<const u8> bytes, u32* pUtf32, usize& capacity) noexcept {
+ALT_NODISCARD constexpr inline bool Utf8ToUtf32(const Slice<const u8> bytes, u32* pUtf32, usize& capacity) noexcept {
 
     if (!pUtf32) {
 
@@ -1266,7 +1266,7 @@ ALT_NODISCARD inline bool Utf8ToUtf32(const Slice<const u8> bytes, u32* pUtf32, 
             pBytes + 3 < pBytesEnd ? *(pBytes + 3) : static_cast<u8>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         Result result = _8::Utf8ToUtf32(utf8, utf32);
 
         consumed = result.consumed;
@@ -1282,7 +1282,7 @@ ALT_NODISCARD inline bool Utf8ToUtf32(const Slice<const u8> bytes, u32* pUtf32, 
     return isOk && consumed != 0;
 }
 
-inline void Utf8ToUtf32Replace(
+constexpr inline void Utf8ToUtf32Replace(
     const Slice<const u8> bytes, u32* pUtf32, usize& capacity, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -1307,7 +1307,7 @@ inline void Utf8ToUtf32Replace(
             pBytes + 3 < pBytesEnd ? *(pBytes + 3) : static_cast<u8>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         Result result = _8::Utf8ToUtf32Replace(utf8, utf32, replaceUtf32);
 
         consumed = result.consumed;
@@ -1321,7 +1321,7 @@ inline void Utf8ToUtf32Replace(
     }
 }
 
-ALT_NODISCARD inline usize LengthUtf8ToUtf16IgnoreErrors(const Slice<const u8> bytes) noexcept {
+ALT_NODISCARD constexpr inline usize LengthUtf8ToUtf16IgnoreErrors(const Slice<const u8> bytes) noexcept {
 
     usize size = 0;
 
@@ -1345,7 +1345,7 @@ ALT_NODISCARD inline usize LengthUtf8ToUtf16IgnoreErrors(const Slice<const u8> b
     return size;
 }
 
-ALT_NODISCARD inline Result LengthUtf8ToUtf16(const Slice<const u8> bytes) noexcept {
+ALT_NODISCARD constexpr inline Result LengthUtf8ToUtf16(const Slice<const u8> bytes) noexcept {
 
     Result result{};
 
@@ -1368,7 +1368,7 @@ ALT_NODISCARD inline Result LengthUtf8ToUtf16(const Slice<const u8> bytes) noexc
         advance = _8::ForwardUtf8(utf8);
 
         isValidUtf8 = advance != 0;
-        advance = Num::Max(advance, 1);
+        advance = Max(advance, 1);
 
         size = advance == 4 ? 2 : 1;
 
@@ -1384,7 +1384,7 @@ ALT_NODISCARD inline Result LengthUtf8ToUtf16(const Slice<const u8> bytes) noexc
     return result;
 }
 
-ALT_NODISCARD inline usize LengthUtf8ToUtf16Replace(
+ALT_NODISCARD constexpr inline usize LengthUtf8ToUtf16Replace(
     const Slice<const u8> bytes, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -1405,7 +1405,7 @@ ALT_NODISCARD inline usize LengthUtf8ToUtf16Replace(
         usize advance = _8::ForwardUtf8(utf8);
 
         const bool isValidUtf8 = advance != 0;
-        advance = Num::Max(advance, 1);
+        advance = Max(advance, 1);
 
         const usize size = advance == 4 ? 2 : 1;
 
@@ -1419,7 +1419,7 @@ ALT_NODISCARD inline usize LengthUtf8ToUtf16Replace(
     return totalSize;
 }
 
-inline void Utf8ToUtf16IgnoreErrors(const Slice<const u8> bytes, u16* pBytesOut, usize& capacity) noexcept {
+constexpr inline void Utf8ToUtf16IgnoreErrors(const Slice<const u8> bytes, u16* pBytesOut, usize& capacity) noexcept {
 
     if (!pBytesOut) {
 
@@ -1442,7 +1442,7 @@ inline void Utf8ToUtf16IgnoreErrors(const Slice<const u8> bytes, u16* pBytesOut,
             pBytes + 3 < pBytesEnd ? *(pBytes + 3) : static_cast<u8>(0),
         };
 
-        u16 utf16[2];
+        u16 utf16[2]{};
         Result result = _8::Utf8ToUtf16IgnoreErrors(utf8, utf16);
 
         isOk = result.consumed <= capacity;
@@ -1457,7 +1457,7 @@ inline void Utf8ToUtf16IgnoreErrors(const Slice<const u8> bytes, u16* pBytesOut,
     }
 }
 
-ALT_NODISCARD inline bool Utf8ToUtf16(const Slice<const u8> bytes, u16* pBytesOut, usize& capacity) noexcept {
+ALT_NODISCARD constexpr inline bool Utf8ToUtf16(const Slice<const u8> bytes, u16* pBytesOut, usize& capacity) noexcept {
 
     if (!pBytesOut) {
 
@@ -1480,7 +1480,7 @@ ALT_NODISCARD inline bool Utf8ToUtf16(const Slice<const u8> bytes, u16* pBytesOu
             pBytes + 3 < pBytesEnd ? *(pBytes + 3) : static_cast<u8>(0),
         };
 
-        u16 utf16[2];
+        u16 utf16[2]{};
         Result result = _8::Utf8ToUtf16(utf8, utf16);
 
         isOk = result.consumed <= capacity;
@@ -1497,7 +1497,7 @@ ALT_NODISCARD inline bool Utf8ToUtf16(const Slice<const u8> bytes, u16* pBytesOu
     return isOk && consumed != 0;
 }
 
-inline void Utf8ToUtf16Replace(
+constexpr inline void Utf8ToUtf16Replace(
     const Slice<const u8> bytes, u16* pBytesOut, usize& capacity, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -1522,7 +1522,7 @@ inline void Utf8ToUtf16Replace(
             pBytes + 3 < pBytesEnd ? *(pBytes + 3) : static_cast<u8>(0),
         };
 
-        u16 utf16[2];
+        u16 utf16[2]{};
         Result result = _8::Utf8ToUtf16Replace(utf8, utf16, replaceUtf32);
 
         isOk = result.consumed <= capacity;

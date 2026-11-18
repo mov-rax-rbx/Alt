@@ -12,7 +12,7 @@ namespace Utf {
 
 namespace _16 {
 
-ALT_NODISCARD ALT_FORCE_INLINE bool IsSurrogateUtf16(const u16 utf16) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsSurrogateUtf16(const u16 utf16) noexcept {
 
     // 3.9.2 UTF-16
     //return utf16 >= 0xD800 && utf16 <= 0xDFFF;
@@ -24,7 +24,7 @@ ALT_NODISCARD ALT_FORCE_INLINE bool IsSurrogateUtf16(const u16 utf16) noexcept {
     return (utf16 & 0xF800) == 0xD800;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE bool IsLowSurrogateUtf16(const u16 utf16Second) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsLowSurrogateUtf16(const u16 utf16Second) noexcept {
 
     // 23.6.1 Surrogates Area: U+D800-U+DFFF
     //return utf16Second >= 0xDC00 && utf16Second <= 0xDFFF;
@@ -36,7 +36,7 @@ ALT_NODISCARD ALT_FORCE_INLINE bool IsLowSurrogateUtf16(const u16 utf16Second) n
     return (utf16Second & 0xFC00) == 0xDC00;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE bool IsHighSurrogateUtf16(const u16 utf16First) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsHighSurrogateUtf16(const u16 utf16First) noexcept {
 
     // 23.6.1 Surrogates Area: U+D800-U+DFFF
     //return utf16First >= 0xD800 && utf16First <= 0xDBFF;
@@ -49,7 +49,7 @@ ALT_NODISCARD ALT_FORCE_INLINE bool IsHighSurrogateUtf16(const u16 utf16First) n
 }
 
 // return numbers of bytes to forward adjust or 0 if invalid utf8
-ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf16(const u16 (&utf16)[2]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize ForwardUtf16(const u16 (&utf16)[2]) noexcept {
 
     // 3.9.2 UTF-16
     // 23.6.1 Surrogates Area: U+D800-U+DFFF
@@ -70,14 +70,14 @@ ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf16(const u16 (&utf16)[2]) noexcep
     //return (utf16 <= 0xD7FF) || (utf16 >= 0xE000 && utf16 <= 0xFFFF);
 #else
 
-    constexpr static u32 MASK = 4227922944; // { 0xFC00, 0xFC00 };
+    constexpr u32 MASK = 4227922944; // { 0xFC00, 0xFC00 };
 
 #if defined(ALT_PLATFORM_LITTLE_ENDIAN)
 
-    constexpr static u32 VALIDATION_MASK = 3691042816; // { 0xD800, 0xDC00 };
+    constexpr u32 VALIDATION_MASK = 3691042816; // { 0xD800, 0xDC00 };
 #elif defined(ALT_PLATFORM_BIG_ENDIAN)
 
-    //constexpr static u32 VALIDATION_MASK = 3623934976; // { 0xDC00, 0xD800 };
+    //constexpr u32 VALIDATION_MASK = 3623934976; // { 0xDC00, 0xD800 };
 #else
 
 #error specify endianness
@@ -98,7 +98,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize ForwardUtf16(const u16 (&utf16)[2]) noexcep
 }
 
 // return numbers of bytes to backward adjust or 0 if invalid utf8
-ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf16(const u16 (&utf16)[2]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize BackwardUtf16(const u16 (&utf16)[2]) noexcept {
 
     // 3.9.2 UTF-16
     // 23.6.1 Surrogates Area: U+D800-U+DFFF
@@ -119,14 +119,14 @@ ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf16(const u16 (&utf16)[2]) noexce
     //return (utf16 <= 0xD7FF) || (utf16 >= 0xE000 && utf16 <= 0xFFFF);
 #else
 
-    constexpr static u32 MASK = 4227922944; // { 0xFC00, 0xFC00 };
+    constexpr u32 MASK = 4227922944; // { 0xFC00, 0xFC00 };
 
 #if defined(ALT_PLATFORM_LITTLE_ENDIAN)
 
-    constexpr static u32 VALIDATION_MASK = 3691042816; // { 0xD800, 0xDC00 };
+    constexpr u32 VALIDATION_MASK = 3691042816; // { 0xD800, 0xDC00 };
 #elif defined(ALT_PLATFORM_BIG_ENDIAN)
 
-    //constexpr static u32 VALIDATION_MASK = 3623934976; // { 0xDC00, 0xD800 };
+    //constexpr u32 VALIDATION_MASK = 3623934976; // { 0xDC00, 0xD800 };
 #else
 
 #error specify endianness
@@ -146,13 +146,13 @@ ALT_NODISCARD ALT_FORCE_INLINE usize BackwardUtf16(const u16 (&utf16)[2]) noexce
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE bool IsValidUtf16(const u16 (&utf16)[2]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsValidUtf16(const u16 (&utf16)[2]) noexcept {
 
     return ForwardUtf16(utf16) != 0;
 }
 
 // if 'length == 4' then utf16 is surrogate
-ALT_NODISCARD ALT_FORCE_INLINE usize LengthUtf16ToUtf8(const u16 (&utf16)[2]) {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr usize LengthUtf16ToUtf8(const u16 (&utf16)[2]) {
 
     // Table 3-7
 
@@ -165,7 +165,7 @@ ALT_NODISCARD ALT_FORCE_INLINE usize LengthUtf16ToUtf8(const u16 (&utf16)[2]) {
     return result;
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8IgnoreErrors(const u16 (&utf16)[2], u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf8IgnoreErrors(const u16 (&utf16)[2], u8 (&utf8)[4]) noexcept {
 
     // Table 3-6
 
@@ -220,7 +220,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8IgnoreErrors(const u16 (&utf16)
         u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
         asU32 = asU32 & UTF16_MASK0;
 
-        u16 utf16_[2];
+        u16 utf16_[2]{};
         Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
         utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
     }
@@ -247,7 +247,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8IgnoreErrors(const u16 (&utf16)
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8(const u16 (&utf16)[2], u8 (&utf8)[4]) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf8(const u16 (&utf16)[2], u8 (&utf8)[4]) noexcept {
 
     // Table 3-6
 
@@ -308,7 +308,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8(const u16 (&utf16)[2], u8 (&ut
         u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
         asU32 = asU32 & UTF16_MASK0;
 
-        u16 utf16_[2];
+        u16 utf16_[2]{};
         Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
         utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
     }
@@ -335,7 +335,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8(const u16 (&utf16)[2], u8 (&ut
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8Replace(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf8Replace(
     const u16 (&utf16)[2], u8 (&utf8)[4], const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -400,7 +400,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8Replace(
         u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
         asU32 = asU32 & UTF16_MASK0;
 
-        u16 utf16_[2];
+        u16 utf16_[2]{};
         Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
         utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
 
@@ -430,7 +430,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf8Replace(
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32IgnoreErrorsBackward(const u16 (&utf16)[2], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf32IgnoreErrorsBackward(const u16 (&utf16)[2], u32& utf32) noexcept {
 
     // Table 3-5
 
@@ -478,7 +478,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32IgnoreErrorsBackward(const u16
     u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
     asU32 = asU32 & UTF16_MASK0;
 
-    u16 utf16_[2];
+    u16 utf16_[2]{};
     Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
     utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
 
@@ -490,7 +490,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32IgnoreErrorsBackward(const u16
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32Backward(const u16 (&utf16)[2], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf32Backward(const u16 (&utf16)[2], u32& utf32) noexcept {
 
     // Table 3-5
 
@@ -539,7 +539,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32Backward(const u16 (&utf16)[2]
     u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
     asU32 = asU32 & UTF16_MASK0;
 
-    u16 utf16_[2];
+    u16 utf16_[2]{};
     Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
     utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
 
@@ -551,7 +551,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32Backward(const u16 (&utf16)[2]
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32ReplaceBackward(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf32ReplaceBackward(
     const u16 (&utf16)[2], u32& utf32, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -604,7 +604,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32ReplaceBackward(
     u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
     asU32 = asU32 & UTF16_MASK0;
 
-    u16 utf16_[2];
+    u16 utf16_[2]{};
     Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
     utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
 
@@ -618,7 +618,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32ReplaceBackward(
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32IgnoreErrors(const u16 (&utf16)[2], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf32IgnoreErrors(const u16 (&utf16)[2], u32& utf32) noexcept {
 
     // Table 3-5
 
@@ -666,7 +666,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32IgnoreErrors(const u16 (&utf16
     u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
     asU32 = asU32 & UTF16_MASK0;
 
-    u16 utf16_[2];
+    u16 utf16_[2]{};
     Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
     utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
 
@@ -678,7 +678,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32IgnoreErrors(const u16 (&utf16
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32(const u16 (&utf16)[2], u32& utf32) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf32(const u16 (&utf16)[2], u32& utf32) noexcept {
 
     // Table 3-5
 
@@ -727,7 +727,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32(const u16 (&utf16)[2], u32& u
     u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
     asU32 = asU32 & UTF16_MASK0;
 
-    u16 utf16_[2];
+    u16 utf16_[2]{};
     Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
     utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
 
@@ -739,7 +739,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32(const u16 (&utf16)[2], u32& u
 #endif // ALT_USE_UTF_NON_BRANCHLESS
 }
 
-ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32Replace(
+ALT_NODISCARD ALT_FORCE_INLINE constexpr Result Utf16ToUtf32Replace(
     const u16 (&utf16)[2], u32& utf32, const u32 replaceUtf32 = GetSubstitutionForInvalidUTF32()
 ) noexcept {
 
@@ -792,7 +792,7 @@ ALT_NODISCARD ALT_FORCE_INLINE Result Utf16ToUtf32Replace(
     u32 asU32 = Memory::Transmute<u16[2], u32>(utf16);
     asU32 = asU32 & UTF16_MASK0;
 
-    u16 utf16_[2];
+    u16 utf16_[2]{};
     Memory::TransmuteInto<u32, u16[2]>(asU32, utf16_);
     utf32 = ((utf16_[0] << 10) | utf16_[1]) + 0x10000;
 

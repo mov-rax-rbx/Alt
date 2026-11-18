@@ -1,28 +1,28 @@
 ﻿#include "../IteratorTrait.h"
 
-/*
-* Alt::IteratorForwardFromFunc iter{
-*     []() {
-*         static usize cnt = 0;
-*         return cnt++;
-*     }
-* };
-*
-* Alt::Vector<usize> vec = iter
-*     .Take(4)
-*     .Intersperse([]() {
-*         return 4;
-*     })
-*     .CollectOrDefault<Alt::Vector<usize>>();
-*
-* assert(vec[0] == 0);
-* assert(vec[1] == 4);
-* assert(vec[2] == 1);
-* assert(vec[3] == 4);
-* assert(vec[4] == 2);
-* assert(vec[5] == 4);
-* assert(vec[6] == 3);
-*/
+/**
+ * Alt::IteratorForwardFromFunc iter{
+ *     []() {
+ *         static usize cnt = 0;
+ *         return cnt++;
+ *     }
+ * };
+ *
+ * Alt::Vector<usize> vec = iter
+ *     .Take(4)
+ *     .Intersperse([]() {
+ *         return 4;
+ *     })
+ *     .CollectOrDefault<Alt::Vector<usize>>();
+ *
+ * assert(vec[0] == 0);
+ * assert(vec[1] == 4);
+ * assert(vec[2] == 1);
+ * assert(vec[3] == 4);
+ * assert(vec[4] == 2);
+ * assert(vec[5] == 4);
+ * assert(vec[6] == 3);
+ */
 namespace Alt {
 namespace _IterDetails {
 namespace Adapters {
@@ -38,7 +38,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Intersperse_<PrevIterT, FuncT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (m_IsIntersperseForwardTurn) {
 
@@ -55,7 +55,7 @@ public:
         return Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -73,7 +73,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 
@@ -93,19 +93,19 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Intersperse_<PrevIterT, FuncT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         const usize size = Self().m_Iter.GetSize();
-        return size + Num::SubWrap(size, 1);
+        return size + SubWrap(size, 1);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return Self().m_Iter.IsEmpty();
     }
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -145,15 +145,15 @@ public:
         , _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorExactSizeTrait<Type>, PrevIterT, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Intersperse_(const PrevIterT iter, FuncT&& func) noexcept
+    ALT_FORCE_INLINE constexpr Intersperse_(const PrevIterT iter, FuncT&& func) noexcept
         : m_Iter(iter)
         , m_Func(std::move(func))
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
 
         const usize sizeHint = m_Iter.GetSizeHint();
-        return sizeHint + Num::SubWrap(sizeHint, 1);
+        return sizeHint + SubWrap(sizeHint, 1);
     }
 
 private:

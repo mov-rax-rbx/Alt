@@ -19,25 +19,25 @@ public:
 
     using Vec3 = Vec3<T>;
 
-    ALT_FORCE_INLINE AABB3() noexcept
-        : m_Min(Num::Desc<T>::Max())
-        , m_Max(Num::Desc<T>::Lowest())
+    ALT_FORCE_INLINE constexpr AABB3() noexcept
+        : m_Min(Desc<T>::Max())
+        , m_Max(Desc<T>::Lowest())
     {}
 
-    ALT_FORCE_INLINE AABB3(const Vec3& min, const Vec3& max) noexcept
+    ALT_FORCE_INLINE constexpr AABB3(const Vec3& min, const Vec3& max) noexcept
         : m_Min(min)
         , m_Max(max)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE static AABB3 Empty() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static AABB3 Empty() noexcept {
 
         return AABB3{
-            Vec3{ Num::Desc<T>::Max() },
-            Vec3{ Num::Desc<T>::Lowest() },
+            Vec3{ Desc<T>::Max() },
+            Vec3{ Desc<T>::Lowest() },
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static AABB3 Zero() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static AABB3 Zero() noexcept {
 
         return AABB3{
             Vec3{ static_cast<T>(0.0) },
@@ -45,13 +45,13 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
 
         AABB3 empty = AABB3::Empty();
         return m_Min.IsEqFuzzy(empty.m_Min) && m_Max.IsEqFuzzy(empty.m_Max);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsDegen() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsDegen() const noexcept {
 
         return
             m_Min.x > m_Max.x ||
@@ -59,37 +59,37 @@ public:
             m_Min.z > m_Max.z;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsZero() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsZero() const noexcept {
 
         const AABB3 zero = AABB3::Zero();
         return m_Min.IsEqFuzzy(zero.m_Min) && m_Max.IsEqFuzzy(zero.m_Max);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const Vec3& operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const Vec3& operator[](const usize i) const noexcept {
         return i == 0 ? m_Min : m_Max;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const Vec3& GetMin() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const Vec3& GetMin() const noexcept {
         return m_Min;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const Vec3& GetMax() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const Vec3& GetMax() const noexcept {
         return m_Max;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 GetCenter() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 GetCenter() const noexcept {
         return m_Max * static_cast<T>(0.5) + m_Min * static_cast<T>(0.5);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 GetExtent() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 GetExtent() const noexcept {
         return (m_Max - m_Min) * static_cast<T>(0.5);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 GetSpan() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 GetSpan() const noexcept {
         return m_Max - m_Min;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetLongestAxis() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetLongestAxis() const noexcept {
 
         const Vec3 span = GetSpan();
         if (span.x > span.y && span.x > span.z) {
@@ -102,13 +102,13 @@ public:
         }
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T GetVolume() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T GetVolume() const noexcept {
 
         const Vec3 e = GetSpan();
         return e.x * e.y * e.z;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T GetSurfaceArea() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T GetSurfaceArea() const noexcept {
 
         const Vec3 e = GetSpan();
         return static_cast<T>(2) * (e.x * e.y + e.x * e.z + e.y * e.z);
@@ -117,7 +117,7 @@ public:
     /*
      * return point by direction
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 GetSupport(const Vec3& dir) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 GetSupport(const Vec3& dir) const noexcept {
 
         return Vec3{
             dir.x >= static_cast<T>(0.0) ? m_Max.x : m_Min.x,
@@ -126,7 +126,7 @@ public:
         };
     }
 
-    ALT_FORCE_INLINE void Include(const AABB3& aabb) noexcept {
+    ALT_FORCE_INLINE constexpr void Include(const AABB3& aabb) noexcept {
 
         m_Min[0] = Min(m_Min[0], aabb.m_Min[0]);
         m_Min[1] = Min(m_Min[1], aabb.m_Min[1]);
@@ -137,7 +137,7 @@ public:
         m_Max[2] = Max(m_Max[2], aabb.m_Max[2]);
     }
 
-    ALT_FORCE_INLINE void Include(const Vec3& p) noexcept {
+    ALT_FORCE_INLINE constexpr void Include(const Vec3& p) noexcept {
 
         m_Min[0] = Min(m_Min[0], p[0]);
         m_Min[1] = Min(m_Min[1], p[1]);
@@ -148,38 +148,38 @@ public:
         m_Max[2] = Max(m_Max[2], p[2]);
     }
 
-    ALT_FORCE_INLINE AABB3 operator+(const Vec3& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB3 operator+(const Vec3& offset) const noexcept {
         return AABB3(m_Min + offset, m_Max + offset);
     }
 
-    ALT_FORCE_INLINE AABB3& operator+=(const Vec3& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB3& operator+=(const Vec3& offset) const noexcept {
 
         *this = AABB3(m_Min + offset, m_Max + offset);
         return *this;
     }
 
-    ALT_FORCE_INLINE AABB3 operator-(const Vec3& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB3 operator-(const Vec3& offset) const noexcept {
         return AABB3(m_Min - offset, m_Max - offset);
     }
 
-    ALT_FORCE_INLINE AABB3& operator-=(const Vec3& offset) const noexcept {
+    ALT_FORCE_INLINE constexpr AABB3& operator-=(const Vec3& offset) const noexcept {
 
         *this = AABB3(m_Min - offset, m_Max - offset);
         return *this;
     }
 
-    ALT_FORCE_INLINE void ExtendByOffset(const Vec3& offset) noexcept {
+    ALT_FORCE_INLINE constexpr void ExtendByOffset(const Vec3& offset) noexcept {
 
         m_Min -= offset;
         m_Max += offset;
     }
 
-    ALT_FORCE_INLINE void ExtendByOffset_Max(const Vec3& offset) noexcept {
+    ALT_FORCE_INLINE constexpr void ExtendByOffset_Max(const Vec3& offset) noexcept {
 
         m_Max += offset;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE AABB3 Transformed(const Matrix44<T>& mat44) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr AABB3 Transformed(const Matrix44<T>& mat44) const noexcept {
 
         Vec3 newMin = mat44.GetTranslation();
         Vec3 newMax = mat44.GetTranslation();
@@ -202,7 +202,7 @@ public:
         return AABB3(newMin, newMax);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IntersectsAABB(const AABB3& aabb) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IntersectsAABB(const AABB3& aabb) const noexcept {
 
         return !(
             aabb.m_Min.x > m_Max.x || aabb.m_Max.x < m_Min.x ||
@@ -211,24 +211,24 @@ public:
         );
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IntersectsSphere(const Vec3& p, const T radius) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IntersectsSphere(const Vec3& p, const T radius) const noexcept {
         return IntersectsSphereSq(p, radius * radius);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IntersectsSphereSq(const Vec3& p, const T radiusSq) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IntersectsSphereSq(const Vec3& p, const T radiusSq) const noexcept {
 
         const Vec3 cl = ClosestPoint(p);
         return (cl - p).LengthSq() <= radiusSq;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool Contains(const Vec3& p) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool Contains(const Vec3& p) const noexcept {
 
         return
             p.x >= m_Min.x && p.y >= m_Min.y && p.z >= m_Min.z &&
             p.x <= m_Max.x && p.y <= m_Max.y && p.z <= m_Max.z;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 ClosestPoint(const Vec3& p) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 ClosestPoint(const Vec3& p) const noexcept {
 
         return Vec3{
             Min(Max(p.x, m_Min.x), m_Max.x),

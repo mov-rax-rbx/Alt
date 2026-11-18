@@ -153,7 +153,7 @@ struct RcIntrusiveMemoryLayoutController<T, false> {
         ALT_MAKE_CLASS_NON_MOVABLE(StrongRefControlBlock);
 
         template <typename ...ArgsT>
-        ALT_FORCE_INLINE StrongRefControlBlock(const StrongCounter strongCounter, ArgsT&&... args) noexcept
+        ALT_FORCE_INLINE constexpr StrongRefControlBlock(const StrongCounter strongCounter, ArgsT&&... args) noexcept
             : strongCounter(strongCounter)
             , object(std::forward<ArgsT>(args)...)
         {}
@@ -163,9 +163,9 @@ struct RcIntrusiveMemoryLayoutController<T, false> {
 
         StrongRefControlBlock* pStrongRef = nullptr;
 
-        ALT_FORCE_INLINE StrongRefData() noexcept = default;
+        ALT_FORCE_INLINE constexpr StrongRefData() noexcept = default;
 
-        ALT_FORCE_INLINE StrongRefData(StrongRefControlBlock* pStrongRef) noexcept
+        ALT_FORCE_INLINE constexpr StrongRefData(StrongRefControlBlock* pStrongRef) noexcept
             : pStrongRef(pStrongRef)
         {}
     };
@@ -185,19 +185,19 @@ struct RcIntrusiveMemoryLayoutController<T, false> {
         Memory::DeallocateObject(strongRef.pStrongRef);
     }
 
-    ALT_FORCE_INLINE static Optional<T*> GetObjectPtr(StrongRef& strongRef) noexcept {
-        return strongRef.pStrongRef ? MakeOptional(&strongRef.pStrongRef->object) : Nullopt;
+    ALT_FORCE_INLINE constexpr static Optional<T*> GetObjectPtr(StrongRef& strongRef) noexcept {
+        return strongRef.pStrongRef ? MakeOptional(Addressof(strongRef.pStrongRef->object)) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static const Optional<T*> GetObjectPtr(const StrongRef& strongRef) noexcept {
-        return strongRef.pStrongRef ? MakeOptional(&strongRef.pStrongRef->object) : Nullopt;
+    ALT_FORCE_INLINE constexpr static const Optional<T*> GetObjectPtr(const StrongRef& strongRef) noexcept {
+        return strongRef.pStrongRef ? MakeOptional(Addressof(strongRef.pStrongRef->object)) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<StrongCounter&> GetStrongCounterRef(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<StrongCounter&> GetStrongCounterRef(StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->strongCounter) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<const StrongCounter&> GetStrongCounterRef(const StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<const StrongCounter&> GetStrongCounterRef(const StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->strongCounter) : Nullopt;
     }
 };
@@ -221,9 +221,9 @@ struct RcIntrusiveMemoryLayoutController<T, true> {
         ALT_MAKE_CLASS_NON_COPYABLE(StrongRefControlBlock);
         ALT_MAKE_CLASS_NON_MOVABLE(StrongRefControlBlock);
 
-        ALT_FORCE_INLINE StrongRefControlBlock() noexcept = default;
+        ALT_FORCE_INLINE constexpr StrongRefControlBlock() noexcept = default;
 
-        ALT_FORCE_INLINE StrongRefControlBlock(const StrongCounter strongCounter, const WeakCounter weakCounter) noexcept
+        ALT_FORCE_INLINE constexpr StrongRefControlBlock(const StrongCounter strongCounter, const WeakCounter weakCounter) noexcept
             : strongCounter(strongCounter)
             , weakCounter(weakCounter)
         {}
@@ -233,9 +233,9 @@ struct RcIntrusiveMemoryLayoutController<T, true> {
 
         StrongRefControlBlock* pStrongRef = nullptr;
 
-        ALT_FORCE_INLINE StrongRefData() noexcept = default;
+        ALT_FORCE_INLINE constexpr StrongRefData() noexcept = default;
 
-        ALT_FORCE_INLINE StrongRefData(StrongRefControlBlock* pStrongRef) noexcept
+        ALT_FORCE_INLINE constexpr StrongRefData(StrongRefControlBlock* pStrongRef) noexcept
             : pStrongRef(pStrongRef)
         {}
     };
@@ -251,7 +251,7 @@ struct RcIntrusiveMemoryLayoutController<T, true> {
         return strongRef;
     }
 
-    ALT_FORCE_INLINE static void DeallocateObject(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static void DeallocateObject(StrongRef& strongRef) noexcept {
 
         strongRef.pStrongRef->object.Destroy();
     }
@@ -261,27 +261,27 @@ struct RcIntrusiveMemoryLayoutController<T, true> {
         Memory::DeallocateObject(strongRef.pStrongRef);
     }
 
-    ALT_FORCE_INLINE static Optional<T*> GetObjectPtr(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<T*> GetObjectPtr(StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->object.GetPtr()) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static const Optional<T*> GetObjectPtr(const StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static const Optional<T*> GetObjectPtr(const StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->object.GetPtr()) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<StrongCounter&> GetStrongCounterRef(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<StrongCounter&> GetStrongCounterRef(StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->strongCounter) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<const StrongCounter&> GetStrongCounterRef(const StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<const StrongCounter&> GetStrongCounterRef(const StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->strongCounter) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<WeakCounter&> GetWeakCounterRef(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<WeakCounter&> GetWeakCounterRef(StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->weakCounter) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<const WeakCounter&> GetWeakCounterRef(const StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<const WeakCounter&> GetWeakCounterRef(const StrongRef& strongRef) noexcept {
         return strongRef.pStrongRef ? MakeOptional(strongRef.pStrongRef->weakCounter) : Nullopt;
     }
 };
@@ -310,9 +310,9 @@ struct RcControlBlockMemoryLayoutController<T, true> {
         ALT_MAKE_CLASS_NON_COPYABLE(StrongRefControlBlock);
         ALT_MAKE_CLASS_NON_MOVABLE(StrongRefControlBlock);
 
-        ALT_FORCE_INLINE StrongRefControlBlock() noexcept = default;
+        ALT_FORCE_INLINE constexpr StrongRefControlBlock() noexcept = default;
 
-        ALT_FORCE_INLINE StrongRefControlBlock(const StrongCounter strongCounter, const StrongCounter weakCounter) noexcept
+        ALT_FORCE_INLINE constexpr StrongRefControlBlock(const StrongCounter strongCounter, const StrongCounter weakCounter) noexcept
             : strongCounter(strongCounter)
             , weakCounter(weakCounter)
         {}
@@ -323,7 +323,7 @@ struct RcControlBlockMemoryLayoutController<T, true> {
         T* pObject = nullptr;
         StrongRefControlBlock* pControlBlock = nullptr;
 
-        ALT_FORCE_INLINE StrongRefData() noexcept = default;
+        ALT_FORCE_INLINE constexpr StrongRefData() noexcept = default;
     };
 
     template <typename ...ArgsT>
@@ -359,27 +359,27 @@ struct RcControlBlockMemoryLayoutController<T, true> {
         Memory::DeallocateObject(strongRef.pControlBlock);
     }
 
-    ALT_FORCE_INLINE static Optional<T*> GetObjectPtr(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<T*> GetObjectPtr(StrongRef& strongRef) noexcept {
         return strongRef.pObject ? MakeOptional(strongRef.pObject) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static const Optional<T*> GetObjectPtr(const StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static const Optional<T*> GetObjectPtr(const StrongRef& strongRef) noexcept {
         return strongRef.pObject ? MakeOptional(strongRef.pObject) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<StrongCounter&> GetStrongCounterRef(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<StrongCounter&> GetStrongCounterRef(StrongRef& strongRef) noexcept {
         return strongRef.pControlBlock ? MakeOptional(strongRef.pControlBlock->strongCounter) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<const StrongCounter&> GetStrongCounterRef(const StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<const StrongCounter&> GetStrongCounterRef(const StrongRef& strongRef) noexcept {
         return strongRef.pControlBlock ? MakeOptional(strongRef.pControlBlock->strongCounter) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<WeakCounter&> GetWeakCounterRef(StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<WeakCounter&> GetWeakCounterRef(StrongRef& strongRef) noexcept {
         return strongRef.pControlBlock ? MakeOptional(strongRef.pControlBlock->weakCounter) : Nullopt;
     }
 
-    ALT_FORCE_INLINE static Optional<const WeakCounter&> GetWeakCounterRef(const StrongRef& strongRef) noexcept {
+    ALT_FORCE_INLINE constexpr static Optional<const WeakCounter&> GetWeakCounterRef(const StrongRef& strongRef) noexcept {
         return strongRef.pControlBlock ? MakeOptional(strongRef.pControlBlock->weakCounter) : Nullopt;
     }
 };
@@ -446,7 +446,7 @@ public:
 
         if constexpr (BitFlag::IsSetEnumFlags(TRAIT, RcPtrTrait::OverflowCheck)) {
 
-            const StrongCounter strongCounterRef = Num::AddOverflowCheck(*pStrongCounterRef, 1) iferr_return false;
+            const StrongCounter strongCounterRef = AddOverflowCheck(*pStrongCounterRef, 1) iferr_return false;
             *pStrongCounterRef = strongCounterRef;
         }
         else {
@@ -530,7 +530,7 @@ public:
 
         if constexpr (BitFlag::IsSetEnumFlags(TRAIT, RcPtrTrait::OverflowCheck)) {
 
-            const StrongCounter strongCounterRef = Num::AddOverflowCheck(*pStrongCounterRef, 1) iferr_return false;
+            const StrongCounter strongCounterRef = AddOverflowCheck(*pStrongCounterRef, 1) iferr_return false;
             *pStrongCounterRef = strongCounterRef;
         }
         else {
@@ -573,7 +573,7 @@ public:
 
         if constexpr (BitFlag::IsSetEnumFlags(TRAIT, RcPtrTrait::OverflowCheck)) {
 
-            const WeakCounter weakCounterRef = Num::AddOverflowCheck(*pWeakCounterRef, 1) iferr_return false;
+            const WeakCounter weakCounterRef = AddOverflowCheck(*pWeakCounterRef, 1) iferr_return false;
             *pWeakCounterRef = weakCounterRef;
         }
         else {
@@ -750,7 +750,9 @@ public:
 
     using Super::Super;
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Optional<RcPtr<T, TRAIT, RcMemoryLayoutController>> FromWeak(const RcWeakPtr<T, TRAIT, RcMemoryLayoutController>& weak) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE static Optional<RcPtr<T, TRAIT, RcMemoryLayoutController>> FromWeak(
+        const RcWeakPtr<T, TRAIT, RcMemoryLayoutController>& weak
+    ) noexcept {
         iferr_scope;
 
         RcPtr<T, TRAIT, RcMemoryLayoutController> result(weak.m_Ptr);
@@ -914,7 +916,9 @@ public:
 
     using Super::Super;
 
-    ALT_NODISCARD ALT_FORCE_INLINE static RcWeakPtr<T, TRAIT, RcMemoryLayoutController> FromRc(const RcPtr<T, TRAIT, RcMemoryLayoutController>& rcPtr) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE static RcWeakPtr<T, TRAIT, RcMemoryLayoutController> FromRc(
+        const RcPtr<T, TRAIT, RcMemoryLayoutController>& rcPtr
+    ) noexcept {
 
         RcWeakPtr<T, TRAIT, RcMemoryLayoutController> weak(rcPtr.m_Ptr);
         ALT_MAYBE_UNUSED const bool isOverflow = weak.m_Ptr.IncWeakRef();
@@ -949,7 +953,9 @@ public:
 
     using Super::Super;
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Optional<RcWeakPtr<T, TRAIT, RcMemoryLayoutController>> FromRc(const RcPtr<T, TRAIT, RcMemoryLayoutController>& rcPtr) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE static Optional<RcWeakPtr<T, TRAIT, RcMemoryLayoutController>> FromRc(
+        const RcPtr<T, TRAIT, RcMemoryLayoutController>& rcPtr
+    ) noexcept {
         iferr_scope;
 
         RcWeakPtr<T, TRAIT, RcMemoryLayoutController> weak(rcPtr.m_Ptr);
@@ -967,8 +973,8 @@ public:
     ALT_FORCE_INLINE RcWeakPtrOverflowResolver(RcWeakPtrOverflowResolver&&) noexcept = default;
     ALT_FORCE_INLINE RcWeakPtrOverflowResolver& operator=(RcWeakPtrOverflowResolver&&) noexcept = default;
 
-    ALT_FORCE_INLINE RcWeakPtrOverflowResolver(const RcWeakPtrOverflowResolver&) noexcept = delete;
-    ALT_FORCE_INLINE RcWeakPtrOverflowResolver& operator=(const RcWeakPtrOverflowResolver&) noexcept = delete;
+    RcWeakPtrOverflowResolver(const RcWeakPtrOverflowResolver&) noexcept = delete;
+    RcWeakPtrOverflowResolver& operator=(const RcWeakPtrOverflowResolver&) noexcept = delete;
 };
 
 } // namespace _RcPtrDetails

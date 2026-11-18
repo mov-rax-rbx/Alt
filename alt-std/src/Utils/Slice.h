@@ -120,20 +120,20 @@ class SliceIterator;
 template <typename T>
 class SliceIteratorConst;
 
-template <Utf::Encoding ENCODING>
+template <typename T, Utf::Encoding ENCODING = _StringDetails::character_compatible_to_utf_type_v<T>>
 class SliceIteratorUTF;
 
-template <Utf::Encoding ENCODING>
+template <typename T, Utf::Encoding ENCODING = _StringDetails::character_compatible_to_utf_type_v<T>>
 class SliceIteratorUTFTrusted;
 
-using SliceIteratorUTF8 = SliceIteratorUTF<Utf::Encoding::Utf8>;
-using SliceIteratorUTF8Trusted = SliceIteratorUTFTrusted<Utf::Encoding::Utf8>;
+using SliceIteratorUTF8 = SliceIteratorUTF<u8, Utf::Encoding::Utf8>;
+using SliceIteratorUTF8Trusted = SliceIteratorUTFTrusted<u8, Utf::Encoding::Utf8>;
 
-using SliceIteratorUTF16 = SliceIteratorUTF<Utf::Encoding::Utf16>;
-using SliceIteratorUTF16Trusted = SliceIteratorUTFTrusted<Utf::Encoding::Utf16>;
+using SliceIteratorUTF16 = SliceIteratorUTF<u16, Utf::Encoding::Utf16>;
+using SliceIteratorUTF16Trusted = SliceIteratorUTFTrusted<u16, Utf::Encoding::Utf16>;
 
-using SliceIteratorUTF32 = SliceIteratorUTF<Utf::Encoding::Utf32>;
-using SliceIteratorUTF32Trusted = SliceIteratorUTFTrusted<Utf::Encoding::Utf32>;
+using SliceIteratorUTF32 = SliceIteratorUTF<chara, Utf::Encoding::Utf32>;
+using SliceIteratorUTF32Trusted = SliceIteratorUTFTrusted<chara, Utf::Encoding::Utf32>;
 
 template <typename T, bool IS_STRING_SLICE = _SliceDetails::is_string_slice_v<T>>
 class SplitIterator;
@@ -192,7 +192,7 @@ public:
     /**
      * @brief Initializes an empty slice.
      */
-    constexpr ALT_FORCE_INLINE Slice() noexcept = default;
+    ALT_FORCE_INLINE constexpr Slice() noexcept = default;
 
     /**
      * @brief Initializes a slice from a pointer and a size.
@@ -204,7 +204,7 @@ public:
      * 
      * assert(slice.GetSize() == 3);
      */
-    constexpr ALT_FORCE_INLINE Slice(T* begin, const usize size) noexcept
+    ALT_FORCE_INLINE constexpr Slice(T* begin, const usize size) noexcept
         : m_pBegin(begin)
         , m_pEnd(begin + size)
     {}
@@ -220,7 +220,7 @@ public:
      * 
      * assert(slice.GetSize() == 3);
      */
-    constexpr ALT_FORCE_INLINE Slice(T* begin, T* end) noexcept
+    ALT_FORCE_INLINE constexpr Slice(T* begin, T* end) noexcept
         : m_pBegin(begin)
         , m_pEnd(end)
     {}
@@ -237,14 +237,14 @@ public:
      * assert(slice.GetSize() == 3);
      */
     template <usize N>
-    constexpr ALT_FORCE_INLINE Slice(T (&arr)[N]) noexcept
+    ALT_FORCE_INLINE constexpr Slice(T (&arr)[N]) noexcept
         : m_pBegin(arr)
         , m_pEnd(arr + N)
     {}
 
     /**
      * @brief Initializes a slice from a container using .data() and .size().
-     * @tparam Container A type providing .data() and .size() methods. 
+     * @tparam Container A type providing .data() and .size() methods.
      * The return value of .data() must be convertible to T*.
      * @param container The container to wrap.
      * @example
@@ -258,14 +258,14 @@ public:
         std::enable_if_t<
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().data())>*, T*>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.data()))
         , m_pEnd(static_cast<T*>(container.data()) + container.size())
     {}
 
     /**
      * @brief Initializes a slice from a const container using .data() and .size().
-     * @tparam Container A type providing .data() and .size() methods. 
+     * @tparam Container A type providing .data() and .size() methods.
      * The return value of .data() must be convertible to T*.
      * @param container The constant container to wrap.
      * @example
@@ -279,14 +279,14 @@ public:
         std::enable_if_t<
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().data())>*, T*>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(const Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(const Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.data()))
         , m_pEnd(static_cast<T*>(container.data()) + container.size())
     {}
 
     /**
      * @brief Initializes a slice from a container using .Data() and .DataEnd().
-     * @tparam Container A type providing .Data() and .DataEnd() methods. 
+     * @tparam Container A type providing .Data() and .DataEnd() methods.
      * The return value of .Data() must be convertible to T*.
      * @param container The container to wrap.
      * @example
@@ -303,14 +303,14 @@ public:
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().Data())>*, T*> &&
             !TypeTraits::is_string_v<Container>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.Data()))
         , m_pEnd(static_cast<T*>(container.DataEnd()))
     {}
 
     /**
      * @brief Initializes a slice from a const container using .Data() and .DataEnd().
-     * @tparam Container A type providing .Data() and .DataEnd() methods. 
+     * @tparam Container A type providing .Data() and .DataEnd() methods.
      * The return value of .Data() must be convertible to T*.
      * @param container The constant container to wrap.
      * @example
@@ -325,7 +325,7 @@ public:
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().Data())>*, T*> &&
             !TypeTraits::is_string_v<Container>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(const Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(const Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.Data()))
         , m_pEnd(static_cast<T*>(container.DataEnd()))
     {}
@@ -345,7 +345,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Slice(const Slice<U> rhs) noexcept
+    ALT_FORCE_INLINE constexpr Slice(const Slice<U> rhs) noexcept
         : m_pBegin(static_cast<T*>(rhs.m_pBegin))
         , m_pEnd(static_cast<T*>(rhs.m_pEnd))
     {}
@@ -374,7 +374,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Slice& operator=(const Slice<U> rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Slice& operator=(const Slice<U> rhs) noexcept {
 
         m_pBegin = static_cast<T*>(rhs.m_pBegin);
         m_pEnd = static_cast<T*>(rhs.m_pEnd);
@@ -382,8 +382,8 @@ public:
         return *this;
     }
 
-    ALT_FORCE_INLINE Slice(const Slice&) noexcept = default;
-    ALT_FORCE_INLINE Slice& operator=(const Slice&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Slice(const Slice&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Slice& operator=(const Slice&) noexcept = default;
 
     /**
      * @brief Returns the number of elements in the slice.
@@ -428,11 +428,11 @@ public:
      * assert(sub[0] == 1);
      * assert(sub[1] == 2);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<T> SubSlice(const usize offset, const usize size = Num::Desc<usize>::Max()) const noexcept {
-        ALT_ASSERT(GetSize() >= offset && (size == Num::Desc<usize>::Max() || size <= GetSize() - offset));
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<T> SubSlice(const usize offset, const usize size = Desc<usize>::Max()) const noexcept {
+        ALT_ASSERT(GetSize() >= offset && (size == Desc<usize>::Max() || size <= GetSize() - offset));
 
         T* pBegin = m_pBegin + offset;
-        T* pEnd = size == Num::Desc<usize>::Max()
+        T* pEnd = size == Desc<usize>::Max()
             ? m_pEnd
             : pBegin + size;
 
@@ -477,13 +477,13 @@ public:
      * 
      * assert(s[4] == 4);
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize idx) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize idx) noexcept {
         ALT_ASSERT(idx < GetSize());
 
         return m_pBegin[idx];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& operator[](const usize idx) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& operator[](const usize idx) const noexcept {
         ALT_ASSERT(idx < GetSize());
 
         return m_pBegin[idx];
@@ -493,13 +493,13 @@ public:
      * @brief Returns a reference to the first element.
      * @return Reference to the first element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetFirst() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetFirst() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *m_pBegin;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetFirst() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetFirst() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *m_pBegin;
@@ -510,13 +510,13 @@ public:
      * @return Reference to the last element.
      * @note Asserts that the Slice is not empty.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetLast() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetLast() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(m_pEnd - 1);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetLast() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetLast() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(m_pEnd - 1);
@@ -549,7 +549,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_same_v<InnerU, T> && std::is_constructible_v<Slice<const T>, U&&>>* = nullptr>
-    ALT_NODISCARD bool operator==(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(U&& rhs_) const noexcept {
 
         const Slice<const T> rhs = rhs_;
         return Algorithms::CompareEQ(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -557,7 +557,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_same_v<InnerU, T> && std::is_constructible_v<Slice<const T>, U&&>>* = nullptr>
-    ALT_NODISCARD bool operator!=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(U&& rhs_) const noexcept {
 
         const Slice<const T> rhs = rhs_;
         return Algorithms::CompareNE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -565,7 +565,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_same_v<InnerU, T> && std::is_constructible_v<Slice<const T>, U&&>>* = nullptr>
-    ALT_NODISCARD bool operator<(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(U&& rhs_) const noexcept {
 
         const Slice<const T> rhs = rhs_;
         return Algorithms::CompareLT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -573,7 +573,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_same_v<InnerU, T> && std::is_constructible_v<Slice<const T>, U&&>>* = nullptr>
-    ALT_NODISCARD bool operator<=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(U&& rhs_) const noexcept {
 
         const Slice<const T> rhs = rhs_;
         return Algorithms::CompareLE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -581,7 +581,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_same_v<InnerU, T> && std::is_constructible_v<Slice<const T>, U&&>>* = nullptr>
-    ALT_NODISCARD bool operator>(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(U&& rhs_) const noexcept {
 
         const Slice<const T> rhs = rhs_;
         return Algorithms::CompareGT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -589,7 +589,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_same_v<InnerU, T> && std::is_constructible_v<Slice<const T>, U&&>>* = nullptr>
-    ALT_NODISCARD bool operator>=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(U&& rhs_) const noexcept {
 
         const Slice<const T> rhs = rhs_;
         return Algorithms::CompareGE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -599,21 +599,21 @@ public:
      * @brief Returns std iterators.
      * @return Iterator pointing to the first element.
      */
-    ALT_FORCE_INLINE iterator begin() const noexcept { return iterator{ m_pBegin }; }
-    ALT_FORCE_INLINE iterator end() const noexcept { return iterator{ m_pEnd}; }
+    ALT_FORCE_INLINE constexpr iterator begin() const noexcept { return iterator{ m_pBegin }; }
+    ALT_FORCE_INLINE constexpr iterator end() const noexcept { return iterator{ m_pEnd}; }
 
-    ALT_FORCE_INLINE reverse_iterator rbegin() const noexcept { return reverse_iterator{ end() }; }
-    ALT_FORCE_INLINE reverse_iterator rend() const noexcept { return reverse_iterator{ begin() }; }
+    ALT_FORCE_INLINE constexpr reverse_iterator rbegin() const noexcept { return reverse_iterator{ end() }; }
+    ALT_FORCE_INLINE constexpr reverse_iterator rend() const noexcept { return reverse_iterator{ begin() }; }
 
     /**
      * @brief Return a custom Alt::Iterator for the slice.
      * @return An Iterator instance.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE SliceIterator<T> GetIterator() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SliceIterator<T> GetIterator() noexcept {
         return SliceIterator<T>{ *this };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE SliceIteratorConst<T> GetIterator() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SliceIteratorConst<T> GetIterator() const noexcept {
         return SliceIteratorConst<T>{ *this };
     }
 
@@ -641,7 +641,7 @@ public:
     /**
      * @brief Initializes an empty slice.
      */
-    constexpr ALT_FORCE_INLINE Slice() noexcept = default;
+    ALT_FORCE_INLINE constexpr Slice() noexcept = default;
 
     /**
      * @brief Initializes a slice from a pointer and a size.
@@ -654,7 +654,7 @@ public:
      * 
      * assert(slice == name);
      */
-    constexpr ALT_FORCE_INLINE Slice(T* begin, const usize size) noexcept
+    ALT_FORCE_INLINE constexpr Slice(T* begin, const usize size) noexcept
         : m_pBegin(begin)
         , m_pEnd(begin + size)
     {}
@@ -670,7 +670,7 @@ public:
      * 
      * assert(slice == name);
      */
-    constexpr ALT_FORCE_INLINE Slice(T* begin, T* end) noexcept
+    ALT_FORCE_INLINE constexpr Slice(T* begin, T* end) noexcept
         : m_pBegin(begin)
         , m_pEnd(end)
     {}
@@ -687,14 +687,14 @@ public:
      * assert(slice == name);
      */
     template <usize N>
-    constexpr ALT_FORCE_INLINE Slice(T (&arr)[N]) noexcept
+    ALT_FORCE_INLINE constexpr Slice(T (&arr)[N]) noexcept
         : m_pBegin(arr)
         , m_pEnd(arr + N - 1)
     {}
 
     /**
      * @brief Initializes a slice from a container using .data() and .size().
-     * @tparam Container A type providing .data() and .size() methods. 
+     * @tparam Container A type providing .data() and .size() methods.
      * The return value of .data() must be convertible to T*.
      * @param container The container to wrap.
      * @example
@@ -708,14 +708,14 @@ public:
         std::enable_if_t<
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().data())>*, T*>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.data()))
         , m_pEnd(static_cast<T*>(container.data()) + container.size())
     {}
 
     /**
      * @brief Initializes a slice from a const container using .data() and .size().
-     * @tparam Container A type providing .data() and .size() methods. 
+     * @tparam Container A type providing .data() and .size() methods.
      * The return value of .data() must be convertible to T*.
      * @param container The constant container to wrap.
      * @example
@@ -729,14 +729,14 @@ public:
         std::enable_if_t<
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().data())>*, T*>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(const Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(const Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.data()))
         , m_pEnd(static_cast<T*>(container.data()) + container.size())
     {}
 
     /**
      * @brief Initializes a slice from a container using .CStr() and .GetSize().
-     * @tparam Container A type providing .CStr() and .CStrEnd() methods. 
+     * @tparam Container A type providing .CStr() and .CStrEnd() methods.
      * The return value of .CStr() must be convertible to T*.
      * @param container The container to wrap.
      * @example
@@ -751,14 +751,14 @@ public:
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().CStr())>*, T*> &&
             TypeTraits::is_string_v<Container>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.CStr()))
         , m_pEnd(static_cast<T*>(container.CStrEnd()))
     {}
 
     /**
      * @brief Initializes a slice from a container using .Data() and .DataEnd().
-     * @tparam Container A type providing .Data() and .DataEnd() methods. 
+     * @tparam Container A type providing .Data() and .DataEnd() methods.
      * The return value of .Data() must be convertible to T*.
      * @param container The container to wrap.
      * @example
@@ -773,14 +773,14 @@ public:
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().Data())>*, T*> &&
             !TypeTraits::is_string_v<Container>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.Data()))
         , m_pEnd(static_cast<T*>(container.DataEnd()))
     {}
 
     /**
      * @brief Initializes a slice from a const container using .Data() and .GetSize().
-     * @tparam Container A type providing .Data() and .CStrEnd() methods. 
+     * @tparam Container A type providing .Data() and .CStrEnd() methods.
      * The return value of .Data() must be convertible to T*.
      * @param container The constant container to wrap.
      * @example
@@ -795,14 +795,14 @@ public:
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().CStr())>*, T*> &&
             TypeTraits::is_string_v<Container>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(const Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(const Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.CStr()))
         , m_pEnd(static_cast<T*>(container.CStrEnd()))
     {}
 
     /**
      * @brief Initializes a slice from a container using .Data() and .DataEnd().
-     * @tparam Container A type providing .Data() and .DataEnd() methods. 
+     * @tparam Container A type providing .Data() and .DataEnd() methods.
      * The return value of .Data() must be convertible to T*.
      * @param container The container to wrap.
      * @example
@@ -817,7 +817,7 @@ public:
             std::is_convertible_v<std::remove_pointer_t<decltype(std::declval<Container&>().Data())>*, T*> &&
             !TypeTraits::is_string_v<Container>
         >* = nullptr>
-    ALT_FORCE_INLINE Slice(const Container& container) noexcept
+    ALT_FORCE_INLINE constexpr Slice(const Container& container) noexcept
         : m_pBegin(static_cast<T*>(container.Data()))
         , m_pEnd(static_cast<T*>(container.DataEnd()))
     {}
@@ -836,7 +836,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Slice(const Slice<U> rhs) noexcept
+    ALT_FORCE_INLINE constexpr Slice(const Slice<U> rhs) noexcept
         : m_pBegin(static_cast<T*>(rhs.m_pBegin))
         , m_pEnd(static_cast<T*>(rhs.m_pEnd))
     {}
@@ -864,7 +864,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<std::is_convertible_v<U*, T*>>* = nullptr>
-    ALT_FORCE_INLINE Slice& operator=(const Slice<U> rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Slice& operator=(const Slice<U> rhs) noexcept {
 
         m_pBegin = static_cast<T*>(rhs.m_pBegin);
         m_pEnd = static_cast<T*>(rhs.m_pEnd);
@@ -872,8 +872,8 @@ public:
         return *this;
     }
 
-    ALT_FORCE_INLINE Slice(const Slice&) noexcept = default;
-    ALT_FORCE_INLINE Slice& operator=(const Slice&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Slice(const Slice&) noexcept = default;
+    ALT_FORCE_INLINE constexpr Slice& operator=(const Slice&) noexcept = default;
 
     /**
      * @brief Returns the number of elements in the slice.
@@ -917,11 +917,11 @@ public:
      * assert(sub[0] == 'l');
      * assert(sub[1] == 'i');
      */
-    ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<T> SubSlice(const usize offset, const usize size = Num::Desc<usize>::Max()) const noexcept {
-        ALT_ASSERT(GetSize() >= offset && (size == Num::Desc<usize>::Max() || size <= GetSize() - offset));
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Slice<T> SubSlice(const usize offset, const usize size = Desc<usize>::Max()) const noexcept {
+        ALT_ASSERT(GetSize() >= offset && (size == Desc<usize>::Max() || size <= GetSize() - offset));
 
         T* pBegin = m_pBegin + offset;
-        T* pEnd = size == Num::Desc<usize>::Max()
+        T* pEnd = size == Desc<usize>::Max()
             ? m_pEnd
             : pBegin + size;
 
@@ -977,13 +977,13 @@ public:
      * 
      * assert(s[4] == 'e');
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize idx) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize idx) noexcept {
         ALT_ASSERT(idx < GetSize());
 
         return m_pBegin[idx];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& operator[](const usize idx) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& operator[](const usize idx) const noexcept {
         ALT_ASSERT(idx < GetSize());
 
         return m_pBegin[idx];
@@ -993,13 +993,13 @@ public:
      * @brief Returns a reference to the first element.
      * @return Reference to the first element.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetFirst() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetFirst() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *m_pBegin;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetFirst() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetFirst() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *m_pBegin;
@@ -1010,13 +1010,13 @@ public:
      * @return Reference to the last element.
      * @note Asserts that the Slice is not empty.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE T& GetLast() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& GetLast() noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(m_pEnd - 1);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& GetLast() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& GetLast() const noexcept {
         ALT_ASSERT(!IsEmpty());
 
         return *(m_pEnd - 1);
@@ -1048,7 +1048,7 @@ public:
      * assert(slice == "Slice    ");
      * assert(str == "    Slice    ");
      */
-    ALT_NODISCARD Slice TrimLeft() const noexcept {
+    ALT_NODISCARD constexpr Slice TrimLeft() const noexcept {
 
         const T* pBegin = _StringDetails::TrimLeft(m_pBegin, m_pEnd);
         return Slice{ pBegin, m_pEnd };
@@ -1066,7 +1066,7 @@ public:
      * assert(slice == "    Slice");
      * assert(str == "    Slice    ");
      */
-    ALT_NODISCARD Slice TrimRight() const noexcept {
+    ALT_NODISCARD constexpr Slice TrimRight() const noexcept {
 
         const T* pEnd = _StringDetails::TrimRight(m_pBegin, m_pEnd);
         return Slice{ m_pBegin, pEnd };
@@ -1084,7 +1084,7 @@ public:
      * assert(slice == "Slice");
      * assert(str == "    Slice    ");
      */
-    ALT_NODISCARD Slice Trim() const noexcept {
+    ALT_NODISCARD constexpr Slice Trim() const noexcept {
 
         Slice result = TrimLeft();
         return result.TrimRight();
@@ -1105,55 +1105,55 @@ public:
      * const usize idx = slice.FindFirst('i') iferr_return;
      * assert(idx == 2); // index in bytes
      */
-    ALT_NODISCARD Optional<usize> FindFirst(const chara utf32) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const chara utf32) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf32);
     }
 
-    ALT_NODISCARD Optional<usize> FindFirst(const u8 utf8) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const u8 utf8) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindFirst(const u8 (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const u8 (&utf8)[4]) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindFirst(const char utf8) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const char utf8) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindFirst(const char (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const char (&utf8)[4]) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf8);
     }
 
 #ifdef __cpp_char8_t
 
-    ALT_NODISCARD Optional<usize> FindFirst(const char8_t utf8) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const char8_t utf8) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindFirst(const char8_t (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const char8_t (&utf8)[4]) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf8);
     }
 #endif // __cpp_char8_t
 
-    ALT_NODISCARD Optional<usize> FindFirst(const char16_t utf16) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const char16_t utf16) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD Optional<usize> FindFirst(const char16_t (&utf16)[2]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const char16_t (&utf16)[2]) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD Optional<usize> FindFirst(const wchar_t wchar) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const wchar_t wchar) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, wchar);
     }
@@ -1173,55 +1173,55 @@ public:
      * const usize idx = slice.FindLast('.') iferr_return;
      * assert(idx == 5); // index in bytes
      */
-    ALT_NODISCARD Optional<usize> FindLast(const chara utf32) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const chara utf32) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf32);
     }
 
-    ALT_NODISCARD Optional<usize> FindLast(const u8 utf8) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const u8 utf8) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindLast(const u8 (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const u8 (&utf8)[4]) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindLast(const char utf8) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const char utf8) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindLast(const char (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const char (&utf8)[4]) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf8);
     }
 
 #ifdef __cpp_char8_t
 
-    ALT_NODISCARD Optional<usize> FindLast(const char8_t utf8) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const char8_t utf8) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD Optional<usize> FindLast(const char8_t (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const char8_t (&utf8)[4]) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf8);
     }
 #endif // __cpp_char8_t
 
-    ALT_NODISCARD Optional<usize> FindLast(const char16_t utf16) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const char16_t utf16) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD Optional<usize> FindLast(const char16_t (&utf16)[2]) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const char16_t (&utf16)[2]) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD Optional<usize> FindLast(const wchar_t wchar) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const wchar_t wchar) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, wchar);
     }
@@ -1239,55 +1239,55 @@ public:
      * const bool isStartWith = slice.StartWith('S');
      * assert(isStartWith);
      */
-    ALT_NODISCARD bool StartWith(const chara utf32) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const chara utf32) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf32);
     }
 
-    ALT_NODISCARD bool StartWith(const u8 utf8) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const u8 utf8) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool StartWith(const u8 (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const u8 (&utf8)[4]) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool StartWith(const char utf8) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const char utf8) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool StartWith(const char (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const char (&utf8)[4]) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf8);
     }
 
 #ifdef __cpp_char8_t
 
-    ALT_NODISCARD bool StartWith(const char8_t utf8) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const char8_t utf8) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool StartWith(const char8_t (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const char8_t (&utf8)[4]) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf8);
     }
 #endif // __cpp_char8_t
 
-    ALT_NODISCARD bool StartWith(const char16_t utf16) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const char16_t utf16) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD bool StartWith(const char16_t (&utf16)[2]) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const char16_t (&utf16)[2]) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD bool StartWith(const wchar_t wchar) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const wchar_t wchar) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, wchar);
     }
@@ -1305,55 +1305,55 @@ public:
      * cpnst bool isEndWith = slice.EndWith('t');
      * assert(isEndWith);
      */
-    ALT_NODISCARD bool EndWith(const chara utf32) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const chara utf32) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf32);
     }
 
-    ALT_NODISCARD bool EndWith(const u8 utf8) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const u8 utf8) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool EndWith(const u8 (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const u8 (&utf8)[4]) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool EndWith(const char utf8) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const char utf8) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool EndWith(const char (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const char (&utf8)[4]) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf8);
     }
 
 #ifdef __cpp_char8_t
 
-    ALT_NODISCARD bool EndWith(const char8_t utf8) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const char8_t utf8) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf8);
     }
 
-    ALT_NODISCARD bool EndWith(const char8_t (&utf8)[4]) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const char8_t (&utf8)[4]) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf8);
     }
 #endif // __cpp_char8_t
 
-    ALT_NODISCARD bool EndWith(const char16_t utf16) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const char16_t utf16) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD bool EndWith(const char16_t (&utf16)[2]) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const char16_t (&utf16)[2]) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, utf16);
     }
 
-    ALT_NODISCARD bool EndWith(const wchar_t wchar) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const wchar_t wchar) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, wchar);
     }
@@ -1374,7 +1374,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD Optional<usize> FindFirst(U&& str) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(U&& str) const noexcept {
 
         const Slice<const InnerU> bytes = str;
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, bytes.Data(), bytes.DataEnd());
@@ -1382,7 +1382,7 @@ public:
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD Optional<usize> FindFirst(const U* str) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindFirst(const U* str) const noexcept {
 
         return _StringDetails::FindFirst(m_pBegin, m_pEnd, str, str + CalculateCStrLen(str));
     }
@@ -1403,7 +1403,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD Optional<usize> FindLast(U&& str) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(U&& str) const noexcept {
 
         const Slice<const InnerU> bytes = str;
         return _StringDetails::FindLast(m_pBegin, m_pEnd, bytes.Data(), bytes.DataEnd());
@@ -1411,7 +1411,7 @@ public:
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD Optional<usize> FindLast(const U* str) const noexcept {
+    ALT_NODISCARD constexpr Optional<usize> FindLast(const U* str) const noexcept {
 
         return _StringDetails::FindLast(m_pBegin, m_pEnd, str, str + CalculateCStrLen(str));
     }
@@ -1433,7 +1433,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool StartWith(U&& str) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(U&& str) const noexcept {
 
         const Slice<const InnerU> bytes = str;
         return _StringDetails::StartWith(m_pBegin, m_pEnd, bytes.Data(), bytes.DataEnd());
@@ -1441,7 +1441,7 @@ public:
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD bool StartWith(const U* str) const noexcept {
+    ALT_NODISCARD constexpr bool StartWith(const U* str) const noexcept {
 
         return _StringDetails::StartWith(m_pBegin, m_pEnd, str, str + _StringDetails::CalculateCStrLen(str));
     }
@@ -1463,7 +1463,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool EndWith(U&& str) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(U&& str) const noexcept {
 
         const Slice<const InnerU> bytes = str;
         return _StringDetails::EndWith(m_pBegin, m_pEnd, bytes.Data(), bytes.DataEnd());
@@ -1471,7 +1471,7 @@ public:
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD bool EndWith(const U* str) const noexcept {
+    ALT_NODISCARD constexpr bool EndWith(const U* str) const noexcept {
 
         return _StringDetails::EndWith(m_pBegin, m_pEnd, str, str + _StringDetails::CalculateCStrLen(str));
     }
@@ -1481,7 +1481,7 @@ public:
      * @param seed The initial seed for hashing.
      * @return A hash result.
      */
-    ALT_NODISCARD usize CalculateHash(const usize seed = 0) const noexcept {
+    ALT_NODISCARD constexpr usize CalculateHash(const usize seed = 0) const noexcept {
 
         return Algorithms::Hash(m_pBegin, m_pEnd, seed);
     }
@@ -1508,32 +1508,18 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD ssize Compare(U&& rhs_) const noexcept {
-
-        using CompatibleCharacterT = TypeTraits::character_to_character_compatible_type_t<T>;
+    ALT_NODISCARD constexpr ssize Compare(U&& rhs_) const noexcept {
 
         const Slice<const InnerU> rhs = rhs_;
 
-        return Algorithms::Compare(
-            reinterpret_cast<const CompatibleCharacterT*>(m_pBegin),
-            reinterpret_cast<const CompatibleCharacterT*>(m_pEnd),
-            reinterpret_cast<const CompatibleCharacterT*>(rhs.Data()),
-            reinterpret_cast<const CompatibleCharacterT*>(rhs.DataEnd())
-        );
+        return _StringDetails::Compare(m_pBegin, m_pEnd, rhs.Data(), rhs.DataEnd());
     }
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD ssize Compare(const U* rhs) const noexcept {
+    ALT_NODISCARD constexpr ssize Compare(const U* rhs) const noexcept {
 
-        using CompatibleCharacterT = TypeTraits::character_to_character_compatible_type_t<T>;
-
-        return Algorithms::Compare(
-            reinterpret_cast<const CompatibleCharacterT*>(m_pBegin),
-            reinterpret_cast<const CompatibleCharacterT*>(m_pEnd),
-            reinterpret_cast<const CompatibleCharacterT*>(rhs),
-            reinterpret_cast<const CompatibleCharacterT*>(rhs + _StringDetails::CalculateCStrLen(rhs))
-        );
+        return _StringDetails::Compare(m_pBegin, m_pEnd, rhs, rhs + _StringDetails::CalculateCStrLen(rhs));
     }
 
     /**
@@ -1547,7 +1533,7 @@ public:
      */
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool operator==(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(U&& rhs_) const noexcept {
 
         const Slice<const InnerU> rhs = rhs_;
         return Algorithms::CompareEQ(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -1555,7 +1541,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool operator!=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(U&& rhs_) const noexcept {
 
         const Slice<const InnerU> rhs = rhs_;
         return Algorithms::CompareNE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -1563,7 +1549,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool operator<(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(U&& rhs_) const noexcept {
 
         const Slice<const InnerU> rhs = rhs_;
         return Algorithms::CompareLT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -1571,7 +1557,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool operator<=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(U&& rhs_) const noexcept {
 
         const Slice<const InnerU> rhs = rhs_;
         return Algorithms::CompareLE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -1579,7 +1565,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool operator>(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(U&& rhs_) const noexcept {
 
         const Slice<const InnerU> rhs = rhs_;
         return Algorithms::CompareGT(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -1587,7 +1573,7 @@ public:
 
     template <typename U, typename InnerU = TypeTraits::unwrap_inner_type_from_like_array_t<U>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerU>, U&&> && TypeTraits::is_character_compatible_have_same_encoding_v<T, InnerU>>* = nullptr>
-    ALT_NODISCARD bool operator>=(U&& rhs_) const noexcept {
+    ALT_NODISCARD constexpr bool operator>=(U&& rhs_) const noexcept {
 
         const Slice<const InnerU> rhs = rhs_;
         return Algorithms::CompareGE(Data(), DataEnd(), rhs.Data(), rhs.DataEnd());
@@ -1595,31 +1581,31 @@ public:
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD bool operator==(const U* rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator==(const U* rhs) const noexcept {
         return Compare(rhs) == 0;
     }
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD bool operator!=(const U* rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator!=(const U* rhs) const noexcept {
         return !(*this == rhs);
     }
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD bool operator<(const U* rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator<(const U* rhs) const noexcept {
         return Compare(rhs) < 0;
     }
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD bool operator<=(const U* rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator<=(const U* rhs) const noexcept {
         return !(*this > rhs);
     }
 
     template <typename U,
         std::enable_if_t<TypeTraits::is_character_have_same_encoding_v<T, U>>* = nullptr>
-    ALT_NODISCARD bool operator>(const U* rhs) const noexcept {
+    ALT_NODISCARD constexpr bool operator>(const U* rhs) const noexcept {
         return Compare(rhs) > 0;
     }
 
@@ -1627,17 +1613,17 @@ public:
      * @brief Returns std iterators.
      * @return Iterator pointing to the first element.
      */
-    ALT_FORCE_INLINE iterator begin() const noexcept { return iterator{ m_pBegin }; }
-    ALT_FORCE_INLINE iterator end() const noexcept { return iterator{ m_pEnd}; }
+    ALT_FORCE_INLINE constexpr iterator begin() const noexcept { return iterator{ m_pBegin }; }
+    ALT_FORCE_INLINE constexpr iterator end() const noexcept { return iterator{ m_pEnd}; }
 
-    ALT_FORCE_INLINE reverse_iterator rbegin() const noexcept { return reverse_iterator{ end() }; }
-    ALT_FORCE_INLINE reverse_iterator rend() const noexcept { return reverse_iterator{ begin() }; }
+    ALT_FORCE_INLINE constexpr reverse_iterator rbegin() const noexcept { return reverse_iterator{ end() }; }
+    ALT_FORCE_INLINE constexpr reverse_iterator rend() const noexcept { return reverse_iterator{ begin() }; }
 
     /**
      * @brief Return a iterator for the slice.
      * @return An `SliceIterator` instance.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE SliceIterator<T> GetIterator() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SliceIterator<T> GetIterator() noexcept {
         return SliceIterator<T>{ *this };
     }
 
@@ -1645,7 +1631,7 @@ public:
      * @brief Return a constant iterator for the slice.
      * @return An `SliceIteratorConst` instance.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE SliceIteratorConst<T> GetIterator() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SliceIteratorConst<T> GetIterator() const noexcept {
         return SliceIteratorConst<T>{ *this };
     }
 
@@ -1653,8 +1639,8 @@ public:
      * @brief Return a iterator for the slice.
      * @return An `SliceIteratorUTF` instance.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE SliceIteratorUTF<_StringDetails::character_to_utf_type_v<T>> GetIteratorUTF() const noexcept {
-        return SliceIteratorUTF<_StringDetails::character_to_utf_type_v<T>>{ *this };
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SliceIteratorUTF<T> GetIteratorUTF() const noexcept {
+        return SliceIteratorUTF<T>{ *this };
     }
 
     /**
@@ -1662,8 +1648,8 @@ public:
      * @details Eliminates validation checks for UTF.
      * @return An `SliceIteratorUTFTrusted` instance.
      */
-    ALT_NODISCARD ALT_FORCE_INLINE SliceIteratorUTFTrusted<_StringDetails::character_to_utf_type_v<T>> GetIteratorUTFTrusted() const noexcept {
-        return SliceIteratorUTFTrusted<_StringDetails::character_to_utf_type_v<T>>{ *this };
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SliceIteratorUTFTrusted<T> GetIteratorUTFTrusted() const noexcept {
+        return SliceIteratorUTFTrusted<T>{ *this };
     }
 
     /**
@@ -1677,7 +1663,7 @@ public:
      * assert(*iter.Next() == "image");
      * assert(*iter.Next() == "base64,");
      */
-    ALT_NODISCARD ALT_FORCE_INLINE SplitIterator<T> GetSplitIterator(const Slice<const T> pattern) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr SplitIterator<T> GetSplitIterator(const Slice<const T> pattern) const noexcept {
         return SplitIterator<T>{ *this, pattern };
     }
 
@@ -1692,7 +1678,7 @@ private:
 
 /**
  * @brief An iterator that allows traversing the slice.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  * @tparam T The numeric type of the slice elements.
  */
@@ -1704,7 +1690,7 @@ public:
      * @brief Constructs an iterator from a specific slice.
      * @param self The Slice object to copy boundaries from.
      */
-    ALT_FORCE_INLINE SliceIterator(Slice<T>& self) noexcept
+    ALT_FORCE_INLINE constexpr SliceIterator(Slice<T>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -1713,7 +1699,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
 
@@ -1730,7 +1716,7 @@ public:
      * assert(*it.Next() == 1);
      * assert(it.Next() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<T&> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T&> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
 
@@ -1758,9 +1744,9 @@ public:
      * assert(skipped == 3);
      * assert(it.GetSize() == 2);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pBegin += advance;
 
         return advance;
@@ -1779,7 +1765,7 @@ public:
      * assert(*it.NextBack() == 0);
      * assert(it.NextBack() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<T&> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T&> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
 
@@ -1807,9 +1793,9 @@ public:
      * assert(skipped == 1);
      * assert(it.GetSize() == 4);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pEnd -= advance;
 
         return advance;
@@ -1819,7 +1805,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's slice.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -1827,7 +1813,7 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
@@ -1839,7 +1825,7 @@ private:
 
 /**
  * @brief An iterator that allows traversing the slice.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  * @tparam T The numeric type of the slice elements.
  */
@@ -1851,7 +1837,7 @@ public:
      * @brief Constructs an iterator from a specific slice.
      * @param self The Slice object to copy boundaries from.
      */
-    ALT_FORCE_INLINE SliceIteratorConst(const Slice<T>& self) noexcept
+    ALT_FORCE_INLINE constexpr SliceIteratorConst(const Slice<T>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -1860,7 +1846,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
 
@@ -1877,7 +1863,7 @@ public:
      * assert(*it.Next() == 1);
      * assert(it.Next() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<const T&> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<const T&> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
 
@@ -1905,9 +1891,9 @@ public:
      * assert(skipped == 3);
      * assert(it.GetSize() == 2);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pBegin += advance;
 
         return advance;
@@ -1926,7 +1912,7 @@ public:
      * assert(*it.NextBack() == 0);
      * assert(it.NextBack() == Alt::Nullopt);
      */
-    ALT_FORCE_INLINE Optional<const T&> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<const T&> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
 
@@ -1954,9 +1940,9 @@ public:
      * assert(skipped == 1);
      * assert(it.GetSize() == 4);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pEnd -= advance;
 
         return advance;
@@ -1966,7 +1952,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's slice.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -1974,7 +1960,7 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
@@ -1986,12 +1972,12 @@ private:
 
 /**
  * @brief An iterator that allows traversing the slice UTF-8. Validates UTF-8 sequences.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  */
-template <>
-class SliceIteratorUTF<Utf::Encoding::Utf8> final
-    : public Iterator<SliceIteratorUTF<Utf::Encoding::Utf8>, Optional<chara>, IIteratorForwardTrait, IIteratorBackwardTrait>
+template <typename T>
+class SliceIteratorUTF<T, Utf::Encoding::Utf8> final
+    : public Iterator<SliceIteratorUTF<T, Utf::Encoding::Utf8>, Optional<chara>, IIteratorForwardTrait, IIteratorBackwardTrait>
 {
 public:
 
@@ -1999,18 +1985,56 @@ public:
      * @brief Constructs an iterator from a slice which support UTF-8.
      * @param self The Slice object to copy boundaries from.
      */
-    template <typename T,
-        std::enable_if_t<TypeTraits::is_character_utf8_v<T>>* = nullptr>
-    ALT_FORCE_INLINE SliceIteratorUTF(const Slice<T>& self) noexcept
-        : m_pBegin(reinterpret_cast<const u8*>(self.Data()))
-        , m_pEnd(reinterpret_cast<const u8*>(self.DataEnd()))
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF(const Slice<T>& self) noexcept
+        : m_pBegin(self.Data())
+        , m_pEnd(self.DataEnd())
     {}
+
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF(const SliceIteratorUTF&) noexcept = default;
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF& operator=(const SliceIteratorUTF&) noexcept = default;
+
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF(SliceIteratorUTF&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF& operator=(SliceIteratorUTF&&) noexcept = default;
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF(const SliceIteratorUTF<U>& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF& operator=(const SliceIteratorUTF<U>& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF(SliceIteratorUTF<U>&& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF& operator=(SliceIteratorUTF<U>&& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
 
     /**
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -2025,20 +2049,20 @@ public:
      * assert(**it.Next() == U"С"[0]);
      * assert(**it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE Optional<Optional<chara>> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Optional<chara>> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u8 utf8[4]{
-            *m_pBegin,
-            m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u8>(0),
-            m_pBegin + 2 < m_pEnd ? *(m_pBegin + 2) : static_cast<u8>(0),
-            m_pBegin + 3 < m_pEnd ? *(m_pBegin + 3) : static_cast<u8>(0),
+            static_cast<u8>(*m_pBegin),
+            m_pBegin + 1 < m_pEnd ? static_cast<u8>(*(m_pBegin + 1)) : static_cast<u8>(0),
+            m_pBegin + 2 < m_pEnd ? static_cast<u8>(*(m_pBegin + 2)) : static_cast<u8>(0),
+            m_pBegin + 3 < m_pEnd ? static_cast<u8>(*(m_pBegin + 3)) : static_cast<u8>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_8::Utf8ToUtf32(utf8, utf32);
 
         m_pBegin += result.advance;
@@ -2062,21 +2086,21 @@ public:
      * assert(**it.Next() == U"а"[0]);
      * assert(**it.Next() == U"й"[0]);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u8 utf8[4]{
-                *m_pBegin,
-                m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u8>(0),
-                m_pBegin + 2 < m_pEnd ? *(m_pBegin + 2) : static_cast<u8>(0),
-                m_pBegin + 3 < m_pEnd ? *(m_pBegin + 3) : static_cast<u8>(0),
+                static_cast<u8>(*m_pBegin),
+                m_pBegin + 1 < m_pEnd ? static_cast<u8>(*(m_pBegin + 1)) : static_cast<u8>(0),
+                m_pBegin + 2 < m_pEnd ? static_cast<u8>(*(m_pBegin + 2)) : static_cast<u8>(0),
+                m_pBegin + 3 < m_pEnd ? static_cast<u8>(*(m_pBegin + 3)) : static_cast<u8>(0),
             };
 
             const usize advanceBytes = Utf::_8::ForwardUtf8(utf8);
 
-            m_pBegin += Num::Max(advanceBytes, 1);
+            m_pBegin += Max(advanceBytes, 1);
             ALT_ASSERT(m_pBegin <= m_pEnd);
 
             advance -= 1;
@@ -2096,20 +2120,20 @@ public:
      * assert(**it.NextBack() == U"с"[0]);
      * assert(**it.NextBack() == U"й"[0]);
      */
-    ALT_FORCE_INLINE Optional<Optional<chara>> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Optional<chara>> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u8 utf8[4]{
-            m_pBegin <= (m_pEnd - 4) ? *(m_pEnd - 4) : static_cast<u8>(0),
-            m_pBegin <= (m_pEnd - 3) ? *(m_pEnd - 3) : static_cast<u8>(0),
-            m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u8>(0),
-            *(m_pEnd - 1),
+            m_pBegin <= (m_pEnd - 4) ? static_cast<u8>(*(m_pEnd - 4)) : static_cast<u8>(0),
+            m_pBegin <= (m_pEnd - 3) ? static_cast<u8>(*(m_pEnd - 3)) : static_cast<u8>(0),
+            m_pBegin <= (m_pEnd - 2) ? static_cast<u8>(*(m_pEnd - 2)) : static_cast<u8>(0),
+            static_cast<u8>(*(m_pEnd - 1)),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_8::Utf8ToUtf32Backward(utf8, utf32);
 
         m_pEnd -= result.advance;
@@ -2133,21 +2157,21 @@ public:
      * assert(**it.Next() == U"а"[0]);
      * assert(**it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u8 utf8[4]{
-                m_pBegin <= (m_pEnd - 4) ? *(m_pEnd - 4) : static_cast<u8>(0),
-                m_pBegin <= (m_pEnd - 3) ? *(m_pEnd - 3) : static_cast<u8>(0),
-                m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u8>(0),
-                *(m_pEnd - 1),
+                m_pBegin <= (m_pEnd - 4) ? static_cast<u8>(*(m_pEnd - 4)) : static_cast<u8>(0),
+                m_pBegin <= (m_pEnd - 3) ? static_cast<u8>(*(m_pEnd - 3)) : static_cast<u8>(0),
+                m_pBegin <= (m_pEnd - 2) ? static_cast<u8>(*(m_pEnd - 2)) : static_cast<u8>(0),
+                static_cast<u8>(*(m_pEnd - 1)),
             };
 
             const usize advanceBytes = Utf::_8::BackwardUtf8(utf8);
 
-            m_pEnd -= Num::Max(advanceBytes, 1);
+            m_pEnd -= Max(advanceBytes, 1);
             ALT_ASSERT(m_pBegin <= m_pEnd);
 
             advance -= 1;
@@ -2160,24 +2184,27 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
 private:
 
-    const u8* m_pBegin;
-    const u8* m_pEnd;
+    template <typename, Utf::Encoding>
+    friend class SliceIteratorUTF;
+
+    const T* m_pBegin;
+    const T* m_pEnd;
 };
 
 /**
  * @brief An iterator that allows traversing the slice UTF-16. Validates UTF-16 sequences.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  */
-template <>
-class SliceIteratorUTF<Utf::Encoding::Utf16> final
-    : public Iterator<SliceIteratorUTF<Utf::Encoding::Utf16>, Optional<chara>, IIteratorForwardTrait, IIteratorBackwardTrait>
+template <typename T>
+class SliceIteratorUTF<T, Utf::Encoding::Utf16> final
+    : public Iterator<SliceIteratorUTF<T, Utf::Encoding::Utf16>, Optional<chara>, IIteratorForwardTrait, IIteratorBackwardTrait>
 {
 public:
 
@@ -2185,18 +2212,56 @@ public:
      * @brief Constructs an iterator from a slice which support UTF-16.
      * @param self The Slice object to copy boundaries from.
      */
-    template <typename T,
-        std::enable_if_t<TypeTraits::is_character_utf16_v<T>>* = nullptr>
-    ALT_FORCE_INLINE SliceIteratorUTF(const Slice<T>& self) noexcept
-        : m_pBegin(reinterpret_cast<const u16*>(self.Data()))
-        , m_pEnd(reinterpret_cast<const u16*>(self.DataEnd()))
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF(const Slice<T>& self) noexcept
+        : m_pBegin(self.Data())
+        , m_pEnd(self.DataEnd())
     {}
+
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF(const SliceIteratorUTF&) noexcept = default;
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF& operator=(const SliceIteratorUTF&) noexcept = default;
+
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF(SliceIteratorUTF&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF& operator=(SliceIteratorUTF&&) noexcept = default;
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF(const SliceIteratorUTF<U>& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF& operator=(const SliceIteratorUTF<U>& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF(SliceIteratorUTF<U>&& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF& operator=(SliceIteratorUTF<U>&& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
 
     /**
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -2211,18 +2276,18 @@ public:
      * assert(**it.Next() == U"С"[0]);
      * assert(**it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE Optional<Optional<chara>> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Optional<chara>> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u16 utf16[2]{
-            *m_pBegin,
-            m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u16>(0),
+            static_cast<u16>(*m_pBegin),
+            m_pBegin + 1 < m_pEnd ? static_cast<u16>(*(m_pBegin + 1)) : static_cast<u16>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_16::Utf16ToUtf32(utf16, utf32);
 
         m_pBegin += result.advance;
@@ -2246,19 +2311,19 @@ public:
      * assert(**it.Next() == U"а"[0]);
      * assert(**it.Next() == U"й"[0]);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u16 utf16[2]{
-                *m_pBegin,
-                m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u16>(0),
+                static_cast<u16>(*m_pBegin),
+                m_pBegin + 1 < m_pEnd ? static_cast<u16>(*(m_pBegin + 1)) : static_cast<u16>(0),
             };
 
             const usize advanceBytes = Utf::_16::ForwardUtf16(utf16);
 
-            m_pBegin += Num::Max(advanceBytes, 1);
+            m_pBegin += Max(advanceBytes, 1);
             ALT_ASSERT(m_pBegin <= m_pEnd);
 
             advance -= 1;
@@ -2278,18 +2343,18 @@ public:
      * assert(**it.NextBack() == U"с"[0]);
      * assert(**it.NextBack() == U"й"[0]);
      */
-    ALT_FORCE_INLINE Optional<Optional<chara>> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Optional<chara>> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u16 utf16[2]{
-            m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u16>(0),
-            *(m_pEnd - 1),
+            m_pBegin <= (m_pEnd - 2) ? static_cast<u16>(*(m_pEnd - 2)) : static_cast<u16>(0),
+            static_cast<u16>(*(m_pEnd - 1)),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_16::Utf16ToUtf32Backward(utf16, utf32);
 
         m_pEnd -= result.advance;
@@ -2313,19 +2378,19 @@ public:
      * assert(**it.Next() == U"а"[0]);
      * assert(**it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u16 utf16[2]{
-                m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u16>(0),
-                *(m_pEnd - 1),
+                m_pBegin <= (m_pEnd - 2) ? static_cast<u16>(*(m_pEnd - 2)) : static_cast<u16>(0),
+                static_cast<u16>(*(m_pEnd - 1)),
             };
 
             const usize advanceBytes = Utf::_16::BackwardUtf16(utf16);
 
-            m_pEnd -= Num::Max(advanceBytes, 1);
+            m_pEnd -= Max(advanceBytes, 1);
             ALT_ASSERT(m_pBegin <= m_pEnd);
 
             advance -= 1;
@@ -2338,24 +2403,27 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
 private:
 
-    const u16* m_pBegin;
-    const u16* m_pEnd;
+    template <typename, Utf::Encoding>
+    friend class SliceIteratorUTF;
+
+    const T* m_pBegin;
+    const T* m_pEnd;
 };
 
 /**
  * @brief An iterator that allows traversing the slice UTF-32. Validates UTF-32 sequences.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  */
-template <>
-class SliceIteratorUTF<Utf::Encoding::Utf32> final
-    : public Iterator<SliceIteratorUTF<Utf::Encoding::Utf32>, Optional<chara>, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
+template <typename T>
+class SliceIteratorUTF<T, Utf::Encoding::Utf32> final
+    : public Iterator<SliceIteratorUTF<T, Utf::Encoding::Utf32>, Optional<chara>, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
 {
 public:
 
@@ -2363,18 +2431,50 @@ public:
      * @brief Constructs an iterator from a slice which support UTF-32.
      * @param self The Slice object to copy boundaries from.
      */
-    template <typename T,
-        std::enable_if_t<TypeTraits::is_character_utf32_v<T>>* = nullptr>
-    ALT_FORCE_INLINE SliceIteratorUTF(const Slice<T>& self) noexcept
-        : m_pBegin(reinterpret_cast<const u32*>(self.Data()))
-        , m_pEnd(reinterpret_cast<const u32*>(self.DataEnd()))
+    ALT_FORCE_INLINE constexpr SliceIteratorUTF(const Slice<T>& self) noexcept
+        : m_pBegin(self.Data())
+        , m_pEnd(self.DataEnd())
     {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF(const SliceIteratorUTF<U>& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF& operator=(const SliceIteratorUTF<U>& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF(SliceIteratorUTF<U>&& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTF& operator=(SliceIteratorUTF<U>&& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
 
     /**
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
 
@@ -2389,13 +2489,13 @@ public:
      * assert(**it.Next() == U"С"[0]);
      * assert(**it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE Optional<Optional<chara>> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Optional<chara>> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
-        const u32 utf32 = *m_pBegin;
+        const u32 utf32 = static_cast<u32>(*m_pBegin);
         m_pBegin += 1;
 
         return utf32;
@@ -2414,9 +2514,9 @@ public:
      * assert(**it.Next() == U"а"[0]);
      * assert(**it.Next() == U"й"[0]);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pBegin += advance;
 
         return advance;
@@ -2433,14 +2533,14 @@ public:
      * assert(**it.NextBack() == U"с"[0]);
      * assert(**it.NextBack() == U"й"[0]);
      */
-    ALT_FORCE_INLINE Optional<Optional<chara>> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Optional<chara>> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         m_pEnd -= 1;
-        const u32 utf32 = *m_pEnd;
+        const u32 utf32 = static_cast<u32>(*m_pEnd);
 
         return utf32;
     }
@@ -2458,9 +2558,9 @@ public:
      * assert(**it.Next() == U"а"[0]);
      * assert(**it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pEnd -= advance;
 
         return advance;
@@ -2470,7 +2570,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's slice.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -2478,24 +2578,27 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
 private:
 
-    const u32* m_pBegin;
-    const u32* m_pEnd;
+    template <typename, Utf::Encoding>
+    friend class SliceIteratorUTF;
+
+    const T* m_pBegin;
+    const T* m_pEnd;
 };
 
 /**
  * @brief An iterator that allows traversing the slice UTF-8. Do not validates UTF-8 sequences - trust Slice.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  */
-template <>
-class SliceIteratorUTFTrusted<Utf::Encoding::Utf8> final
-    : public Iterator<SliceIteratorUTFTrusted<Utf::Encoding::Utf8>, chara, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
+template <typename T>
+class SliceIteratorUTFTrusted<T, Utf::Encoding::Utf8> final
+    : public Iterator<SliceIteratorUTFTrusted<T, Utf::Encoding::Utf8>, chara, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
 {
 public:
 
@@ -2503,21 +2606,53 @@ public:
      * @brief Constructs an iterator from a slice which support UTF-8.
      * @param self The Slice object to copy boundaries from.
      */
-    template <typename T,
-        std::enable_if_t<TypeTraits::is_character_utf8_v<T>>* = nullptr>
-    ALT_FORCE_INLINE SliceIteratorUTFTrusted(const Slice<T>& self) noexcept
-        : m_pBegin(reinterpret_cast<const u8*>(self.Data()))
-        , m_pEnd(reinterpret_cast<const u8*>(self.DataEnd()))
+    ALT_FORCE_INLINE constexpr SliceIteratorUTFTrusted(const Slice<T>& self) noexcept
+        : m_pBegin(self.Data())
+        , m_pEnd(self.DataEnd())
     {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted(const SliceIteratorUTFTrusted<U>& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted& operator=(const SliceIteratorUTFTrusted<U>& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted(SliceIteratorUTFTrusted<U>&& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf8_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted& operator=(SliceIteratorUTFTrusted<U>&& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
 
     /**
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_pEnd - m_pBegin;
     }
-    
+
     /**
      * @brief Retrieves the next element and advances the start boundary.
      * @return An Alt::Optional<T> containing the value, or Alt::Nullopt if the range is exhausted.
@@ -2529,20 +2664,20 @@ public:
      * assert(*it.Next() == U"С"[0]);
      * assert(*it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE Optional<chara> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u8 utf8[4]{
-            *m_pBegin,
-            m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u8>(0),
-            m_pBegin + 2 < m_pEnd ? *(m_pBegin + 2) : static_cast<u8>(0),
-            m_pBegin + 3 < m_pEnd ? *(m_pBegin + 3) : static_cast<u8>(0),
+            static_cast<u8>(*m_pBegin),
+            m_pBegin + 1 < m_pEnd ? static_cast<u8>(*(m_pBegin + 1)) : static_cast<u8>(0),
+            m_pBegin + 2 < m_pEnd ? static_cast<u8>(*(m_pBegin + 2)) : static_cast<u8>(0),
+            m_pBegin + 3 < m_pEnd ? static_cast<u8>(*(m_pBegin + 3)) : static_cast<u8>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_8::Utf8ToUtf32IgnoreErrors(utf8, utf32);
 
         m_pBegin += result.advance;
@@ -2564,16 +2699,16 @@ public:
      * assert(*it.Next() == U"а"[0]);
      * assert(*it.Next() == U"й"[0]);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u8 utf8[4]{
-                *m_pBegin,
-                m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u8>(0),
-                m_pBegin + 2 < m_pEnd ? *(m_pBegin + 2) : static_cast<u8>(0),
-                m_pBegin + 3 < m_pEnd ? *(m_pBegin + 3) : static_cast<u8>(0),
+                static_cast<u8>(*m_pBegin),
+                m_pBegin + 1 < m_pEnd ? static_cast<u8>(*(m_pBegin + 1)) : static_cast<u8>(0),
+                m_pBegin + 2 < m_pEnd ? static_cast<u8>(*(m_pBegin + 2)) : static_cast<u8>(0),
+                m_pBegin + 3 < m_pEnd ? static_cast<u8>(*(m_pBegin + 3)) : static_cast<u8>(0),
             };
 
             const usize advanceBytes = Utf::_8::ForwardUtf8IgnoreErrors(utf8);
@@ -2598,20 +2733,20 @@ public:
      * assert(*it.NextBack() == U"с"[0]);
      * assert(*it.NextBack() == U"й"[0]);
      */
-    ALT_FORCE_INLINE Optional<chara> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u8 utf8[4]{
-            m_pBegin <= (m_pEnd - 4) ? *(m_pEnd - 4) : static_cast<u8>(0),
-            m_pBegin <= (m_pEnd - 3) ? *(m_pEnd - 3) : static_cast<u8>(0),
-            m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u8>(0),
-            *(m_pEnd - 1),
+            m_pBegin <= (m_pEnd - 4) ? static_cast<u8>(*(m_pEnd - 4)) : static_cast<u8>(0),
+            m_pBegin <= (m_pEnd - 3) ? static_cast<u8>(*(m_pEnd - 3)) : static_cast<u8>(0),
+            m_pBegin <= (m_pEnd - 2) ? static_cast<u8>(*(m_pEnd - 2)) : static_cast<u8>(0),
+            static_cast<u8>(*(m_pEnd - 1)),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_8::Utf8ToUtf32IgnoreErrorsBackward(utf8, utf32);
 
         m_pEnd -= result.advance;
@@ -2633,16 +2768,16 @@ public:
      * assert(*it.Next() == U"а"[0]);
      * assert(*it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u8 utf8[4]{
-                m_pBegin <= (m_pEnd - 4) ? *(m_pEnd - 4) : static_cast<u8>(0),
-                m_pBegin <= (m_pEnd - 3) ? *(m_pEnd - 3) : static_cast<u8>(0),
-                m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u8>(0),
-                *(m_pEnd - 1),
+                m_pBegin <= (m_pEnd - 4) ? static_cast<u8>(*(m_pEnd - 4)) : static_cast<u8>(0),
+                m_pBegin <= (m_pEnd - 3) ? static_cast<u8>(*(m_pEnd - 3)) : static_cast<u8>(0),
+                m_pBegin <= (m_pEnd - 2) ? static_cast<u8>(*(m_pEnd - 2)) : static_cast<u8>(0),
+                static_cast<u8>(*(m_pEnd - 1)),
             };
 
             const usize advanceBytes = Utf::_8::BackwardUtf8IgnoreErrors(utf8);
@@ -2666,18 +2801,21 @@ public:
 
 private:
 
-    const u8* m_pBegin;
-    const u8* m_pEnd;
+    template <typename, Utf::Encoding>
+    friend class SliceIteratorUTFTrusted;
+
+    const T* m_pBegin;
+    const T* m_pEnd;
 };
 
 /**
  * @brief An iterator that allows traversing the slice UTF-16. Do not validates UTF-16 sequences - trust Slice.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  */
-template <>
-class SliceIteratorUTFTrusted<Utf::Encoding::Utf16> final
-    : public Iterator<SliceIteratorUTFTrusted<Utf::Encoding::Utf16>, chara, IIteratorForwardTrait, IIteratorBackwardTrait>
+template <typename T>
+class SliceIteratorUTFTrusted<T, Utf::Encoding::Utf16> final
+    : public Iterator<SliceIteratorUTFTrusted<T, Utf::Encoding::Utf16>, chara, IIteratorForwardTrait, IIteratorBackwardTrait>
 {
 public:
 
@@ -2685,21 +2823,53 @@ public:
      * @brief Constructs an iterator from a slice which support UTF-16.
      * @param self The Slice object to copy boundaries from.
      */
-    template <typename T,
-        std::enable_if_t<TypeTraits::is_character_utf16_v<T>>* = nullptr>
-    ALT_FORCE_INLINE SliceIteratorUTFTrusted(const Slice<T>& self) noexcept
-        : m_pBegin(reinterpret_cast<const u16*>(self.Data()))
-        , m_pEnd(reinterpret_cast<const u16*>(self.DataEnd()))
+    ALT_FORCE_INLINE constexpr SliceIteratorUTFTrusted(const Slice<T>& self) noexcept
+        : m_pBegin(self.Data())
+        , m_pEnd(self.DataEnd())
     {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted(const SliceIteratorUTFTrusted<U>& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted& operator=(const SliceIteratorUTFTrusted<U>& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted(SliceIteratorUTFTrusted<U>&& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf16_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted& operator=(SliceIteratorUTFTrusted<U>&& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
 
     /**
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_pEnd - m_pBegin;
     }
-    
+
     /**
      * @brief Retrieves the next element and advances the start boundary.
      * @return An Alt::Optional<T> containing the value, or Alt::Nullopt if the range is exhausted.
@@ -2711,18 +2881,18 @@ public:
      * assert(*it.Next() == U"С"[0]);
      * assert(*it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE Optional<chara> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u16 utf16[2]{
-            *m_pBegin,
-            m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u16>(0),
+            static_cast<u16>(*m_pBegin),
+            m_pBegin + 1 < m_pEnd ? static_cast<u16>(*(m_pBegin + 1)) : static_cast<u16>(0),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_16::Utf16ToUtf32IgnoreErrors(utf16, utf32);
 
         m_pBegin += result.advance;
@@ -2744,19 +2914,19 @@ public:
      * assert(*it.Next() == U"а"[0]);
      * assert(*it.Next() == U"й"[0]);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u16 utf16[2]{
-                *m_pBegin,
-                m_pBegin + 1 < m_pEnd ? *(m_pBegin + 1) : static_cast<u16>(0),
+                static_cast<u16>(*m_pBegin),
+                m_pBegin + 1 < m_pEnd ? static_cast<u16>(*(m_pBegin + 1)) : static_cast<u16>(0),
             };
 
             const usize advanceBytes = Utf::_16::ForwardUtf16(utf16);
 
-            m_pBegin += Num::Max(advanceBytes, 1);
+            m_pBegin += Max(advanceBytes, 1);
             ALT_ASSERT(m_pBegin <= m_pEnd);
 
             advance -= 1;
@@ -2776,18 +2946,18 @@ public:
      * assert(*it.NextBack() == U"с"[0]);
      * assert(*it.NextBack() == U"й"[0]);
      */
-    ALT_FORCE_INLINE Optional<chara> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         const u16 utf16[2]{
-            m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u16>(0),
-            *(m_pEnd - 1),
+            m_pBegin <= (m_pEnd - 2) ? static_cast<u16>(*(m_pEnd - 2)) : static_cast<u16>(0),
+            static_cast<u16>(*(m_pEnd - 1)),
         };
 
-        u32 utf32;
+        u32 utf32 = 0;
         const Utf::Result result = Utf::_16::Utf16ToUtf32IgnoreErrorsBackward(utf16, utf32);
 
         m_pEnd -= result.advance;
@@ -2809,19 +2979,19 @@ public:
      * assert(*it.Next() == U"а"[0]);
      * assert(*it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
         usize advance = advance_;
         while (advance != 0 && m_pBegin != m_pEnd) {
 
             const u16 utf16[2]{
-                m_pBegin <= (m_pEnd - 2) ? *(m_pEnd - 2) : static_cast<u16>(0),
-                *(m_pEnd - 1),
+                m_pBegin <= (m_pEnd - 2) ? static_cast<u16>(*(m_pEnd - 2)) : static_cast<u16>(0),
+                static_cast<u16>(*(m_pEnd - 1)),
             };
 
             const usize advanceBytes = Utf::_16::BackwardUtf16(utf16);
 
-            m_pEnd -= Num::Max(advanceBytes, 1);
+            m_pEnd -= Max(advanceBytes, 1);
             ALT_ASSERT(m_pBegin <= m_pEnd);
 
             advance -= 1;
@@ -2834,24 +3004,27 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
 private:
 
-    const u16* m_pBegin;
-    const u16* m_pEnd;
+    template <typename, Utf::Encoding>
+    friend class SliceIteratorUTFTrusted;
+
+    const T* m_pBegin;
+    const T* m_pEnd;
 };
 
 /**
  * @brief An iterator that allows traversing the slice UTF-32. Do not validates UTF-32 sequences - trust Slice.
- * @details This iterator maintains its own copy of the slice's boundaries. 
+ * @details This iterator maintains its own copy of the slice's boundaries.
  * Advancing the iterator modifies its internal view, not the original Slice object.
  */
-template <>
-class SliceIteratorUTFTrusted<Utf::Encoding::Utf32> final
-    : public Iterator<SliceIteratorUTFTrusted<Utf::Encoding::Utf32>, chara, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
+template <typename T>
+class SliceIteratorUTFTrusted<T, Utf::Encoding::Utf32> final
+    : public Iterator<SliceIteratorUTFTrusted<T, Utf::Encoding::Utf32>, chara, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
 {
 public:
 
@@ -2859,21 +3032,53 @@ public:
      * @brief Constructs an iterator from a slice which support UTF-32.
      * @param self The Slice object to copy boundaries from.
      */
-    template <typename T,
-        std::enable_if_t<TypeTraits::is_character_utf32_v<T>>* = nullptr>
-    ALT_FORCE_INLINE SliceIteratorUTFTrusted(const Slice<T>& self) noexcept
-        : m_pBegin(reinterpret_cast<const u32*>(self.Data()))
-        , m_pEnd(reinterpret_cast<const u32*>(self.DataEnd()))
+    ALT_FORCE_INLINE constexpr SliceIteratorUTFTrusted(const Slice<T>& self) noexcept
+        : m_pBegin(self.Data())
+        , m_pEnd(self.DataEnd())
     {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted(const SliceIteratorUTFTrusted<U>& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted& operator=(const SliceIteratorUTFTrusted<U>& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted(SliceIteratorUTFTrusted<U>&& rhs) noexcept
+        : m_pBegin(reinterpret_cast<const T*>(rhs.m_pBegin))
+        , m_pEnd(reinterpret_cast<const T*>(rhs.m_pEnd))
+    {}
+
+    template <typename U,
+        std::enable_if_t<TypeTraits::is_compatible_with_character_utf32_v<U>>* = nullptr>
+    ALT_FORCE_INLINE SliceIteratorUTFTrusted& operator=(SliceIteratorUTFTrusted<U>&& rhs) noexcept {
+
+        m_pBegin = reinterpret_cast<const T*>(rhs.m_pBegin);
+        m_pEnd = reinterpret_cast<const T*>(rhs.m_pEnd);
+
+        return *this;
+    }
 
     /**
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
-    
+
     /**
      * @brief Retrieves the next element and advances the start boundary.
      * @return An Alt::Optional<T> containing the value, or Alt::Nullopt if the range is exhausted.
@@ -2885,13 +3090,13 @@ public:
      * assert(*it.Next() == U"С"[0]);
      * assert(*it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE Optional<chara> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
-        const u32 utf32 = *m_pBegin;
+        const u32 utf32 = static_cast<u32>(*m_pBegin);
         m_pBegin += 1;
 
         return static_cast<chara>(utf32);
@@ -2910,9 +3115,9 @@ public:
      * assert(*it.Next() == U"а"[0]);
      * assert(*it.Next() == U"й"[0]);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pBegin += advance;
 
         return advance;
@@ -2929,14 +3134,14 @@ public:
      * assert(*it.NextBack() == U"с"[0]);
      * assert(*it.NextBack() == U"й"[0]);
      */
-    ALT_FORCE_INLINE Optional<chara> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<chara> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
         }
 
         m_pEnd -= 1;
-        const u32 utf32 = *m_pEnd;
+        const u32 utf32 = static_cast<u32>(*m_pEnd);
 
         return static_cast<chara>(utf32);
     }
@@ -2954,9 +3159,9 @@ public:
      * assert(*it.Next() == U"а"[0]);
      * assert(*it.Next() == U"л"[0]);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pEnd -= advance;
 
         return advance;
@@ -2966,7 +3171,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's slice.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -2974,14 +3179,17 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
 private:
 
-    const u32* m_pBegin;
-    const u32* m_pEnd;
+    template <typename, Utf::Encoding>
+    friend class SliceIteratorUTFTrusted;
+
+    const T* m_pBegin;
+    const T* m_pEnd;
 };
 
 /**
@@ -3016,65 +3224,65 @@ public:
     using pointer = T*;
     using reference = T&;
 
-    ALT_FORCE_INLINE SliceSTDIterator() noexcept
+    ALT_FORCE_INLINE constexpr SliceSTDIterator() noexcept
         : m_Current(nullptr)
     {}
 
-    ALT_FORCE_INLINE SliceSTDIterator(pointer current) noexcept
+    ALT_FORCE_INLINE constexpr SliceSTDIterator(pointer current) noexcept
         : m_Current(current)
     {}
 
-    ALT_FORCE_INLINE reference operator*() const noexcept {
+    ALT_FORCE_INLINE constexpr reference operator*() const noexcept {
         return *m_Current;
     }
 
-    ALT_FORCE_INLINE pointer operator->() const noexcept {
+    ALT_FORCE_INLINE constexpr pointer operator->() const noexcept {
         return m_Current;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator& operator++() noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator& operator++() noexcept {
         ++m_Current;
         return *this;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator operator++(int) noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator operator++(int) noexcept {
         SliceSTDIterator ret = *this;
         ++*this;
         return ret;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator& operator--() noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator& operator--() noexcept {
         --m_Current;
         return *this;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator operator--(int) noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator operator--(int) noexcept {
         SliceSTDIterator ret = *this;
         --*this;
         return ret;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator& operator+=(const difference_type n) noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator& operator+=(const difference_type n) noexcept {
         m_Current += n;
         return *this;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator operator+(const difference_type n) const noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator operator+(const difference_type n) const noexcept {
         SliceSTDIterator ret = *this;
         ret += n;
         return ret;
     }
 
-    ALT_FORCE_INLINE friend SliceSTDIterator operator+(const difference_type n, const SliceSTDIterator& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr friend SliceSTDIterator operator+(const difference_type n, const SliceSTDIterator& rhs) noexcept {
         return rhs + n;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator& operator-=(const difference_type n) noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator& operator-=(const difference_type n) noexcept {
         m_Current -= n;
         return *this;
     }
 
-    ALT_FORCE_INLINE SliceSTDIterator operator-(const difference_type n) const noexcept {
+    ALT_FORCE_INLINE constexpr SliceSTDIterator operator-(const difference_type n) const noexcept {
         SliceSTDIterator ret = *this;
         ret -= n;
         return ret;
@@ -3082,47 +3290,47 @@ public:
 
     template <typename U,
         std::enable_if_t<std::is_same_v<std::remove_cv_t<U>, value_type>, int> = 0>
-    ALT_FORCE_INLINE difference_type operator-(const SliceSTDIterator<U>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr difference_type operator-(const SliceSTDIterator<U>& rhs) const noexcept {
         return m_Current - rhs.m_Current;
     }
 
-    ALT_FORCE_INLINE reference operator[](const difference_type n) const noexcept {
+    ALT_FORCE_INLINE constexpr reference operator[](const difference_type n) const noexcept {
         return *(*this + n);
     }
 
     template <typename U,
         std::enable_if_t<std::is_same_v<std::remove_cv_t<U>, value_type>, int> = 0>
-    ALT_FORCE_INLINE bool operator==(const SliceSTDIterator<U>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator==(const SliceSTDIterator<U>& rhs) const noexcept {
         return m_Current == rhs.m_Current;
     }
 
     template <typename U,
         std::enable_if_t<std::is_same_v<std::remove_cv_t<U>, value_type>, int> = 0>
-    ALT_FORCE_INLINE bool operator!=(const SliceSTDIterator<U>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator!=(const SliceSTDIterator<U>& rhs) const noexcept {
         return !(*this == rhs);
     }
 
     template <typename U,
         std::enable_if_t<std::is_same_v<std::remove_cv_t<U>, value_type>, int> = 0>
-    ALT_FORCE_INLINE bool operator<(const SliceSTDIterator<U>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator<(const SliceSTDIterator<U>& rhs) const noexcept {
         return m_Current < rhs.m_Current;
     }
 
     template <typename U,
         std::enable_if_t<std::is_same_v<std::remove_cv_t<U>, value_type>, int> = 0>
-    ALT_FORCE_INLINE bool operator>(const SliceSTDIterator<U>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator>(const SliceSTDIterator<U>& rhs) const noexcept {
         return rhs < *this;
     }
 
     template <typename U,
         std::enable_if_t<std::is_same_v<std::remove_cv_t<U>, value_type>, int> = 0>
-    ALT_FORCE_INLINE bool operator<=(const SliceSTDIterator<U>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator<=(const SliceSTDIterator<U>& rhs) const noexcept {
         return !(rhs < *this);
     }
 
     template <typename U,
         std::enable_if_t<std::is_same_v<std::remove_cv_t<U>, value_type>, int> = 0>
-    ALT_FORCE_INLINE bool operator>=(const SliceSTDIterator<U>& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr bool operator>=(const SliceSTDIterator<U>& rhs) const noexcept {
         return !(*this < rhs);
     }
 
@@ -3154,7 +3362,7 @@ public:
      * @param str The source slice to be partitioned.
      * @param pattern The pattern used to split.
      */
-    ALT_FORCE_INLINE SplitIterator(const Slice<T> str, const Slice<const T> pattern) noexcept
+    ALT_FORCE_INLINE constexpr SplitIterator(const Slice<T> str, const Slice<const T> pattern) noexcept
         : m_Str(str)
         , m_Pattern(pattern)
     {}
@@ -3162,7 +3370,7 @@ public:
     /**
      * @brief Retrieves a hint regarding the number of elements remaining.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return 0;
     }
 
@@ -3176,7 +3384,7 @@ public:
      * 
      * assert(*iter.Next() == "one");
      */
-    ALT_FORCE_INLINE Optional<Slice<T>> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Slice<T>> Next() noexcept {
         iferr_scope;
 
         if (m_Str.IsEmpty()) {
@@ -3209,7 +3417,7 @@ public:
      * assert(iter.Advance(2), 2);
      * assert(*iter.Next() == "three");
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
         iferr_scope;
 
         usize size = 0;
@@ -3232,7 +3440,7 @@ public:
      * 
      * assert(*iter.NextBack() == "three");
      */
-    ALT_FORCE_INLINE Optional<Slice<T>> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<Slice<T>> NextBack() noexcept {
         iferr_scope;
 
         if (m_Str.IsEmpty()) {
@@ -3265,7 +3473,7 @@ public:
      * assert(iter.AdvanceBack(2), 2);
      * assert(*iter.NextBack() == "one");
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
         iferr_scope;
 
         usize size = 0;
@@ -3465,10 +3673,9 @@ constexpr inline Slice<const wchar_t> operator""_s(const wchar_t* str, const usi
  * 
  * constexpr static hash = "Hello World"_hash;
  */
-constexpr inline usize operator""_hash(const char* str_, const usize size) noexcept {
+constexpr inline usize operator""_hash(const char* str, const usize size) noexcept {
 
-    Slice<const char> str{ str_, size };
-    return ALT_HASH_CONST(str);
+    return Alt::Algorithms::Hash(str, str + size);
 }
 
 #ifdef __cpp_char8_t
@@ -3479,10 +3686,9 @@ constexpr inline usize operator""_hash(const char* str_, const usize size) noexc
  * 
  * constexpr static hash = "Hello World"_hash;
  */
-constexpr inline usize operator""_hash(const char8_t* str_, const usize size) noexcept {
+constexpr inline usize operator""_hash(const char8_t* str, const usize size) noexcept {
 
-    Slice<const char8_t> str{ str_, size };
-    return ALT_HASH_CONST(str);
+    return Alt::Algorithms::Hash(str, str + size);
 }
 #endif // __cpp_char8_t
 

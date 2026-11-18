@@ -250,13 +250,13 @@ template <typename SelfT, typename T>
 struct OptionalStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted>
     : OptionalStorageCore<T>
 {
-    OptionalStorageDestruct() noexcept = default;
+    constexpr OptionalStorageDestruct() noexcept = default;
 
-    OptionalStorageDestruct(const OptionalStorageDestruct&) noexcept = default;
-    OptionalStorageDestruct& operator=(const OptionalStorageDestruct&) noexcept = default;
+    constexpr OptionalStorageDestruct(const OptionalStorageDestruct&) noexcept = default;
+    constexpr OptionalStorageDestruct& operator=(const OptionalStorageDestruct&) noexcept = default;
 
-    OptionalStorageDestruct(OptionalStorageDestruct&&) noexcept = default;
-    OptionalStorageDestruct& operator=(OptionalStorageDestruct&&) noexcept = default;
+    constexpr OptionalStorageDestruct(OptionalStorageDestruct&&) noexcept = default;
+    constexpr OptionalStorageDestruct& operator=(OptionalStorageDestruct&&) noexcept = default;
 
     ~OptionalStorageDestruct() noexcept = delete;
 };
@@ -265,13 +265,13 @@ template <typename SelfT, typename T>
 struct OptionalStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial>
     : OptionalStorageCore<T>
 {
-    OptionalStorageDestruct() noexcept = default;
+    constexpr OptionalStorageDestruct() noexcept = default;
 
-    OptionalStorageDestruct(const OptionalStorageDestruct&) noexcept = default;
-    OptionalStorageDestruct& operator=(const OptionalStorageDestruct&) noexcept = default;
+    constexpr OptionalStorageDestruct(const OptionalStorageDestruct&) noexcept = default;
+    constexpr OptionalStorageDestruct& operator=(const OptionalStorageDestruct&) noexcept = default;
 
-    OptionalStorageDestruct(OptionalStorageDestruct&&) noexcept = default;
-    OptionalStorageDestruct& operator=(OptionalStorageDestruct&&) noexcept = default;
+    constexpr OptionalStorageDestruct(OptionalStorageDestruct&&) noexcept = default;
+    constexpr OptionalStorageDestruct& operator=(OptionalStorageDestruct&&) noexcept = default;
 
     ~OptionalStorageDestruct() noexcept = default;
 };
@@ -280,13 +280,13 @@ template <typename SelfT, typename T>
 struct OptionalStorageDestruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : OptionalStorageCore<T>
 {
-    OptionalStorageDestruct() noexcept = default;
+    constexpr OptionalStorageDestruct() noexcept = default;
 
-    OptionalStorageDestruct(const OptionalStorageDestruct&) noexcept = default;
-    OptionalStorageDestruct& operator=(const OptionalStorageDestruct&) noexcept = default;
+    constexpr OptionalStorageDestruct(const OptionalStorageDestruct&) noexcept = default;
+    constexpr OptionalStorageDestruct& operator=(const OptionalStorageDestruct&) noexcept = default;
 
-    OptionalStorageDestruct(OptionalStorageDestruct&&) noexcept = default;
-    OptionalStorageDestruct& operator=(OptionalStorageDestruct&&) noexcept = default;
+    constexpr OptionalStorageDestruct(OptionalStorageDestruct&&) noexcept = default;
+    constexpr OptionalStorageDestruct& operator=(OptionalStorageDestruct&&) noexcept = default;
 
     ~OptionalStorageDestruct() noexcept {
 
@@ -301,12 +301,12 @@ template <typename SelfT, typename T>
 struct OptionalStorageMoveAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted>
     : OptionalStorageDestruct<SelfT, T>
 {
-    OptionalStorageMoveAssign() noexcept = default;
+    constexpr OptionalStorageMoveAssign() noexcept = default;
 
-    OptionalStorageMoveAssign(const OptionalStorageMoveAssign&) noexcept = default;
-    OptionalStorageMoveAssign& operator=(const OptionalStorageMoveAssign&) noexcept = default;
+    constexpr OptionalStorageMoveAssign(const OptionalStorageMoveAssign&) noexcept = default;
+    constexpr OptionalStorageMoveAssign& operator=(const OptionalStorageMoveAssign&) noexcept = default;
 
-    OptionalStorageMoveAssign(OptionalStorageMoveAssign&&) noexcept = default;
+    constexpr OptionalStorageMoveAssign(OptionalStorageMoveAssign&&) noexcept = default;
     OptionalStorageMoveAssign& operator=(OptionalStorageMoveAssign&&) noexcept = delete;
 };
 
@@ -314,27 +314,27 @@ template <typename SelfT, typename T>
 struct OptionalStorageMoveAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial>
     : OptionalStorageDestruct<SelfT, T>
 {
-    OptionalStorageMoveAssign() noexcept = default;
+    constexpr OptionalStorageMoveAssign() noexcept = default;
 
-    OptionalStorageMoveAssign(const OptionalStorageMoveAssign&) noexcept = default;
-    OptionalStorageMoveAssign& operator=(const OptionalStorageMoveAssign&) noexcept = default;
+    constexpr OptionalStorageMoveAssign(const OptionalStorageMoveAssign&) noexcept = default;
+    constexpr OptionalStorageMoveAssign& operator=(const OptionalStorageMoveAssign&) noexcept = default;
 
-    OptionalStorageMoveAssign(OptionalStorageMoveAssign&&) noexcept = default;
-    OptionalStorageMoveAssign& operator=(OptionalStorageMoveAssign&&) noexcept = default;
+    constexpr OptionalStorageMoveAssign(OptionalStorageMoveAssign&&) noexcept = default;
+    constexpr OptionalStorageMoveAssign& operator=(OptionalStorageMoveAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct OptionalStorageMoveAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : OptionalStorageDestruct<SelfT, T>
 {
-    OptionalStorageMoveAssign() noexcept = default;
+    constexpr OptionalStorageMoveAssign() noexcept = default;
 
-    OptionalStorageMoveAssign(const OptionalStorageMoveAssign&) noexcept = default;
-    OptionalStorageMoveAssign& operator=(const OptionalStorageMoveAssign&) noexcept = default;
+    constexpr OptionalStorageMoveAssign(const OptionalStorageMoveAssign&) noexcept = default;
+    constexpr OptionalStorageMoveAssign& operator=(const OptionalStorageMoveAssign&) noexcept = default;
 
-    OptionalStorageMoveAssign(OptionalStorageMoveAssign&&) noexcept = default;
+    constexpr OptionalStorageMoveAssign(OptionalStorageMoveAssign&&) noexcept = default;
 
-    OptionalStorageMoveAssign& operator=(OptionalStorageMoveAssign&& rhs) noexcept {
+    constexpr OptionalStorageMoveAssign& operator=(OptionalStorageMoveAssign&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Move, static_cast<SelfT&>(rhs));
         return *this;
@@ -348,43 +348,43 @@ template <typename SelfT, typename T>
 struct OptionalStorageMoveConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted>
     : OptionalStorageMoveAssign<SelfT, T>
 {
-    OptionalStorageMoveConstruct() noexcept = default;
+    constexpr OptionalStorageMoveConstruct() noexcept = default;
 
-    OptionalStorageMoveConstruct(const OptionalStorageMoveConstruct&) noexcept = default;
-    OptionalStorageMoveConstruct& operator=(const OptionalStorageMoveConstruct&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct(const OptionalStorageMoveConstruct&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct& operator=(const OptionalStorageMoveConstruct&) noexcept = default;
 
     OptionalStorageMoveConstruct(OptionalStorageMoveConstruct&&) noexcept = delete;
-    OptionalStorageMoveConstruct& operator=(OptionalStorageMoveConstruct&&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct& operator=(OptionalStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct OptionalStorageMoveConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial>
     : OptionalStorageMoveAssign<SelfT, T>
 {
-    OptionalStorageMoveConstruct() noexcept = default;
+    constexpr OptionalStorageMoveConstruct() noexcept = default;
 
-    OptionalStorageMoveConstruct(const OptionalStorageMoveConstruct&) noexcept = default;
-    OptionalStorageMoveConstruct& operator=(const OptionalStorageMoveConstruct&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct(const OptionalStorageMoveConstruct&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct& operator=(const OptionalStorageMoveConstruct&) noexcept = default;
 
-    OptionalStorageMoveConstruct(OptionalStorageMoveConstruct&&) noexcept = default;
-    OptionalStorageMoveConstruct& operator=(OptionalStorageMoveConstruct&&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct(OptionalStorageMoveConstruct&&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct& operator=(OptionalStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct OptionalStorageMoveConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : OptionalStorageMoveAssign<SelfT, T>
 {
-    OptionalStorageMoveConstruct() noexcept = default;
+    constexpr OptionalStorageMoveConstruct() noexcept = default;
 
-    OptionalStorageMoveConstruct(const OptionalStorageMoveConstruct&) noexcept = default;
-    OptionalStorageMoveConstruct& operator=(const OptionalStorageMoveConstruct&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct(const OptionalStorageMoveConstruct&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct& operator=(const OptionalStorageMoveConstruct&) noexcept = default;
 
-    OptionalStorageMoveConstruct(OptionalStorageMoveConstruct&& rhs) noexcept {
+    constexpr OptionalStorageMoveConstruct(OptionalStorageMoveConstruct&& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Move, static_cast<SelfT&>(rhs));
     }
 
-    OptionalStorageMoveConstruct& operator=(OptionalStorageMoveConstruct&&) noexcept = default;
+    constexpr OptionalStorageMoveConstruct& operator=(OptionalStorageMoveConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, _MaybeUninitDetails::Rule5Trait RULE5_TRAIT = _MaybeUninitDetails::rule5_copy_assignable_v<T>>
@@ -394,44 +394,44 @@ template <typename SelfT, typename T>
 struct OptionalStorageCopyAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted>
     : OptionalStorageMoveConstruct<SelfT, T>
 {
-    OptionalStorageCopyAssign() noexcept = default;
+    constexpr OptionalStorageCopyAssign() noexcept = default;
 
-    OptionalStorageCopyAssign(const OptionalStorageCopyAssign&) noexcept = default;
+    constexpr OptionalStorageCopyAssign(const OptionalStorageCopyAssign&) noexcept = default;
     OptionalStorageCopyAssign& operator=(const OptionalStorageCopyAssign&) noexcept = delete;
 
-    OptionalStorageCopyAssign(OptionalStorageCopyAssign&&) noexcept = default;
-    OptionalStorageCopyAssign& operator=(OptionalStorageCopyAssign&&) noexcept = default;
+    constexpr OptionalStorageCopyAssign(OptionalStorageCopyAssign&&) noexcept = default;
+    constexpr OptionalStorageCopyAssign& operator=(OptionalStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct OptionalStorageCopyAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial>
     : OptionalStorageMoveConstruct<SelfT, T>
 {
-    OptionalStorageCopyAssign() noexcept = default;
+    constexpr OptionalStorageCopyAssign() noexcept = default;
 
-    OptionalStorageCopyAssign(const OptionalStorageCopyAssign&) noexcept = default;
-    OptionalStorageCopyAssign& operator=(const OptionalStorageCopyAssign&) noexcept = default;
+    constexpr OptionalStorageCopyAssign(const OptionalStorageCopyAssign&) noexcept = default;
+    constexpr OptionalStorageCopyAssign& operator=(const OptionalStorageCopyAssign&) noexcept = default;
 
-    OptionalStorageCopyAssign(OptionalStorageCopyAssign&&) noexcept = default;
-    OptionalStorageCopyAssign& operator=(OptionalStorageCopyAssign&&) noexcept = default;
+    constexpr OptionalStorageCopyAssign(OptionalStorageCopyAssign&&) noexcept = default;
+    constexpr OptionalStorageCopyAssign& operator=(OptionalStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct OptionalStorageCopyAssign<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : OptionalStorageMoveConstruct<SelfT, T>
 {
-    OptionalStorageCopyAssign() noexcept = default;
+    constexpr OptionalStorageCopyAssign() noexcept = default;
 
-    OptionalStorageCopyAssign(const OptionalStorageCopyAssign&) noexcept = default;
+    constexpr OptionalStorageCopyAssign(const OptionalStorageCopyAssign&) noexcept = default;
 
-    OptionalStorageCopyAssign& operator=(const OptionalStorageCopyAssign& rhs) noexcept {
+    constexpr OptionalStorageCopyAssign& operator=(const OptionalStorageCopyAssign& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Assign(Rule5Copy, static_cast<const SelfT&>(rhs));
         return *this;
     }
 
-    OptionalStorageCopyAssign(OptionalStorageCopyAssign&&) noexcept = default;
-    OptionalStorageCopyAssign& operator=(OptionalStorageCopyAssign&&) noexcept = default;
+    constexpr OptionalStorageCopyAssign(OptionalStorageCopyAssign&&) noexcept = default;
+    constexpr OptionalStorageCopyAssign& operator=(OptionalStorageCopyAssign&&) noexcept = default;
 };
 
 template <typename SelfT, typename T, _MaybeUninitDetails::Rule5Trait RULE5_TRAIT = _MaybeUninitDetails::rule5_copy_constructible_v<T>>
@@ -441,43 +441,43 @@ template <typename SelfT, typename T>
 struct OptionalStorageCopyConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Deleted>
     : OptionalStorageCopyAssign<SelfT, T>
 {
-    OptionalStorageCopyConstruct() noexcept = default;
+    constexpr OptionalStorageCopyConstruct() noexcept = default;
 
     OptionalStorageCopyConstruct(const OptionalStorageCopyConstruct&) noexcept = delete;
-    OptionalStorageCopyConstruct& operator=(const OptionalStorageCopyConstruct&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct& operator=(const OptionalStorageCopyConstruct&) noexcept = default;
 
-    OptionalStorageCopyConstruct(OptionalStorageCopyConstruct&&) noexcept = default;
-    OptionalStorageCopyConstruct& operator=(OptionalStorageCopyConstruct&&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct(OptionalStorageCopyConstruct&&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct& operator=(OptionalStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct OptionalStorageCopyConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::Trivial>
     : OptionalStorageCopyAssign<SelfT, T>
 {
-    OptionalStorageCopyConstruct() noexcept = default;
+    constexpr OptionalStorageCopyConstruct() noexcept = default;
 
-    OptionalStorageCopyConstruct(const OptionalStorageCopyConstruct&) noexcept = default;
-    OptionalStorageCopyConstruct& operator=(const OptionalStorageCopyConstruct&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct(const OptionalStorageCopyConstruct&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct& operator=(const OptionalStorageCopyConstruct&) noexcept = default;
 
-    OptionalStorageCopyConstruct(OptionalStorageCopyConstruct&&) noexcept = default;
-    OptionalStorageCopyConstruct& operator=(OptionalStorageCopyConstruct&&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct(OptionalStorageCopyConstruct&&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct& operator=(OptionalStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename SelfT, typename T>
 struct OptionalStorageCopyConstruct<SelfT, T, _MaybeUninitDetails::Rule5Trait::NonTrivial>
     : OptionalStorageCopyAssign<SelfT, T>
 {
-    OptionalStorageCopyConstruct() noexcept = default;
+    constexpr OptionalStorageCopyConstruct() noexcept = default;
 
-    OptionalStorageCopyConstruct(const OptionalStorageCopyConstruct& rhs) noexcept {
+    constexpr OptionalStorageCopyConstruct(const OptionalStorageCopyConstruct& rhs) noexcept {
 
         static_cast<SelfT*>(this)->Construct(Rule5Copy, static_cast<const SelfT&>(rhs));
     }
 
-    OptionalStorageCopyConstruct& operator=(const OptionalStorageCopyConstruct&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct& operator=(const OptionalStorageCopyConstruct&) noexcept = default;
 
-    OptionalStorageCopyConstruct(OptionalStorageCopyConstruct&&) noexcept = default;
-    OptionalStorageCopyConstruct& operator=(OptionalStorageCopyConstruct&&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct(OptionalStorageCopyConstruct&&) noexcept = default;
+    constexpr OptionalStorageCopyConstruct& operator=(OptionalStorageCopyConstruct&&) noexcept = default;
 };
 
 template <typename T, OptionalLayoutTrait = optional_layout_trait_v<T>>
@@ -495,12 +495,12 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     template <typename U>
     constexpr static bool is_assignable_inner_value_v = std::is_assignable_v<T&, U> && std::is_constructible_v<T, U>;
 
-    OptionalStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr OptionalStorage() noexcept = default;
 
-    OptionalStorage(Nullopt_t) noexcept
+    ALT_FORCE_INLINE constexpr OptionalStorage(Nullopt_t) noexcept
     {}
 
-    void Assign(Nullopt_t) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Nullopt_t) noexcept {
 
         if (this->m_IsVal) {
 
@@ -510,14 +510,14 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    void Construct(InnerValue_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerValue_t, U&& val) noexcept {
 
         this->m_Val.Construct(std::forward<U>(val));
         this->m_IsVal = true;
     }
 
     template <typename U = T>
-    void Assign(InnerValue_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerValue_t, U&& rhs) noexcept {
 
         if (this->m_IsVal) {
 
@@ -531,7 +531,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    bool ConstructCloneOrMove(InnerValue_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(InnerValue_t, U&& val) noexcept {
 
         const bool isOk = this->m_Val.ConstructCloneOrMove(std::forward<U>(val));
         this->m_IsVal = isOk;
@@ -540,9 +540,9 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    bool AssignCloneOrMove(InnerValue_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignCloneOrMove(InnerValue_t, U&& rhs) noexcept {
 
-        bool isOk;
+        bool isOk = true;
         if (this->m_IsVal) {
 
             isOk = this->m_Val.AssignCloneOrMove(std::forward<U>(rhs));
@@ -557,7 +557,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    void Construct(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -567,7 +567,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    void Construct(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -577,7 +577,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    void Assign(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -590,7 +590,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    void Assign(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -602,13 +602,13 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
         }
     }
     
-    void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         Assign(Nullopt);
     }
 
     template <typename U = T>
-    bool ConstructClone(const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructClone(const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -619,7 +619,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
     }
 
     template <typename U = T>
-    bool AssignClone(const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignClone(const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -633,15 +633,15 @@ struct OptionalStorage<T, OptionalLayoutTrait::Value>
         return true;
     }
 
-    T& GetVal() & noexcept { return this->m_Val.GetVal(); }
-    const T& GetVal() const & noexcept { return this->m_Val.GetVal(); }
-    T&& GetVal() && noexcept { return std::move(this->m_Val.GetVal()); }
-    const T&& GetVal() const && noexcept { return std::move(this->m_Val.GetVal()); }
+    ALT_FORCE_INLINE constexpr T& GetVal() & noexcept { return this->m_Val.GetVal(); }
+    ALT_FORCE_INLINE constexpr const T& GetVal() const & noexcept { return this->m_Val.GetVal(); }
+    ALT_FORCE_INLINE constexpr T&& GetVal() && noexcept { return std::move(this->m_Val.GetVal()); }
+    ALT_FORCE_INLINE constexpr const T&& GetVal() const && noexcept { return std::move(this->m_Val.GetVal()); }
 
-    bool IsVal() const noexcept { return this->m_IsVal; }
+    ALT_FORCE_INLINE constexpr bool IsVal() const noexcept { return this->m_IsVal; }
 
-    DerefT* Deref() noexcept { return this->m_Val.GetPtr(); }
-    const DerefT* Deref() const noexcept { return this->m_Val.GetPtr(); }
+    ALT_FORCE_INLINE constexpr DerefT* Deref() noexcept { return this->m_Val.GetPtr(); }
+    ALT_FORCE_INLINE constexpr const DerefT* Deref() const noexcept { return this->m_Val.GetPtr(); }
 };
 
 template <typename T>
@@ -656,44 +656,44 @@ struct OptionalStorage<T, OptionalLayoutTrait::Ptr>
     template <typename U>
     constexpr static bool is_assignable_inner_value_v = std::is_assignable_v<T&, U>;
 
-    OptionalStorage() noexcept = default;
+    ALT_FORCE_INLINE constexpr OptionalStorage() noexcept = default;
 
-    OptionalStorage(Nullopt_t) noexcept {
+    ALT_FORCE_INLINE constexpr OptionalStorage(Nullopt_t) noexcept {
 
         this->m_PtrVal.Construct(nullptr);
     }
 
-    void Assign(Nullopt_t) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Nullopt_t) noexcept {
 
         this->m_PtrVal.Assign(nullptr);
     }
 
     template <typename U = T>
-    void Construct(InnerValue_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(InnerValue_t, U&& val) noexcept {
 
         this->m_PtrVal.Construct(std::forward<U>(val));
     }
 
     template <typename U = T>
-    void Assign(InnerValue_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(InnerValue_t, U&& rhs) noexcept {
 
         this->m_PtrVal.Assign(std::forward<U>(rhs));
     }
 
     template <typename U = T>
-    bool ConstructCloneOrMove(InnerValue_t, U&& val) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructCloneOrMove(InnerValue_t, U&& val) noexcept {
 
         return this->m_PtrVal.ConstructCloneOrMove(std::forward<U>(val));
     }
 
     template <typename U = T>
-    bool AssignCloneOrMove(InnerValue_t, U&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignCloneOrMove(InnerValue_t, U&& rhs) noexcept {
 
         return this->m_PtrVal.AssignCloneOrMove(std::forward<U>(rhs));
     }
 
     template <typename U = T>
-    void Construct(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -706,7 +706,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Ptr>
     }
 
     template <typename U = T>
-    void Construct(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -719,7 +719,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Ptr>
     }
 
     template <typename U = T>
-    void Assign(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -732,7 +732,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Ptr>
     }
 
     template <typename U = T>
-    void Assign(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Copy_t, const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -744,13 +744,13 @@ struct OptionalStorage<T, OptionalLayoutTrait::Ptr>
         }
     }
 
-    void Destroy() noexcept {
+    ALT_FORCE_INLINE constexpr void Destroy() noexcept {
 
         this->m_PtrVal.Destroy();
     }
 
     template <typename U = T>
-    bool ConstructClone(const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool ConstructClone(const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -765,7 +765,7 @@ struct OptionalStorage<T, OptionalLayoutTrait::Ptr>
     }
 
     template <typename U = T>
-    bool AssignClone(const OptionalStorage<U>& storage) noexcept {
+    ALT_FORCE_INLINE constexpr bool AssignClone(const OptionalStorage<U>& storage) noexcept {
 
         if (storage.IsVal()) {
 
@@ -779,28 +779,28 @@ struct OptionalStorage<T, OptionalLayoutTrait::Ptr>
         return true;
     }
 
-    T& GetVal() & noexcept { return this->m_PtrVal.GetVal(); }
-    const T& GetVal() const & noexcept { return this->m_PtrVal.GetVal(); }
-    T&& GetVal() && noexcept { return std::move(this->m_PtrVal.GetVal()); }
-    const T&& GetVal() const && noexcept { return std::move(this->m_PtrVal.GetVal()); }
+    ALT_FORCE_INLINE constexpr T& GetVal() & noexcept { return this->m_PtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr const T& GetVal() const & noexcept { return this->m_PtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr T&& GetVal() && noexcept { return std::move(this->m_PtrVal.GetVal()); }
+    ALT_FORCE_INLINE constexpr const T&& GetVal() const && noexcept { return std::move(this->m_PtrVal.GetVal()); }
 
-    bool IsVal() const noexcept { return this->m_PtrVal.GetVal() != nullptr; }
-
-    template <typename U = T,
-        std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
-    DerefT* Deref() noexcept { return this->m_PtrVal.GetPtr(); }
-
-    template <typename U = T,
-        std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
-    DerefT* Deref() noexcept { return &*this->m_PtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr bool IsVal() const noexcept { return this->m_PtrVal.GetVal() != nullptr; }
 
     template <typename U = T,
         std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
-    const DerefT* Deref() const noexcept { return this->m_PtrVal.GetPtr(); }
+    ALT_FORCE_INLINE constexpr DerefT* Deref() noexcept { return this->m_PtrVal.GetPtr(); }
 
     template <typename U = T,
         std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
-    const DerefT* Deref() const noexcept { return &*this->m_PtrVal.GetVal(); }
+    ALT_FORCE_INLINE constexpr DerefT* Deref() noexcept { return Addressof(*this->m_PtrVal.GetVal()); }
+
+    template <typename U = T,
+        std::enable_if_t<is_layout_own_value_v<U>>* = nullptr>
+    ALT_FORCE_INLINE constexpr const DerefT* Deref() const noexcept { return this->m_PtrVal.GetPtr(); }
+
+    template <typename U = T,
+        std::enable_if_t<is_layout_not_own_value_v<U>>* = nullptr>
+    ALT_FORCE_INLINE constexpr const DerefT* Deref() const noexcept { return Addressof(*this->m_PtrVal.GetVal()); }
 };
 
 } // namespace _OptionalDetails
@@ -856,7 +856,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_constructible_inner_value_v<U&&>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE static Optional Ok(U&& val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Optional Ok(U&& val) noexcept {
         return Optional(std::forward<U>(val));
     }
 
@@ -867,7 +867,7 @@ public:
      * 
      * Alt::Optional<usize> opt = Alt::Optional<usize>::Null();
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static Optional Null() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Optional Null() noexcept {
         return Nullopt;
     }
 
@@ -878,7 +878,7 @@ public:
      * 
      * Alt::Optional<usize> opt;
      */
-    ALT_FORCE_INLINE Optional() noexcept
+    ALT_FORCE_INLINE constexpr Optional() noexcept
         : m_Storage(Nullopt)
     {}
 
@@ -890,11 +890,11 @@ public:
      * Alt::Optional<usize> opt{ Alt::Nullopt };
      * Alt::Optional<usize> opt = Alt::Nullopt;
      */
-    ALT_FORCE_INLINE Optional(Nullopt_t) noexcept
+    ALT_FORCE_INLINE constexpr Optional(Nullopt_t) noexcept
         : m_Storage(Nullopt)
     {}
 
-    Optional& operator=(Nullopt_t) noexcept {
+    constexpr Optional& operator=(Nullopt_t) noexcept {
 
         m_Storage.Assign(Nullopt);
         return *this;
@@ -910,7 +910,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_constructible_inner_value_v<U&&>>* = nullptr>
-    Optional(U&& val) noexcept {
+    constexpr Optional(U&& val) noexcept {
 
         m_Storage.Construct(_OptionalDetails::InnerValue, std::forward<U>(val));
     }
@@ -926,7 +926,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<is_assignable_inner_value_v<U&&>>* = nullptr>
-    Optional& operator=(U&& rhs) noexcept {
+    constexpr Optional& operator=(U&& rhs) noexcept {
 
         m_Storage.Assign(_OptionalDetails::InnerValue, std::forward<U>(rhs));
         return *this;
@@ -943,14 +943,14 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<!std::is_constructible_v<T, Optional<U>> && is_constructible_inner_value_v<U&&>>* = nullptr>
-    Optional(Optional<U>&& val) noexcept {
+    constexpr Optional(Optional<U>&& val) noexcept {
 
         m_Storage.Construct(_OptionalDetails::Rule5Move, val.m_Storage);
     }
 
     template <typename U = T,
         std::enable_if_t<!std::is_constructible_v<T, Optional<U>> && is_constructible_inner_value_v<const U&>>* = nullptr>
-    Optional(const Optional<U>& val) noexcept {
+    constexpr Optional(const Optional<U>& val) noexcept {
 
         m_Storage.Construct(_OptionalDetails::Rule5Copy, val.m_Storage);
     }
@@ -967,7 +967,7 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<!std::is_assignable_v<T&, Optional<U>&&> && is_assignable_inner_value_v<U&&>>* = nullptr>
-    Optional& operator=(Optional<U>&& rhs) noexcept {
+    constexpr Optional& operator=(Optional<U>&& rhs) noexcept {
 
         m_Storage.Assign(_OptionalDetails::Rule5Move, rhs.m_Storage);
         return *this;
@@ -975,7 +975,7 @@ public:
 
     template <typename U = T,
         std::enable_if_t<!std::is_assignable_v<T&, const Optional<U>&> && is_assignable_inner_value_v<const U&>>* = nullptr>
-    Optional& operator=(const Optional<U>& rhs) noexcept {
+    constexpr Optional& operator=(const Optional<U>& rhs) noexcept {
 
         m_Storage.Assign(_OptionalDetails::Rule5Copy, rhs.m_Storage);
         return *this;
@@ -1004,14 +1004,14 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<U, T> || is_assignable_inner_value_v<const U&>>* = nullptr>
-    ALT_NODISCARD bool CloneFrom(const Optional<U>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneFrom(const Optional<U>& rhs) noexcept {
 
         return m_Storage.AssignClone(rhs.m_Storage);
     }
 
     template <typename U = T,
         std::enable_if_t<TypeTraits::is_only_clonable_to_from_v<U, T> || is_constructible_inner_value_v<const U&>>* = nullptr>
-    ALT_NODISCARD bool CloneConstructFrom(const Optional<U>& rhs) noexcept {
+    ALT_NODISCARD constexpr bool CloneConstructFrom(const Optional<U>& rhs) noexcept {
 
         return m_Storage.ConstructClone(rhs.m_Storage);
     }
@@ -1056,8 +1056,8 @@ public:
      * 
      * if (opt == Alt::Nullopt) {}
      */
-    ALT_FORCE_INLINE bool operator==(Nullopt_t) const noexcept { return !IsOk(); }
-    ALT_FORCE_INLINE bool operator!=(Nullopt_t) const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator==(Nullopt_t) const noexcept { return !IsOk(); }
+    ALT_FORCE_INLINE constexpr bool operator!=(Nullopt_t) const noexcept { return IsOk(); }
 
     /**
      * @brief Dereferences the Optional to access the value.
@@ -1067,16 +1067,16 @@ public:
      * usize val = *opt;
      */
     template <typename U = DerefT>
-    ALT_FORCE_INLINE U& operator*() & noexcept { ALT_ASSERT(m_Storage.IsVal()); return *m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr U& operator*() & noexcept { ALT_ASSERT(m_Storage.IsVal()); return *m_Storage.Deref(); }
 
     template <typename U = DerefT>
-    ALT_FORCE_INLINE const U& operator*() const & noexcept { ALT_ASSERT(m_Storage.IsVal()); return *m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr const U& operator*() const & noexcept { ALT_ASSERT(m_Storage.IsVal()); return *m_Storage.Deref(); }
 
     template <typename U = DerefT>
-    ALT_FORCE_INLINE U&& operator*() && noexcept { ALT_ASSERT(m_Storage.IsVal()); return std::move(*m_Storage.Deref()); }
+    ALT_FORCE_INLINE constexpr U&& operator*() && noexcept { ALT_ASSERT(m_Storage.IsVal()); return std::move(*m_Storage.Deref()); }
 
     template <typename U = DerefT>
-    ALT_FORCE_INLINE const U&& operator*() const && noexcept { ALT_ASSERT(m_Storage.IsVal()); return std::move(*m_Storage.Deref()); }
+    ALT_FORCE_INLINE constexpr const U&& operator*() const && noexcept { ALT_ASSERT(m_Storage.IsVal()); return std::move(*m_Storage.Deref()); }
 
     /**
      * @brief Accesses members of the contained object.
@@ -1085,8 +1085,8 @@ public:
      * Alt::Optional<SomeClass> opt = SomeClass{};
      * if (opt) opt->SomeMethod();
      */
-    ALT_FORCE_INLINE DerefT* operator->() noexcept { ALT_ASSERT(m_Storage.IsVal()); return m_Storage.Deref(); }
-    ALT_FORCE_INLINE const DerefT* operator->() const noexcept { ALT_ASSERT(m_Storage.IsVal()); return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr DerefT* operator->() noexcept { ALT_ASSERT(m_Storage.IsVal()); return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr const DerefT* operator->() const noexcept { ALT_ASSERT(m_Storage.IsVal()); return m_Storage.Deref(); }
 
     /**
      * @brief Implicit conversion to a pointer type.
@@ -1101,11 +1101,11 @@ public:
      */
     template <typename U = T,
         std::enable_if_t<_OptionalDetails::is_layout_not_own_value_v<U>>* = nullptr>
-    ALT_FORCE_INLINE operator DerefT*() noexcept { return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr operator DerefT*() noexcept { return m_Storage.Deref(); }
 
     template <typename U = T,
         std::enable_if_t<_OptionalDetails::is_layout_not_own_value_v<U>>* = nullptr>
-    ALT_FORCE_INLINE operator const DerefT*() const noexcept { return m_Storage.Deref(); }
+    ALT_FORCE_INLINE constexpr operator const DerefT*() const noexcept { return m_Storage.Deref(); }
 
     /**
     * @brief Checks if the Optional contains a valid value.
@@ -1114,7 +1114,7 @@ public:
     * 
     * if (opt.IsOk()) {}
     */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsOk() const noexcept { return m_Storage.IsVal(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsOk() const noexcept { return m_Storage.IsVal(); }
 
     /**
      * @brief Checks if the Optional contains a valid value.
@@ -1123,7 +1123,7 @@ public:
      * 
      * if (opt.IsPopulated()) {}
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsPopulated() const noexcept { return m_Storage.IsVal(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsPopulated() const noexcept { return m_Storage.IsVal(); }
 
     /**
      * @brief Checks if the Optional is 'nullopt'.
@@ -1132,7 +1132,7 @@ public:
      * 
      * if (opt.IsNone()) {}
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsNone() const noexcept { return !m_Storage.IsVal(); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsNone() const noexcept { return !m_Storage.IsVal(); }
 
     /**
      * @brief Checks if the Optional contains a valid value.
@@ -1141,7 +1141,7 @@ public:
      * 
      * if (opt) {}
      */
-    ALT_FORCE_INLINE explicit operator bool() const noexcept { return IsOk(); }
+    ALT_FORCE_INLINE constexpr explicit operator bool() const noexcept { return IsOk(); }
 
     /**
      * @brief Accesses the contained value.
@@ -1154,19 +1154,19 @@ public:
      * SomeClass val = std::move(opt.GetValue());
      */
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&>
         GetValue() & noexcept { ALT_ASSERT(m_Storage.IsVal()); return m_Storage.GetVal(); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&>
         GetValue() const & noexcept { ALT_ASSERT(m_Storage.IsVal()); return m_Storage.GetVal(); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, std::remove_reference_t<CleanT>&, CleanT&&>
         GetValue() && noexcept { ALT_ASSERT(m_Storage.IsVal()); return std::move(m_Storage.GetVal()); }
 
     template <typename U = CleanT>
-    ALT_NODISCARD ALT_FORCE_INLINE std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&&>
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr std::conditional_t<std::is_reference_v<U>, const std::remove_reference_t<CleanT>&, const CleanT&&>
         GetValue() const && noexcept { ALT_ASSERT(m_Storage.IsVal()); return std::move(m_Storage.GetVal()); }
 
     /**
@@ -1186,19 +1186,19 @@ public:
      */
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOr(U&& v) & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOr(U&& v) & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOr(U&& v) const & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOr(U&& v) const & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOr(U&& v) && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOr(U&& v) && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>(std::forward<U>(v)); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_convertible_v<U, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOr(U&& v) const && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>(std::forward<U>(v)); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOr(U&& v) const && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>(std::forward<U>(v)); }
 
     /**
      * @brief Returns the contained value or a default-constructed value.
@@ -1216,19 +1216,19 @@ public:
      */
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrDefault() & noexcept { return GetValueOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrDefault() & noexcept { return GetValueOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrDefault() const & noexcept { return GetValueOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrDefault() const & noexcept { return GetValueOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrDefault() && noexcept { return std::move(*this).GetValueOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrDefault() && noexcept { return std::move(*this).GetValueOrExec([]() { return U{}; }); }
 
     template <typename U = CleanT,
         std::enable_if_t<std::is_default_constructible_v<U>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrDefault() const && noexcept { return std::move(*this).GetValueOrExec([]() { return U{}; }); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrDefault() const && noexcept { return std::move(*this).GetValueOrExec([]() { return U{}; }); }
 
     /**
      * @brief Returns the contained value or the result of executing a callable.
@@ -1247,19 +1247,19 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrExec(FuncT&& func) & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrExec(FuncT&& func) & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrExec(FuncT&& func) const & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrExec(FuncT&& func) const & noexcept { return m_Storage.IsVal() ? m_Storage.GetVal() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrExec(FuncT&& func) && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrExec(FuncT&& func) && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>((func)()); }
 
     template <typename FuncT,
         std::enable_if_t<std::is_convertible_v<std::invoke_result_t<FuncT>, CleanT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE CleanT GetValueOrExec(FuncT&& func) const && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>((func)()); }
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr CleanT GetValueOrExec(FuncT&& func) const && noexcept { return m_Storage.IsVal() ? std::move(m_Storage).GetVal() : static_cast<T>((func)()); }
 
     /**
      * @brief Maps the contained value using a provided function.
@@ -1289,7 +1289,7 @@ public:
      */
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_optional_v<std::invoke_result_t<FuncT, CleanT&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanT&> Map(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanT&> Map(FuncT&& func) & noexcept {
 
         return IsOk()
             ? (func)(GetValue())
@@ -1298,7 +1298,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_optional_v<std::invoke_result_t<FuncT, CleanT&>>>* = nullptr>
-    ALT_NODISCARD Optional<std::invoke_result_t<FuncT, CleanT&>> Map(FuncT&& func) & noexcept {
+    ALT_NODISCARD constexpr Optional<std::invoke_result_t<FuncT, CleanT&>> Map(FuncT&& func) & noexcept {
 
         return IsOk()
             ? MakeOptional((func)(GetValue()))
@@ -1307,7 +1307,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_optional_v<std::invoke_result_t<FuncT, const CleanT&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanT&> Map(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanT&> Map(FuncT&& func) const & noexcept {
 
         return IsOk()
             ? (func)(GetValue())
@@ -1316,7 +1316,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_optional_v<std::invoke_result_t<FuncT, const CleanT&>>>* = nullptr>
-    ALT_NODISCARD Optional<std::invoke_result_t<FuncT, const CleanT&>> Map(FuncT&& func) const & noexcept {
+    ALT_NODISCARD constexpr Optional<std::invoke_result_t<FuncT, const CleanT&>> Map(FuncT&& func) const & noexcept {
 
         return IsOk()
             ? MakeOptional((func)(GetValue()))
@@ -1325,7 +1325,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_optional_v<std::invoke_result_t<FuncT, CleanT&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, CleanT&&> Map(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, CleanT&&> Map(FuncT&& func) && noexcept {
 
         return IsOk()
             ? (func)(std::move(GetValue()))
@@ -1334,7 +1334,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_optional_v<std::invoke_result_t<FuncT, CleanT&&>>>* = nullptr>
-    ALT_NODISCARD Optional<std::invoke_result_t<FuncT, CleanT&&>> Map(FuncT&& func) && noexcept {
+    ALT_NODISCARD constexpr Optional<std::invoke_result_t<FuncT, CleanT&&>> Map(FuncT&& func) && noexcept {
 
         return IsOk()
             ? MakeOptional((func)(std::move(GetValue())))
@@ -1343,7 +1343,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<TypeTraits::is_optional_v<std::invoke_result_t<FuncT, const CleanT&&>>>* = nullptr>
-    ALT_NODISCARD std::invoke_result_t<FuncT, const CleanT&&> Map(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr std::invoke_result_t<FuncT, const CleanT&&> Map(FuncT&& func) const && noexcept {
 
         return IsOk()
             ? (func)(std::move(GetValue()))
@@ -1352,7 +1352,7 @@ public:
 
     template <typename FuncT,
         std::enable_if_t<!TypeTraits::is_optional_v<std::invoke_result_t<FuncT, const CleanT&&>>>* = nullptr>
-    ALT_NODISCARD Optional<std::invoke_result_t<FuncT, const CleanT&&>> Map(FuncT&& func) const && noexcept {
+    ALT_NODISCARD constexpr Optional<std::invoke_result_t<FuncT, const CleanT&&>> Map(FuncT&& func) const && noexcept {
 
         return IsOk()
             ? MakeOptional((func)(std::move(GetValue())))

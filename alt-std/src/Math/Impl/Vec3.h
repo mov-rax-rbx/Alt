@@ -28,37 +28,37 @@ public:
 
     using Type = T;
 
-    ALT_FORCE_INLINE Vec3() noexcept
+    ALT_FORCE_INLINE constexpr Vec3() noexcept
         : vec{ static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0) }
     {}
 
-    ALT_FORCE_INLINE explicit Vec3(const T v) noexcept
+    ALT_FORCE_INLINE constexpr explicit Vec3(const T v) noexcept
         : vec{ v, v, v }
     {}
 
-    ALT_FORCE_INLINE explicit Vec3(const T v0, const T v1, const T v2) noexcept
+    ALT_FORCE_INLINE constexpr explicit Vec3(const T v0, const T v1, const T v2) noexcept
         : vec{ v0, v1, v2 }
     {}
 
-    ALT_FORCE_INLINE explicit Vec3(const Vec4<T>& vec4) noexcept;
+    ALT_FORCE_INLINE constexpr explicit Vec3(const Vec4<T>& vec4) noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE T Dot(const Vec3& vec3) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T Dot(const Vec3& vec3) const noexcept {
         return x * vec3.x + y * vec3.y + z * vec3.z;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T Length() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T Length() const noexcept {
         return Sqrt(this->Dot(*this));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T LengthSq() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T LengthSq() const noexcept {
         return this->Dot(*this);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsUnit() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsUnit() const noexcept {
         return Math::IsEqFuzzy(Length(), static_cast<T>(1.0));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE ssize CompareFuzzy(const Vec3& rhs, const T eps = Num::Desc<T>::Eps()) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize CompareFuzzy(const Vec3& rhs, const T eps = Desc<T>::Eps()) const noexcept {
 
         if (Math::IsEqFuzzy(vec[0], rhs[0], eps)) {
 
@@ -78,7 +78,7 @@ public:
         return vec[0] < rhs[0] ? -1 : 1;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEqFuzzy(const Vec3& rhs, const T eps = Num::Desc<T>::Eps()) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const Vec3& rhs, const T eps = Desc<T>::Eps()) const noexcept {
 
         return
             Math::IsEqFuzzy(vec[0], rhs[0], eps) &&
@@ -90,7 +90,7 @@ public:
         Vec3<T> up;
         Vec3<T> right;
     };
-    ALT_NODISCARD ALT_FORCE_INLINE RightUpPerpResult CalculateRightUpPerp() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr RightUpPerpResult CalculateRightUpPerp() const noexcept {
 
         RightUpPerpResult result;
 
@@ -113,7 +113,7 @@ public:
         return result;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Cross(const Vec3& rhs) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Cross(const Vec3& rhs) const noexcept {
 
         return Vec3{
             y * rhs.z - z * rhs.y,
@@ -122,19 +122,19 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 FrictionVec(const Vec3& normal) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 FrictionVec(const Vec3& normal) const noexcept {
         ALT_ASSERT(normal.IsUnit());
 
         return this->Dot(normal) * normal - *this;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Reflect(const Vec3& dir) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Reflect(const Vec3& dir) const noexcept {
         ALT_ASSERT(dir.IsUnit());
 
         return *this - static_cast<T>(2.0) * this->Dot(dir) * dir;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Refract(const Vec3& dir, const T eta) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Refract(const Vec3& dir, const T eta) const noexcept {
         ALT_ASSERT(IsUnit());
         ALT_ASSERT(dir.IsUnit());
 
@@ -146,44 +146,44 @@ public:
             : eta * *this - (eta * dot + Sqrt(k)) * dir;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Normalize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Normalize() const noexcept {
         return *this * Rsqrt(LengthSq());
     }
 
     template <typename U>
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3<U> Cast() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3<U> Cast() const noexcept {
         return Vec3<U>(static_cast<U>(x), static_cast<U>(y), static_cast<U>(z));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T MinFetch() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T MinFetch() const noexcept {
         return Num::Min(x, y, z);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T MaxFetch() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T MaxFetch() const noexcept {
         return Num::Max(x, y, z);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Min(const T rhsx, const T rhsy, const T rhsz) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Min(const T rhsx, const T rhsy, const T rhsz) const noexcept {
         return Vec3(Num::Min(x, rhsx), Num::Min(y, rhsy), Num::Min(z, rhsz));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Min(const Vec3& rhs) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Min(const Vec3& rhs) const noexcept {
         return Vec3(Num::Min(x, rhs.x), Num::Min(y, rhs.y), Num::Min(z, rhs.z));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Max(const T rhsx, const T rhsy, const T rhsz) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Max(const T rhsx, const T rhsy, const T rhsz) const noexcept {
         return Vec3(Num::Max(x, rhsx), Num::Max(y, rhsy), Num::Max(z, rhsz));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Max(const Vec3& rhs) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Max(const Vec3& rhs) const noexcept {
         return Vec3(Num::Max(x, rhs.x), Num::Max(y, rhs.y), Num::Max(z, rhs.z));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Clamp(const Vec3& min, const Vec3& max) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Clamp(const Vec3& min, const Vec3& max) const noexcept {
         return Min(max).Max(min);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Abs() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Abs() const noexcept {
         return Vec3(Num::Abs(x), Num::Abs(y), Num::Abs(z));
     }
 
@@ -207,20 +207,20 @@ public:
         return Vec3(Math::Round(x), Math::Round(y), Math::Round(z));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 xyz() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 xzy() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 yxz() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 yzx() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 zxy() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 zyx() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<T> xy() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<T> xz() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<T> yx() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<T> yz() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<T> zx() const noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<T> zy() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 xyz() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 xzy() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 yxz() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 yzx() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 zxy() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 zyx() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<T> xy() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<T> xz() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<T> yx() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<T> yz() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<T> zx() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<T> zy() const noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Lerp(const Vec3& dst, const T t) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Lerp(const Vec3& dst, const T t) const noexcept {
         return *this * (static_cast<T>(1.0) - t) + dst * t;
     }
 
@@ -254,7 +254,7 @@ public:
         };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 PerpNormalized() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 PerpNormalized() const noexcept {
 
         if (Num::Abs(x) > Num::Abs(y)) {
 
@@ -268,45 +268,45 @@ public:
         }
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize i) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize i) noexcept {
         return vec[i];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T& operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T& operator[](const usize i) const noexcept {
         return vec[i];
     }
 
-    ALT_FORCE_INLINE Vec3 operator*(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator*(const T s) const noexcept {
         return Vec3(x * s, y * s, z * s);
     }
 
-    ALT_FORCE_INLINE Vec3 operator*(const Vec3& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator*(const Vec3& rhs) const noexcept {
         return Vec3(x * rhs.x, y * rhs.y, z * rhs.z);
     }
 
-    ALT_FORCE_INLINE Vec3& operator*=(const T s) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator*=(const T s) noexcept {
 
         *this = Vec3(x * s, y * s, z * s);
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3& operator*=(const Vec3& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator*=(const Vec3& rhs) noexcept {
 
         *this = Vec3(x * rhs.x, y * rhs.y, z * rhs.z);
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3 operator/(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator/(const T s) const noexcept {
 
         const T inv = SafeInv(s);
         return Vec3(x * inv, y * inv, z * inv);
     }
 
-    ALT_FORCE_INLINE Vec3 operator/(const Vec3& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator/(const Vec3& rhs) const noexcept {
         return Vec3(x * SafeInv(rhs.x), y * SafeInv(rhs.y), z * SafeInv(rhs.z));
     }
 
-    ALT_FORCE_INLINE Vec3& operator/=(const T s) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator/=(const T s) noexcept {
 
         const T inv = SafeInv(s);
         *this = Vec3(x * inv, y * inv, z * inv);
@@ -314,65 +314,65 @@ public:
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3& operator/=(const Vec3& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator/=(const Vec3& rhs) noexcept {
 
         *this = Vec3(x * SafeInv(rhs.x), y * SafeInv(rhs.y), z * SafeInv(rhs.z));
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3 operator+(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator+(const T s) const noexcept {
         return Vec3(x + s, y + s, z + s);
     }
 
-    ALT_FORCE_INLINE Vec3 operator+(const Vec3& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator+(const Vec3& rhs) const noexcept {
         return Vec3(x + rhs.x, y + rhs.y, z + rhs.z);
     }
 
-    ALT_FORCE_INLINE Vec3& operator+=(const T s) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator+=(const T s) noexcept {
 
         *this = Vec3(x + s, y + s, z + s);
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3& operator+=(const Vec3& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator+=(const Vec3& rhs) noexcept {
 
         *this = Vec3(x + rhs.x, y + rhs.y, z + rhs.z);
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3 operator-(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator-(const T s) const noexcept {
         return Vec3(x - s, y - s, z - s);
     }
 
-    ALT_FORCE_INLINE Vec3 operator-(const Vec3& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator-(const Vec3& rhs) const noexcept {
         return Vec3(x - rhs.x, y - rhs.y, z - rhs.z);
     }
 
-    ALT_FORCE_INLINE Vec3& operator-=(const T s) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator-=(const T s) noexcept {
 
         *this = Vec3(x - s, y - s, z - s);
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3& operator-=(const Vec3& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Vec3& operator-=(const Vec3& rhs) noexcept {
 
         *this = Vec3(x - rhs.x, y - rhs.y, z - rhs.z);
         return *this;
     }
 
-    ALT_FORCE_INLINE Vec3 operator-() const noexcept {
+    ALT_FORCE_INLINE constexpr Vec3 operator-() const noexcept {
         return Vec3(-x, -y, -z);
     }
 
-    ALT_FORCE_INLINE friend Vec3 operator*(const T s, const Vec3& vec3) noexcept {
+    ALT_FORCE_INLINE constexpr friend Vec3 operator*(const T s, const Vec3& vec3) noexcept {
         return Vec3(s * vec3.x, s * vec3.y, s * vec3.z);
     }
 
-    ALT_FORCE_INLINE friend Vec3 operator+(const T s, const Vec3& vec3) noexcept {
+    ALT_FORCE_INLINE constexpr friend Vec3 operator+(const T s, const Vec3& vec3) noexcept {
         return Vec3(s + vec3.x, s + vec3.y, s + vec3.z);
     }
 
-    ALT_FORCE_INLINE friend Vec3 operator-(const T s, const Vec3& vec3) noexcept {
+    ALT_FORCE_INLINE constexpr friend Vec3 operator-(const T s, const Vec3& vec3) noexcept {
         return Vec3(s - vec3.x, s - vec3.y, s - vec3.z);
     }
 
@@ -393,175 +393,175 @@ public: \
 \
     using Type = type; \
 \
-    ALT_FORCE_INLINE Vec3() noexcept \
+    ALT_FORCE_INLINE constexpr Vec3() noexcept \
         : vec{ static_cast<type>(0), static_cast<type>(0), static_cast<type>(0) } \
     {} \
 \
-    ALT_FORCE_INLINE explicit Vec3(const type v) noexcept \
+    ALT_FORCE_INLINE constexpr explicit Vec3(const type v) noexcept \
         : vec{ v, v, v } \
     {} \
 \
-    ALT_FORCE_INLINE explicit Vec3(const type v0, const type v1, const type v2) noexcept \
+    ALT_FORCE_INLINE constexpr explicit Vec3(const type v0, const type v1, const type v2) noexcept \
         : vec{ v0, v1, v2 } \
     {} \
 \
-    ALT_FORCE_INLINE explicit Vec3(const Vec4<type>& vec4) noexcept; \
+    ALT_FORCE_INLINE constexpr explicit Vec3(const Vec4<type>& vec4) noexcept; \
 \
     template <typename U> \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3<U> Cast() const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3<U> Cast() const noexcept { \
         return Vec3<U>(static_cast<U>(x), static_cast<U>(y), static_cast<U>(z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE type MinFetch() const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr type MinFetch() const noexcept { \
         return Num::Min(x, y, z); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE type MaxFetch() const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr type MaxFetch() const noexcept { \
         return Num::Max(x, y, z); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Min(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Min(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
         return Vec3(Num::Min(x, rhsx), Num::Min(y, rhsy), Num::Min(z, rhsz)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Min(const Vec3& rhs) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Min(const Vec3& rhs) const noexcept { \
         return Vec3(Num::Min(x, rhs.x), Num::Min(y, rhs.y), Num::Min(z, rhs.z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Max(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Max(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
         return Vec3(Num::Max(x, rhsx), Num::Max(y, rhsy), Num::Max(z, rhsz)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Max(const Vec3& rhs) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Max(const Vec3& rhs) const noexcept { \
         return Vec3(Num::Max(x, rhs.x), Num::Max(y, rhs.y), Num::Max(z, rhs.z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Clamp(const Vec3& min, const Vec3& max) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Clamp(const Vec3& min, const Vec3& max) const noexcept { \
         return Min(max).Max(min); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 AddWrap(const Vec3& rhs) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 AddWrap(const Vec3& rhs) const noexcept { \
         return Vec3(Num::AddWrap(x, rhs.x), Num::AddWrap(y, rhs.y), Num::AddWrap(z, rhs.z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 SubWrap(const Vec3& rhs) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 SubWrap(const Vec3& rhs) const noexcept { \
         return Vec3(Num::SubWrap(x, rhs.x), Num::SubWrap(y, rhs.y), Num::SubWrap(z, rhs.z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 MulWrap(const Vec3& rhs) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 MulWrap(const Vec3& rhs) const noexcept { \
         return Vec3(Num::MulWrap(x, rhs.x), Num::MulWrap(y, rhs.y), Num::MulWrap(z, rhs.z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 xyz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 xzy() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 yxz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 yzx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 zxy() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 zyx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> xy() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> xz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> yx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> yz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> zx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> zy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 xyz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 xzy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 yxz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 yzx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 zxy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 zyx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> xy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> xz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> yx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> yz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> zx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> zy() const noexcept; \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE type& operator[](const usize i) noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr type& operator[](const usize i) noexcept { \
         return vec[i]; \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE const type& operator[](const usize i) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const type& operator[](const usize i) const noexcept { \
         return vec[i]; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator*(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator*(const type s) const noexcept { \
         return Vec3(x * s, y * s, z * s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator*(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator*(const Vec3& rhs) const noexcept { \
         return Vec3(x * rhs.x, y * rhs.y, z * rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator*=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator*=(const type s) noexcept { \
 \
         *this = Vec3(x * s, y * s, z * s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator*=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator*=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x * rhs.x, y * rhs.y, z * rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator/(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator/(const type s) const noexcept { \
         return Vec3(x / s, y / s, z / s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator/(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator/(const Vec3& rhs) const noexcept { \
         return Vec3(x / rhs.x, y / rhs.y, z / rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator/=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator/=(const type s) noexcept { \
 \
         *this = Vec3(x / s, y / s, z / s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator/=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator/=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x / rhs.x, y / rhs.y, z / rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator+(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator+(const type s) const noexcept { \
         return Vec3(x + s, y + s, z + s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator+(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator+(const Vec3& rhs) const noexcept { \
         return Vec3(x + rhs.x, y + rhs.y, z + rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator+=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator+=(const type s) noexcept { \
 \
         *this = Vec3(x + s, y + s, z + s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator+=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator+=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x + rhs.x, y + rhs.y, z + rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator-(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator-(const type s) const noexcept { \
         return Vec3(x - s, y - s, z - s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator-(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator-(const Vec3& rhs) const noexcept { \
         return Vec3(x - rhs.x, y - rhs.y, z - rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator-=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator-=(const type s) noexcept { \
 \
         *this = Vec3(x - s, y - s, z - s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator-=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator-=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x - rhs.x, y - rhs.y, z - rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE friend Vec3 operator*(const type s, const Vec3& vec3) noexcept { \
+    ALT_FORCE_INLINE constexpr friend Vec3 operator*(const type s, const Vec3& vec3) noexcept { \
         return Vec3(s * vec3.x, s * vec3.y, s * vec3.z); \
     } \
 \
-    ALT_FORCE_INLINE friend Vec3 operator+(const type s, const Vec3& vec3) noexcept { \
+    ALT_FORCE_INLINE constexpr friend Vec3 operator+(const type s, const Vec3& vec3) noexcept { \
         return Vec3(s + vec3.x, s + vec3.y, s + vec3.z); \
     } \
 \
-    ALT_FORCE_INLINE friend Vec3 operator-(const type s, const Vec3& vec3) noexcept { \
+    ALT_FORCE_INLINE constexpr friend Vec3 operator-(const type s, const Vec3& vec3) noexcept { \
         return Vec3(s - vec3.x, s - vec3.y, s - vec3.z); \
     } \
 \
@@ -582,171 +582,171 @@ public: \
 \
     using Type = type; \
 \
-    ALT_FORCE_INLINE Vec3() noexcept \
+    ALT_FORCE_INLINE constexpr Vec3() noexcept \
         : vec{ static_cast<type>(0), static_cast<type>(0), static_cast<type>(0) } \
     {} \
 \
-    ALT_FORCE_INLINE explicit Vec3(const type v) noexcept \
+    ALT_FORCE_INLINE constexpr explicit Vec3(const type v) noexcept \
         : vec{ v, v, v } \
     {} \
 \
-    ALT_FORCE_INLINE explicit Vec3(const type v0, const type v1, const type v2) noexcept \
+    ALT_FORCE_INLINE constexpr explicit Vec3(const type v0, const type v1, const type v2) noexcept \
         : vec{ v0, v1, v2 } \
     {} \
 \
-    ALT_FORCE_INLINE explicit Vec3(const Vec4<type>& vec4) noexcept; \
+    ALT_FORCE_INLINE constexpr explicit Vec3(const Vec4<type>& vec4) noexcept; \
 \
     template <typename U> \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3<U> Cast() const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3<U> Cast() const noexcept { \
         return Vec3<U>(static_cast<U>(x), static_cast<U>(y), static_cast<U>(z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE type MinFetch() const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr type MinFetch() const noexcept { \
         return Num::Min(x, y, z); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE type MaxFetch() const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr type MaxFetch() const noexcept { \
         return Num::Max(x, y, z); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Min(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Min(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
         return Vec3(Num::Min(x, rhsx), Num::Min(y, rhsy), Num::Min(z, rhsz)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Min(const Vec3& rhs) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Min(const Vec3& rhs) const noexcept { \
         return Vec3(Num::Min(x, rhs.x), Num::Min(y, rhs.y), Num::Min(z, rhs.z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Max(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Max(const type rhsx, const type rhsy, const type rhsz) const noexcept { \
         return Vec3(Num::Max(x, rhsx), Num::Max(y, rhsy), Num::Max(z, rhsz)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Max(const Vec3& rhs) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Max(const Vec3& rhs) const noexcept { \
         return Vec3(Num::Max(x, rhs.x), Num::Max(y, rhs.y), Num::Max(z, rhs.z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Clamp(const Vec3& min, const Vec3& max) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Clamp(const Vec3& min, const Vec3& max) const noexcept { \
         return Min(max).Max(min); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 Abs() const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 Abs() const noexcept { \
         return Vec3(Num::Abs(x), Num::Abs(y), Num::Abs(z)); \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 xyz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 xzy() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 yxz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 yzx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 zxy() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3 zyx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> xy() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> xz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> yx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> yz() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> zx() const noexcept; \
-    ALT_NODISCARD ALT_FORCE_INLINE Vec2<type> zy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 xyz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 xzy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 yxz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 yzx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 zxy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3 zyx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> xy() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> xz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> yx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> yz() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> zx() const noexcept; \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec2<type> zy() const noexcept; \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE const type& operator[](const usize i) const noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const type& operator[](const usize i) const noexcept { \
         return vec[i]; \
     } \
 \
-    ALT_NODISCARD ALT_FORCE_INLINE type& operator[](const usize i) noexcept { \
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr type& operator[](const usize i) noexcept { \
         return vec[i]; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator*(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator*(const type s) const noexcept { \
         return Vec3(x * s, y * s, z * s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator*(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator*(const Vec3& rhs) const noexcept { \
         return Vec3(x * rhs.x, y * rhs.y, z * rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator*=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator*=(const type s) noexcept { \
 \
         *this = Vec3(x * s, y * s, z * s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator*=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator*=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x * rhs.x, y * rhs.y, z * rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator/(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator/(const type s) const noexcept { \
         return Vec3(x / s, y / s, z / s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator/(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator/(const Vec3& rhs) const noexcept { \
         return Vec3(x / rhs.x, y / rhs.y, z / rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator/=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator/=(const type s) noexcept { \
 \
         *this = Vec3(x / s, y / s, z / s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator/=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator/=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x / rhs.x, y / rhs.y, z / rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator+(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator+(const type s) const noexcept { \
         return Vec3(x + s, y + s, z + s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator+(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator+(const Vec3& rhs) const noexcept { \
         return Vec3(x + rhs.x, y + rhs.y, z + rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator+=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator+=(const type s) noexcept { \
 \
         *this = Vec3(x + s, y + s, z + s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator+=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator+=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x + rhs.x, y + rhs.y, z + rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator-(const type s) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator-(const type s) const noexcept { \
         return Vec3(x - s, y - s, z - s); \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator-(const Vec3& rhs) const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator-(const Vec3& rhs) const noexcept { \
         return Vec3(x - rhs.x, y - rhs.y, z - rhs.z); \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator-=(const type s) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator-=(const type s) noexcept { \
 \
         *this = Vec3(x - s, y - s, z - s); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3& operator-=(const Vec3& rhs) noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3& operator-=(const Vec3& rhs) noexcept { \
 \
         *this = Vec3(x - rhs.x, y - rhs.y, z - rhs.z); \
         return *this; \
     } \
 \
-    ALT_FORCE_INLINE Vec3 operator-() const noexcept { \
+    ALT_FORCE_INLINE constexpr Vec3 operator-() const noexcept { \
         return Vec3(-x, -y, -z); \
     } \
 \
-    ALT_FORCE_INLINE friend Vec3 operator*(const type s, const Vec3& vec3) noexcept { \
+    ALT_FORCE_INLINE constexpr friend Vec3 operator*(const type s, const Vec3& vec3) noexcept { \
         return Vec3(s * vec3.x, s * vec3.y, s * vec3.z); \
     } \
 \
-    ALT_FORCE_INLINE friend Vec3 operator+(const type s, const Vec3& vec3) noexcept { \
+    ALT_FORCE_INLINE constexpr friend Vec3 operator+(const type s, const Vec3& vec3) noexcept { \
         return Vec3(s + vec3.x, s + vec3.y, s + vec3.z); \
     } \
 \
-    ALT_FORCE_INLINE friend Vec3 operator-(const type s, const Vec3& vec3) noexcept { \
+    ALT_FORCE_INLINE constexpr friend Vec3 operator-(const type s, const Vec3& vec3) noexcept { \
         return Vec3(s - vec3.x, s - vec3.y, s - vec3.z); \
     } \
 \

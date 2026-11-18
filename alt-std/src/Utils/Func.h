@@ -63,7 +63,7 @@ template <typename Return, typename ...Args>
 class FuncRef {
 public:
 
-    FuncRef() noexcept = delete;
+    constexpr FuncRef() noexcept = delete;
 
     /**
      * @brief Constructs a FuncRef from a functor or function pointer.
@@ -82,7 +82,7 @@ public:
             std::is_convertible_v<FuncT, Return(*)(Args...)> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<FuncT&&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE FuncRef(FuncT&& func) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef(FuncT&& func) noexcept {
 
         Assign(func);
     }
@@ -115,7 +115,7 @@ public:
             !std::is_convertible_v<FuncT, Return(*)(Args...)> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<FuncT&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE FuncRef(FuncT& func) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef(FuncT& func) noexcept {
 
         Assign(func);
     }
@@ -142,27 +142,27 @@ public:
             !std::is_convertible_v<FuncT, Return(*)(Args...)> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<const FuncT&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE FuncRef(const FuncT& func) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef(const FuncT& func) noexcept {
 
         AssignConst(func);
     }
 
     template <usize SIZE_IN_BYTES, usize ALIGN_IN_BYTES>
-    ALT_FORCE_INLINE FuncRef(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>&& rhs) noexcept {
 
         m_pFuncOrObj = rhs.m_Memory;
         m_pCall = rhs.m_pOperatorBracketBracket;
     }
 
     template <usize SIZE_IN_BYTES, usize ALIGN_IN_BYTES>
-    ALT_FORCE_INLINE FuncRef(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
 
         m_pFuncOrObj = rhs.m_Memory;
         m_pCall = rhs.m_pOperatorBracketBracket;
     }
 
     template <usize SIZE_IN_BYTES, usize ALIGN_IN_BYTES>
-    ALT_FORCE_INLINE FuncRef(const StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef(const StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
 
         m_pFuncOrObj = rhs.m_Memory;
         m_pCall = rhs.m_pOperatorBracketBracket;
@@ -177,7 +177,7 @@ public:
             std::is_convertible_v<FuncT, Return(*)(Args...)> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<FuncT&&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE FuncRef& operator=(FuncT&& func) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(FuncT&& func) noexcept {
 
         Assign(func);
         return *this;
@@ -188,7 +188,7 @@ public:
             !std::is_convertible_v<FuncT, Return(*)(Args...)> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<FuncT&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE FuncRef& operator=(FuncT& func) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(FuncT& func) noexcept {
 
         Assign(func);
         return *this;
@@ -199,14 +199,14 @@ public:
             !std::is_convertible_v<FuncT, Return(*)(Args...)> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<const FuncT&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE FuncRef& operator=(const FuncT& func) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(const FuncT& func) noexcept {
 
         AssignConst(func);
         return *this;
     }
 
     template <usize SIZE_IN_BYTES, usize ALIGN_IN_BYTES>
-    ALT_FORCE_INLINE FuncRef& operator=(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>&& rhs) noexcept {
 
         m_pFuncOrObj = rhs.m_Memory;
         m_pCall = rhs.m_pCall;
@@ -215,7 +215,7 @@ public:
     }
 
     template <usize SIZE_IN_BYTES, usize ALIGN_IN_BYTES>
-    ALT_FORCE_INLINE FuncRef& operator=(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
 
         m_pFuncOrObj = rhs.m_Memory;
         m_pCall = rhs.m_pCall;
@@ -224,7 +224,7 @@ public:
     }
 
     template <usize SIZE_IN_BYTES, usize ALIGN_IN_BYTES>
-    ALT_FORCE_INLINE FuncRef& operator=(const StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(const StaticFunc<SIZE_IN_BYTES, ALIGN_IN_BYTES, Return, Args...>& rhs) noexcept {
 
         m_pFuncOrObj = rhs.m_Memory;
         m_pCall = rhs.m_pCall;
@@ -232,11 +232,11 @@ public:
         return *this;
     }
 
-    ALT_FORCE_INLINE FuncRef(const FuncRef&) noexcept = default;
-    ALT_FORCE_INLINE FuncRef& operator=(const FuncRef&) noexcept = default;
+    ALT_FORCE_INLINE constexpr FuncRef(const FuncRef&) noexcept = default;
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(const FuncRef&) noexcept = default;
 
-    ALT_FORCE_INLINE FuncRef(FuncRef&&) noexcept = default;
-    ALT_FORCE_INLINE FuncRef& operator=(FuncRef&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr FuncRef(FuncRef&&) noexcept = default;
+    ALT_FORCE_INLINE constexpr FuncRef& operator=(FuncRef&&) noexcept = default;
 
     /**
      * @brief Invokes the wrapped callable with provided arguments.
@@ -252,37 +252,46 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<std::conjunction_v<std::is_constructible<Args, ArgsT&&>...>>* = nullptr>
-    ALT_FORCE_INLINE Return operator()(ArgsT&&... args) noexcept {
+    ALT_FORCE_INLINE constexpr Return operator()(ArgsT&&... args) noexcept {
 
         return (*m_pCall)(m_pFuncOrObj, std::forward<ArgsT>(args)...);
     }
 
     template <typename ...ArgsT,
         std::enable_if_t<std::conjunction_v<std::is_constructible<Args, ArgsT&&>...>>* = nullptr>
-    ALT_FORCE_INLINE Return operator()(ArgsT&&... args) const noexcept {
+    ALT_FORCE_INLINE constexpr Return operator()(ArgsT&&... args) const noexcept {
 
         return (*m_pCall)(m_pFuncOrObj, std::forward<ArgsT>(args)...);
     }
 
 private:
 
-    template <typename FuncT>
-    ALT_FORCE_INLINE void Assign(const FuncT& func) noexcept {
+#ifdef ALT_COMPILER_CLANG
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmicrosoft-cast" // implicit conversion between pointer-to-function and pointer-to-object is a Microsoft extension
+#endif // ALT_COMPILER_CLANG
 
-        m_pFuncOrObj = const_cast<void*>(reinterpret_cast<const void*>(&func));
+    template <typename FuncT>
+    ALT_FORCE_INLINE constexpr void Assign(const FuncT& func) noexcept {
+
+        m_pFuncOrObj = const_cast<void*>(static_cast<const void*>(Addressof(func)));
         m_pCall = [](void* pObj, Args... args) noexcept -> Return {
-            return (*reinterpret_cast<std::remove_reference_t<FuncT>*>(pObj))(std::forward<Args>(args)...);
+            return (*static_cast<std::remove_reference_t<FuncT>*>(pObj))(std::forward<Args>(args)...);
         };
     }
 
     template <typename FuncT>
-    ALT_FORCE_INLINE void AssignConst(const FuncT& func) noexcept {
+    ALT_FORCE_INLINE constexpr void AssignConst(const FuncT& func) noexcept {
 
-        m_pFuncOrObj = const_cast<void*>(reinterpret_cast<const void*>(&func));
+        m_pFuncOrObj = const_cast<void*>(static_cast<const void*>(Addressof(func)));
         m_pCall = [](void* pObj, Args... args) noexcept -> Return {
-            return (*reinterpret_cast<const std::remove_reference_t<FuncT>*>(pObj))(std::forward<Args>(args)...);
+            return (*static_cast<const std::remove_reference_t<FuncT>*>(pObj))(std::forward<Args>(args)...);
         };
     }
+
+#ifdef ALT_COMPILER_CLANG
+#pragma clang diagnostic pop
+#endif // ALT_COMPILER_CLANG
 
 private:
 
@@ -302,40 +311,40 @@ struct FTable {
 };
 
 template <typename FuncT, typename Return, typename ...Args>
-ALT_FORCE_INLINE FuncPtr<Return, void*, Args...> OperatorBracketBracketFunc() noexcept {
+ALT_FORCE_INLINE constexpr FuncPtr<Return, void*, Args...> OperatorBracketBracketFunc() noexcept {
 
     using T = std::remove_reference_t<FuncT>;
 
     return [](void* pObj, Args... args) noexcept -> Return {
 
-        return (*reinterpret_cast<T*>(pObj))(std::forward<Args>(args)...);
+        return (*static_cast<T*>(pObj))(std::forward<Args>(args)...);
     };
 }
 
 template <typename FuncT>
-ALT_FORCE_INLINE FuncPtr<void, void*, void*> MoveConstructFunc() noexcept {
+ALT_FORCE_INLINE constexpr FuncPtr<void, void*, void*> MoveConstructFunc() noexcept {
 
     using T = TypeTraits::clean_t<std::remove_reference_t<FuncT>>;
 
     return [](void* pObjTo, void* pObjFrom) noexcept {
 
-        Memory::ConstructObject(reinterpret_cast<T*>(pObjTo), std::move(*reinterpret_cast<T*>(pObjFrom)));
+        Memory::ConstructObject<T>(pObjTo, std::move(*static_cast<T*>(pObjFrom)));
     };
 }
 
 template <typename FuncT>
-ALT_FORCE_INLINE FuncPtr<void, void*> DestructFunc() noexcept {
+ALT_FORCE_INLINE constexpr FuncPtr<void, void*> DestructFunc() noexcept {
 
     using T = TypeTraits::clean_t<std::remove_reference_t<FuncT>>;
 
     return [](void* pObjTo) noexcept {
 
-        Memory::DestroyObject(*reinterpret_cast<T*>(pObjTo));
+        Memory::DestroyObject(*static_cast<T*>(pObjTo));
     };
 }
 
 template <typename FuncT, typename Return, typename ...Args>
-ALT_FORCE_INLINE FTable<Return, Args...> CreateFTable() noexcept {
+ALT_FORCE_INLINE constexpr FTable<Return, Args...> CreateFTable() noexcept {
 
     FTable<Return, Args...> fTable;
 
@@ -346,12 +355,21 @@ ALT_FORCE_INLINE FTable<Return, Args...> CreateFTable() noexcept {
     return fTable;
 }
 
+#ifdef ALT_COMPILER_CLANG
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++23-extensions" // definition of a static variable in a constexpr function is a C++23 extension
+#endif // ALT_COMPILER_CLANG
+
 template <typename FuncT, typename Return, typename ...Args>
-ALT_NODISCARD static FTable<Return, Args...>* GetOrCreateFTable() noexcept {
+ALT_NODISCARD constexpr static FTable<Return, Args...>* GetOrCreateFTable() noexcept {
 
     static FTable<Return, Args...> fTable = CreateFTable<FuncT, Return, Args...>();
     return &fTable;
 }
+
+#ifdef ALT_COMPILER_CLANG
+#pragma clang diagnostic pop
+#endif // ALT_COMPILER_CLANG
 
 } // namespace _FuncDetails
 /**\endcond */
@@ -388,7 +406,7 @@ private:
     template <typename FuncT>
     constexpr static bool is_check_size_ok_v = sizeof(FuncT) <= SIZE_IN_BYTES && alignof(FuncT) <= ALIGN_IN_BYTES;
 
-    static_assert(Num::IsPowerOf2(ALIGN_IN_BYTES), "");
+    static_assert(IsPowerOf2(ALIGN_IN_BYTES), "");
 
 public:
 
@@ -404,14 +422,14 @@ public:
      * Alt::StaticFunc<64, 16, usize, f32> func0 = &FuncPtr;
      * Alt::StaticFunc<64, 16, usize, f32> func1 = [](const f32) noexcept -> usize { return 0 };
      */
-    ALT_FORCE_INLINE StaticFunc(StaticFunc&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr StaticFunc(StaticFunc&& rhs) noexcept {
 
         Construct(Rule5Move, std::move(rhs));
     }
 
     template <usize SIZE_IN_BYTES_, usize ALIGN_IN_BYTES_,
-        std::enable_if_t<(SIZE_IN_BYTES_ + ALIGN_IN_BYTES_) <= SIZE_IN_BYTES + ALIGN_IN_BYTES>* = nullptr>
-    ALT_FORCE_INLINE StaticFunc(StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
+        std::enable_if_t<ALIGN_IN_BYTES_ <= ALIGN_IN_BYTES && SIZE_IN_BYTES_ <= SIZE_IN_BYTES>* = nullptr>
+    ALT_FORCE_INLINE constexpr StaticFunc(StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
 
         Construct(Rule5Move, std::move(rhs));
     }
@@ -444,20 +462,20 @@ public:
             is_check_size_ok_v<FuncT> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<FuncT&&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE StaticFunc(FuncT&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr StaticFunc(FuncT&& rhs) noexcept {
 
         Construct(std::forward<FuncT>(rhs));
     }
 
-    ALT_FORCE_INLINE StaticFunc& operator=(StaticFunc&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr StaticFunc& operator=(StaticFunc&& rhs) noexcept {
 
         Assign(Rule5Move, std::move(rhs));
         return *this;
     }
 
     template <usize SIZE_IN_BYTES_, usize ALIGN_IN_BYTES_,
-        std::enable_if_t<(SIZE_IN_BYTES_ + ALIGN_IN_BYTES_) <= SIZE_IN_BYTES + ALIGN_IN_BYTES>* = nullptr>
-    ALT_FORCE_INLINE StaticFunc& operator=(StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
+        std::enable_if_t<ALIGN_IN_BYTES_ <= ALIGN_IN_BYTES && SIZE_IN_BYTES_ <= SIZE_IN_BYTES>* = nullptr>
+    ALT_FORCE_INLINE constexpr StaticFunc& operator=(StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
 
         Assign(Rule5Move, std::move(rhs));
         return *this;
@@ -468,7 +486,7 @@ public:
             is_check_size_ok_v<FuncT> &&
             std::is_same_v<TypeTraits::clean_t<Return>, TypeTraits::clean_t<std::invoke_result_t<FuncT&&, Args...>>>
         >* = nullptr>
-    ALT_FORCE_INLINE StaticFunc& operator=(FuncT&& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr StaticFunc& operator=(FuncT&& rhs) noexcept {
 
         Assign(std::forward<FuncT>(rhs));
         return *this;
@@ -488,7 +506,7 @@ public:
      */
     template <typename ...ArgsT,
         std::enable_if_t<std::conjunction_v<std::is_constructible<Args, ArgsT&&>...>>* = nullptr>
-    ALT_FORCE_INLINE Return operator()(ArgsT&&... args) noexcept {
+    ALT_FORCE_INLINE constexpr Return operator()(ArgsT&&... args) noexcept {
         ALT_ASSERT(m_pFTable);
 
         return (*m_pOperatorBracketBracket)(m_Memory, std::forward<ArgsT>(args)...);
@@ -496,7 +514,7 @@ public:
 
     template <typename ...ArgsT,
         std::enable_if_t<std::conjunction_v<std::is_constructible<Args, ArgsT&&>...>>* = nullptr>
-    ALT_FORCE_INLINE Return operator()(ArgsT&&... args) const noexcept {
+    ALT_FORCE_INLINE constexpr Return operator()(ArgsT&&... args) const noexcept {
         ALT_ASSERT(m_pFTable);
 
         return (*m_pOperatorBracketBracket)(m_Memory, std::forward<ArgsT>(args)...);
@@ -514,22 +532,22 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE StaticFunc() noexcept = default;
+    ALT_FORCE_INLINE constexpr StaticFunc() noexcept = default;
 
     template <typename FuncT>
-    ALT_FORCE_INLINE void Construct(FuncT&& func) noexcept {
+    ALT_FORCE_INLINE constexpr void Construct(FuncT&& func) noexcept {
 
         using T = TypeTraits::clean_t<std::remove_reference_t<FuncT>>;
 
         m_pOperatorBracketBracket = _FuncDetails::OperatorBracketBracketFunc<FuncT, Return, Args...>();
         m_pFTable = _FuncDetails::GetOrCreateFTable<FuncT, Return, Args...>();
 
-        void* pMemory = Memory::AlignPtr(m_Memory, alignof(T));
-        Memory::ConstructObject<T>(reinterpret_cast<T*>(pMemory), std::forward<FuncT>(func));
+        ALT_ASSERT(alignof(T) <= ALIGN_IN_BYTES);
+        Memory::ConstructObject<T>(m_Memory, std::forward<FuncT>(func));
     }
 
     template <typename FuncT>
-    ALT_FORCE_INLINE void Assign(FuncT&& func) noexcept {
+    ALT_FORCE_INLINE constexpr void Assign(FuncT&& func) noexcept {
         ALT_ASSERT(m_pFTable);
 
         (*m_pFTable->pDestruct)(m_Memory);
@@ -538,8 +556,8 @@ private:
     }
 
     template <usize SIZE_IN_BYTES_, usize ALIGN_IN_BYTES_,
-        std::enable_if_t<(SIZE_IN_BYTES_ + ALIGN_IN_BYTES_) <= SIZE_IN_BYTES + ALIGN_IN_BYTES>* = nullptr>
-    ALT_FORCE_INLINE void Construct(Rule5Move_t, StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
+        std::enable_if_t<ALIGN_IN_BYTES_ <= ALIGN_IN_BYTES && SIZE_IN_BYTES_ <= SIZE_IN_BYTES>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Construct(Rule5Move_t, StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
 
         m_pOperatorBracketBracket = Exchange(rhs.m_pOperatorBracketBracket, nullptr);
         m_pFTable = Exchange(rhs.m_pFTable, nullptr);
@@ -548,8 +566,8 @@ private:
     }
 
     template <usize SIZE_IN_BYTES_, usize ALIGN_IN_BYTES_,
-        std::enable_if_t<(SIZE_IN_BYTES_ + ALIGN_IN_BYTES_) <= SIZE_IN_BYTES + ALIGN_IN_BYTES>* = nullptr>
-    ALT_FORCE_INLINE void Assign(Rule5Move_t, StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
+        std::enable_if_t<ALIGN_IN_BYTES_ <= ALIGN_IN_BYTES && SIZE_IN_BYTES_ <= SIZE_IN_BYTES>* = nullptr>
+    ALT_FORCE_INLINE constexpr void Assign(Rule5Move_t, StaticFunc<SIZE_IN_BYTES_, ALIGN_IN_BYTES_, Return, Args...>&& rhs) noexcept {
 
         if (static_cast<const void*>(this) == &rhs) {
             return;

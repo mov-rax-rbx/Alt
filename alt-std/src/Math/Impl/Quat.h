@@ -22,48 +22,48 @@ public:
 
     using Type = T;
 
-    ALT_FORCE_INLINE Quat() noexcept = default;
+    ALT_FORCE_INLINE constexpr Quat() noexcept = default;
 
-    ALT_FORCE_INLINE explicit Quat(const Vec3<T>& v, const T w) noexcept
+    ALT_FORCE_INLINE constexpr explicit Quat(const Vec3<T>& v, const T w) noexcept
         : quat{ v.x, v.y, v.z, w }
     {}
 
-    ALT_FORCE_INLINE explicit Quat(const T x, const T y, const T z, const T w) noexcept
+    ALT_FORCE_INLINE constexpr explicit Quat(const T x, const T y, const T z, const T w) noexcept
         : quat{ x, y, z, w }
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Quat Identity() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Quat Identity() noexcept {
         return Quat{ static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(1.0) };
     }
 
     ALT_NODISCARD ALT_FORCE_INLINE static Quat FromRotate(Vec3<T> axis, const T angleRad) noexcept;
-    ALT_NODISCARD ALT_FORCE_INLINE static Quat FromVectors(Vec3<T> orig, Vec3<T> dst) noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Quat FromVectors(Vec3<T> orig, Vec3<T> dst) noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE static Quat FromMatrix44(const Matrix44<T>& m) noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static Quat FromMatrix44(const Matrix44<T>& m) noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Matrix44<T> ToMatrix44() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Matrix44<T> ToMatrix44() const noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE T Dot(const Quat& q) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T Dot(const Quat& q) const noexcept {
         return x * q.x + y * q.y + z * q.z + w * q.w;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE T Length() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T Length() const noexcept {
         return Sqrt(Dot(*this));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Quat Normalize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Quat Normalize() const noexcept {
         return *this * Rsqrt(Dot(*this));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Quat Conjugate() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Quat Conjugate() const noexcept {
         return Quat{ -x, -y, -z, w };
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Quat Inverse() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Quat Inverse() const noexcept {
         return Conjugate() * SafeInv(Dot(*this));
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Quat Lerp(const Quat& dst, T t) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Quat Lerp(const Quat& dst, T t) const noexcept {
         return *this * (static_cast<T>(1.0) - t) + dst * t;
     }
 
@@ -76,7 +76,7 @@ public:
         T scale1;
 
         // linear interpolation
-        if (absCosTheta >= static_cast<T>(1.0) - Num::Desc<T>::Eps()) {
+        if (absCosTheta >= static_cast<T>(1.0) - Desc<T>::Eps()) {
 
             scale0 = static_cast<T>(1.0) - t;
             scale1 = t;
@@ -97,20 +97,20 @@ public:
         return scale0 * *this + scale1 * dst;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> GetAxis() const noexcept;
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Vec3<T> GetAxis() const noexcept;
     ALT_NODISCARD ALT_FORCE_INLINE T GetAngle() const noexcept;
 
     ALT_NODISCARD ALT_FORCE_INLINE Vec3<T> GetEulerAnglesXYZ() const noexcept;
 
-    ALT_NODISCARD ALT_FORCE_INLINE T& operator[](const usize i) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr T& operator[](const usize i) noexcept {
         return quat[i];
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const T operator[](const usize i) const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const T operator[](const usize i) const noexcept {
         return quat[i];
     }
 
-    ALT_FORCE_INLINE Quat operator*(const Quat& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Quat operator*(const Quat& rhs) const noexcept {
 
         return Quat{
             w * rhs.x + x * rhs.w + y * rhs.z - z * rhs.y,
@@ -120,50 +120,50 @@ public:
         };
     }
 
-    ALT_FORCE_INLINE Vec3<T> operator*(const Vec3<T>& rhs) const noexcept;
+    ALT_FORCE_INLINE constexpr Vec3<T> operator*(const Vec3<T>& rhs) const noexcept;
 
-    ALT_FORCE_INLINE Quat operator*(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr Quat operator*(const T s) const noexcept {
         return Quat{ x * s, y * s, z * s, w * s };
     }
 
-    ALT_FORCE_INLINE Quat& operator*=(const T s) noexcept {
+    ALT_FORCE_INLINE constexpr Quat& operator*=(const T s) noexcept {
 
         *this = *this * s;
         return *this;
     }
 
-    ALT_FORCE_INLINE Quat operator/(const T s) const noexcept {
+    ALT_FORCE_INLINE constexpr Quat operator/(const T s) const noexcept {
 
         return *this * SafeInv(s);
     }
 
-    ALT_FORCE_INLINE Quat& operator/=(const T s) noexcept {
+    ALT_FORCE_INLINE constexpr Quat& operator/=(const T s) noexcept {
 
         *this = *this / s;
         return *this;
     }
 
-    ALT_FORCE_INLINE Quat operator+(const Quat& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Quat operator+(const Quat& rhs) const noexcept {
         return Quat{ x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w };
     }
 
-    ALT_FORCE_INLINE Quat& operator+=(const Quat& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Quat& operator+=(const Quat& rhs) noexcept {
 
         *this = *this + rhs;
         return *this;
     }
 
-    ALT_FORCE_INLINE Quat operator-(const Quat& rhs) const noexcept {
+    ALT_FORCE_INLINE constexpr Quat operator-(const Quat& rhs) const noexcept {
         return Quat{ x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w };
     }
 
-    ALT_FORCE_INLINE Quat& operator-=(const Quat& rhs) noexcept {
+    ALT_FORCE_INLINE constexpr Quat& operator-=(const Quat& rhs) noexcept {
 
         *this = *this - rhs;
         return *this;
     }
 
-    ALT_FORCE_INLINE friend Quat operator*(const T s, const Quat& q) noexcept {
+    ALT_FORCE_INLINE constexpr friend Quat operator*(const T s, const Quat& q) noexcept {
         return q * s;
     }
 

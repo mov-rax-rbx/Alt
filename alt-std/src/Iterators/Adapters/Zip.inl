@@ -2,7 +2,7 @@
 
 #include "../../Utils/Pair.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter0{
  *     []() {
  *         static usize cnt = 0;
@@ -46,7 +46,7 @@ public:
 
     using Type = Pair<T0, T1>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Type> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Type> Next() noexcept {
 
         Optional<T0> val0 = Self().m_Iter0.Next();
         Optional<T1> val1 = Self().m_Iter1.Next();
@@ -62,7 +62,7 @@ public:
         return Alt::Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -80,7 +80,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -99,7 +99,7 @@ public:
 
     using Type = Pair<T0, T1>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<Type> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<Type> NextBack() noexcept {
 
         const usize size0 = Self().m_Iter0.GetSize();
         const usize size1 = Self().m_Iter1.GetSize();
@@ -125,7 +125,7 @@ public:
         );
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -143,7 +143,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -160,18 +160,18 @@ public:
     using T1 = typename PrevIterT1::Type;
     using SelfT = Zip_<PrevIterT0, PrevIterT1>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
-        return Num::Min(Self().m_Iter0.GetSize(), Self().m_Iter1.GetSize());
+        return Min(Self().m_Iter0.GetSize(), Self().m_Iter1.GetSize());
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return GetSize() == 0;
     }
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -226,15 +226,15 @@ public:
         , _IterDetails::return_if_exist_type_in_type_list_t<IIteratorExactSizeTrait<Type>, _IterDetails::type_list<PrevIterT0, PrevIterT1>, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Zip_(const PrevIterT0& iter0, const PrevIterT1& iter1) noexcept
+    ALT_FORCE_INLINE constexpr Zip_(const PrevIterT0& iter0, const PrevIterT1& iter1) noexcept
         : m_Iter0(iter0)
         , m_Iter1(iter1)
     {
         ALT_ASSERT((void*)&m_Iter0 != (void*)&m_Iter1);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
-        return Num::Min(m_Iter0.GetSizeHint(), m_Iter1.GetSizeHint());
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
+        return Min(m_Iter0.GetSizeHint(), m_Iter1.GetSizeHint());
     }
 
 private:

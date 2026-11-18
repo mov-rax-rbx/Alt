@@ -1,6 +1,6 @@
 ﻿#include "../IteratorTrait.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter{
  *     []() {
  *         static usize cnt = 0;
@@ -34,7 +34,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Step_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_IsFirst) {
 
@@ -46,16 +46,16 @@ public:
         return Self().m_Iter.Next();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         return Self().m_IsFirst
             ? Self().m_Iter.Advance(advance * Self().m_Step)
-            : Self().m_Iter.Advance(Num::SubWrap(advance * Self().m_Step, 1));
+            : Self().m_Iter.Advance(SubWrap(advance * Self().m_Step, 1));
     }
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -71,7 +71,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Step_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         const usize size = Self().m_Iter.GetSize();
         const usize tail = size % Self().m_Step;
@@ -98,7 +98,7 @@ public:
         return Self().m_Iter.NextBack();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -116,7 +116,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -132,20 +132,20 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Step_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
 
         return Self().m_Step == 0
             ? Self().m_Iter.GetSize()
             : Self().m_Iter.GetSize() / Self().m_Step;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return GetSize() == 0;
     }
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -190,13 +190,13 @@ public:
         , _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorExactSizeTrait<Type>, PrevIterT, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Step_(const PrevIterT& iter, const usize step) noexcept
+    ALT_FORCE_INLINE constexpr Step_(const PrevIterT& iter, const usize step) noexcept
         : m_Iter(iter)
-        , m_StepMinusOne(Num::SubWrap(step, 1))
+        , m_StepMinusOne(SubWrap(step, 1))
         , m_Step(step)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
 
         return m_Step == 0
             ? m_Iter.GetSizeHint()

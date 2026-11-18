@@ -48,7 +48,7 @@ public:
 
         __ALT_STD_INTERNAL_TRY__ {
 
-            const usize reserve = Num::AddWrap(self.size(), iter.GetSizeHint());
+            const usize reserve = AddWrap(self.size(), iter.GetSizeHint());
             self.reserve(reserve);
 
             while (Optional<U> val = iter.Next()) {
@@ -155,7 +155,7 @@ public:
 
         __ALT_STD_INTERNAL_TRY__ {
 
-            const usize reserve = Num::AddWrap(self.size(), iter.GetSizeHint());
+            const usize reserve = AddWrap(self.size(), iter.GetSizeHint());
             self.reserve(reserve);
 
             while (Optional<K> val = iter.Next()) {
@@ -184,7 +184,7 @@ public:
 
         __ALT_STD_INTERNAL_TRY__ {
 
-            const usize reserve = Num::AddWrap(self.size(), iter.GetSizeHint());
+            const usize reserve = AddWrap(self.size(), iter.GetSizeHint());
             self.reserve(reserve);
 
             while (Optional<Pair<UK, UV>> val = iter.Next()) {

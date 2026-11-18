@@ -16,7 +16,7 @@ namespace RadixSort {
 template <typename Usize>
 ALT_FORCE_INLINE constexpr usize SortUnsignedImpl_GetBacketBufferSize() noexcept {
 
-    constexpr usize BITS = Num::Desc<Usize>::Bits();
+    constexpr usize BITS = Desc<Usize>::Bits();
     constexpr usize BITS_PER_STEP = 8;
 
     constexpr usize NUM_STEPS = (BITS + BITS_PER_STEP - 1) / BITS_PER_STEP;
@@ -95,9 +95,9 @@ ALT_FORCE_INLINE void SortUnsignedImpl(
 ) noexcept {
     ALT_ASSERT(backets);
 
-    using U = typename Num::Desc<Usize>::Unsigned;
+    using U = typename Desc<Usize>::Unsigned;
 
-    constexpr usize BITS = Num::Desc<Usize>::Bits();
+    constexpr usize BITS = Desc<Usize>::Bits();
     constexpr usize BITS_PER_STEP = 8;
     static_assert(BITS_PER_STEP <= BITS, "");
 
@@ -226,7 +226,7 @@ inline bool Sort<s8>(s8* const __restrict data, s8* const __restrict buffer, con
 
     usize backets[SortUnsignedImpl_GetBacketBufferSize<u8>()]{ 0 };
 
-    SortUnsignedImpl<u8>(data, buffer, backets, size, Num::ConvertSignedToUnsignedOrdered<s8>);
+    SortUnsignedImpl<u8>(data, buffer, backets, size, ConvertSignedToUnsignedOrdered<s8>);
 
     return true;
 }
@@ -236,7 +236,7 @@ inline bool Sort<s16>(s16* const __restrict data, s16* const __restrict buffer, 
 
     usize backets[SortUnsignedImpl_GetBacketBufferSize<u16>()]{ 0 };
 
-    SortUnsignedImpl<u16>(data, buffer, backets, size, Num::ConvertSignedToUnsignedOrdered<s16>);
+    SortUnsignedImpl<u16>(data, buffer, backets, size, ConvertSignedToUnsignedOrdered<s16>);
 
     return true;
 }
@@ -246,7 +246,7 @@ inline bool Sort<s32>(s32* const __restrict data, s32* const __restrict buffer, 
 
     usize backets[SortUnsignedImpl_GetBacketBufferSize<u32>()]{ 0 };
 
-    SortUnsignedImpl<u32>(data, buffer, backets, size, Num::ConvertSignedToUnsignedOrdered<s32>);
+    SortUnsignedImpl<u32>(data, buffer, backets, size, ConvertSignedToUnsignedOrdered<s32>);
 
     return true;
 }
@@ -258,7 +258,7 @@ ALT_NODISCARD inline bool Sort<s64>(s64* const __restrict data, s64* const __res
     usize* pBackets = Memory::ChooseAlignedMalloc<usize>(SortUnsignedImpl_GetBacketBufferSize<u64>()) iferr_return false;
     defer{ Memory::ChooseAlignedFree<usize>(pBackets); };
 
-    SortUnsignedImpl<u64>(data, buffer, pBackets, size, Num::ConvertSignedToUnsignedOrdered<s64>);
+    SortUnsignedImpl<u64>(data, buffer, pBackets, size, ConvertSignedToUnsignedOrdered<s64>);
 
     return true;
 }
@@ -268,7 +268,7 @@ inline bool Sort<f32>(f32* const __restrict data, f32* const __restrict buffer, 
 
     usize backets[SortUnsignedImpl_GetBacketBufferSize<u32>()]{ 0 };
 
-    SortUnsignedImpl<u32>(data, buffer, backets, size, Num::ConvertFloatToUnsignedOrdered<f32>);
+    SortUnsignedImpl<u32>(data, buffer, backets, size, ConvertFloatToUnsignedOrdered<f32>);
 
     return true;
 }
@@ -280,7 +280,7 @@ ALT_NODISCARD inline bool Sort<f64>(f64* const __restrict data, f64* const __res
     usize* pBackets = Memory::ChooseAlignedMalloc<usize>(SortUnsignedImpl_GetBacketBufferSize<u64>()) iferr_return false;
     defer{ Memory::ChooseAlignedFree<usize>(pBackets); };
 
-    SortUnsignedImpl<u64>(data, buffer, pBackets, size, Num::ConvertFloatToUnsignedOrdered<f64>);
+    SortUnsignedImpl<u64>(data, buffer, pBackets, size, ConvertFloatToUnsignedOrdered<f64>);
 
     return true;
 }
@@ -367,7 +367,7 @@ struct SortKeyByValue<KeyT, s8> {
         usize backets[SortUnsignedImpl_GetBacketBufferSize<u8>()]{ 0 };
 
         SortUnsignedImpl<u8>(keys, buffer, backets, size, [&](const KeyT key) -> u8 {
-            return Num::ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
+            return ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
         });
 
         return true;
@@ -383,7 +383,7 @@ struct SortKeyByValue<KeyT, s16> {
         usize backets[SortUnsignedImpl_GetBacketBufferSize<u16>()]{ 0 };
 
         SortUnsignedImpl<u16>(keys, buffer, backets, size, [&](const KeyT key) -> u16 {
-            return Num::ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
+            return ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
         });
 
         return true;
@@ -399,7 +399,7 @@ struct SortKeyByValue<KeyT, s32> {
         usize backets[SortUnsignedImpl_GetBacketBufferSize<u32>()]{ 0 };
 
         SortUnsignedImpl<u32>(keys, buffer, backets, size, [&](const KeyT key) -> u32 {
-            return Num::ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
+            return ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
         });
 
         return true;
@@ -417,7 +417,7 @@ struct SortKeyByValue<KeyT, s64> {
         defer{ Memory::ChooseAlignedFree<usize>(pBackets); };
 
         SortUnsignedImpl<u64>(keys, buffer, pBackets, size, [&](const KeyT key) -> u64 {
-            return Num::ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
+            return ConvertSignedToUnsignedOrdered((funcLookupVal)(key));
         });
 
         return true;
@@ -433,7 +433,7 @@ struct SortKeyByValue<KeyT, f32> {
         usize backets[SortUnsignedImpl_GetBacketBufferSize<u32>()]{ 0 };
 
         SortUnsignedImpl<u32>(keys, buffer, backets, size, [&](const KeyT key) -> u32 {
-            return Num::ConvertFloatToUnsignedOrdered<f32>((funcLookupF32)(key));
+            return ConvertFloatToUnsignedOrdered<f32>((funcLookupF32)(key));
         });
 
         return true;
@@ -451,7 +451,7 @@ struct SortKeyByValue<KeyT, f64> {
         defer{ Memory::ChooseAlignedFree<usize>(pBackets); };
 
         SortUnsignedImpl<u64>(keys, buffer, pBackets, size, [&](const KeyT key) -> u64 {
-            return Num::ConvertFloatToUnsignedOrdered<f64>((funcLookupF64)(key));
+            return ConvertFloatToUnsignedOrdered<f64>((funcLookupF64)(key));
         });
 
         return true;

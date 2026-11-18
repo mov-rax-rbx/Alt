@@ -57,8 +57,8 @@ template <
     typename T,
     usize MIN_NUM_ELEMENTS_PER_BLOCK = 16,
     usize MAX_NUM_ELEMENTS_PER_BLOCK = ALT_PLATFORM_32BIT_BOOL
-        ? Memory::GB(2) / Num::Max(sizeof(T), sizeof(uptr))
-        : Memory::TB(1) / Num::Max(sizeof(T), sizeof(uptr))
+        ? Memory::GB(2) / Max(sizeof(T), sizeof(uptr))
+        : Memory::TB(1) / Max(sizeof(T), sizeof(uptr))
 >
 class PoolAllocator;
 
@@ -173,12 +173,12 @@ protected:
                 ? (defaultBlockAlignmentMalloc - 1) + sizeof(Block)
                 : (defaultBlockAlignmentMalloc - 1) + sizeof(Block) + (alignment - 1);
 
-            return Num::SubWrap(totalSizeInBytes, extraBlockSizeInBytes);
+            return SubWrap(totalSizeInBytes, extraBlockSizeInBytes);
         }
 
         ALT_FORCE_INLINE void CalculateNextBlockSize(const usize alignment, usize& sizeInBytesBlock, const usize maxBlockSizeInBytes) const noexcept {
 
-            sizeInBytesBlock = Num::MulWrap(GetSizeInBytesPerfectForNextGrow(alignment), GetGrowFactor(), maxBlockSizeInBytes);
+            sizeInBytesBlock = MulWrap(GetSizeInBytesPerfectForNextGrow(alignment), GetGrowFactor(), maxBlockSizeInBytes);
         }
     };
 };
@@ -582,7 +582,7 @@ private:
             : (defaultBlockAlignmentMalloc - 1) + sizeof(Block) + (alignment - 1);
 
         usize size;
-        if (Num::IsOverflowCheckAdd(extraBlockSizeInBytes, sizeInBytesBlock, &size)) {
+        if (IsOverflowCheckAdd(extraBlockSizeInBytes, sizeInBytesBlock, &size)) {
             return nullptr;
         }
 
@@ -947,7 +947,7 @@ private:
             : (defaultBlockAlignmentMalloc - 1) + sizeof(Block) + (alignment - 1);
 
         usize size;
-        if (Num::IsOverflowCheckAdd(extraBlockSizeInBytes, sizeInBytesBlock, &size)) {
+        if (IsOverflowCheckAdd(extraBlockSizeInBytes, sizeInBytesBlock, &size)) {
             return nullptr;
         }
 
@@ -1069,11 +1069,11 @@ public:
     >;
 
     ALT_FORCE_INLINE constexpr static usize GetElementSizeOf() noexcept {
-        return Num::Max(sizeof(T), alignof(T), sizeof(uptr));
+        return Max(sizeof(T), alignof(T), sizeof(uptr));
     }
 
     ALT_FORCE_INLINE constexpr static usize GetElementAlignOf() noexcept {
-        return Num::Max(alignof(T), alignof(uptr));
+        return Max(alignof(T), alignof(uptr));
     }
 
     ALT_FORCE_INLINE constexpr static usize GetMinElementsSizeInBytesPerBlock() noexcept {
@@ -1082,11 +1082,11 @@ public:
             Super::GetControlBlockSizeInBytesForOveralBlockSizeEstimation() +
             GetElementAlignOf() <= Memory::MallocDefaultAlignment() ? 0 : GetElementAlignOf() - 1;
 
-        constexpr usize maxPossibleBlockSizeInBytes = Num::Desc<usize>::Max() - extraSizeInBytes;
+        constexpr usize maxPossibleBlockSizeInBytes = Desc<usize>::Max() - extraSizeInBytes;
 
         constexpr usize minNumElementsPerBlock = MIN_NUM_ELEMENTS_PER_BLOCK > maxPossibleBlockSizeInBytes / GetElementSizeOf()
             ? maxPossibleBlockSizeInBytes / GetElementSizeOf()
-            : Num::Max(MIN_NUM_ELEMENTS_PER_BLOCK, 1);
+            : Max(MIN_NUM_ELEMENTS_PER_BLOCK, 1);
 
         return minNumElementsPerBlock * GetElementSizeOf();
     }
@@ -1097,11 +1097,11 @@ public:
             Super::GetControlBlockSizeInBytesForOveralBlockSizeEstimation() +
             GetElementAlignOf() <= Memory::MallocDefaultAlignment() ? 0 : GetElementAlignOf() - 1;
 
-        constexpr usize maxPossibleBlockSizeInBytes = Num::Desc<usize>::Max() - extraSizeInBytes;
+        constexpr usize maxPossibleBlockSizeInBytes = Desc<usize>::Max() - extraSizeInBytes;
 
         constexpr usize maxNumElementsPerBlock = MAX_NUM_ELEMENTS_PER_BLOCK > maxPossibleBlockSizeInBytes / GetElementSizeOf()
             ? maxPossibleBlockSizeInBytes / GetElementSizeOf()
-            : Num::Max(MAX_NUM_ELEMENTS_PER_BLOCK, 1);
+            : Max(MAX_NUM_ELEMENTS_PER_BLOCK, 1);
 
         return maxNumElementsPerBlock * GetElementSizeOf();
     }
@@ -1161,37 +1161,37 @@ public:
             desc.elementAlignOf = alignof(T);
 
             desc.maxNumElementsPerBlock = ALT_PLATFORM_32BIT_BOOL
-                ? Memory::GB(2) / Num::Max(sizeof(T), sizeof(uptr))
-                : Memory::TB(1) / Num::Max(sizeof(T), sizeof(uptr));
+                ? Memory::GB(2) / Max(sizeof(T), sizeof(uptr))
+                : Memory::TB(1) / Max(sizeof(T), sizeof(uptr));
 
             return desc;
         }
     };
 
     ALT_FORCE_INLINE PoolAllocatorDynamic(const MemoryDesc& desc) noexcept {
-        ALT_ASSERT(Num::IsPowerOf2(desc.elementAlignOf));
+        ALT_ASSERT(IsPowerOf2(desc.elementAlignOf));
 
-        m_Desc.elementAlignOf = Num::Max(desc.elementAlignOf, alignof(uptr));
-        m_Desc.elementSizeOf = Num::Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
+        m_Desc.elementAlignOf = Max(desc.elementAlignOf, alignof(uptr));
+        m_Desc.elementSizeOf = Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
 
-        const usize minNumElementsPerBlock = Num::Min(desc.minNumElementsPerBlock, desc.maxNumElementsPerBlock);
-        const usize maxNumElementsPerBlock = Num::Max(desc.minNumElementsPerBlock, desc.maxNumElementsPerBlock);
+        const usize minNumElementsPerBlock = Min(desc.minNumElementsPerBlock, desc.maxNumElementsPerBlock);
+        const usize maxNumElementsPerBlock = Max(desc.minNumElementsPerBlock, desc.maxNumElementsPerBlock);
 
         usize extraSizeInBytes = Super::GetControlBlockSizeInBytesForOveralBlockSizeEstimation();
         extraSizeInBytes += m_Desc.elementAlignOf <= Memory::MallocDefaultAlignment() ? 0 : m_Desc.elementAlignOf - 1;
 
-        const usize minElementsSizeInBytesPerBlock = Num::Min(
-            Num::MulWrap(Num::Max(minNumElementsPerBlock, 1), m_Desc.elementSizeOf),
-            Num::Desc<usize>::Max() - extraSizeInBytes
+        const usize minElementsSizeInBytesPerBlock = Min(
+            MulWrap(Max(minNumElementsPerBlock, 1), m_Desc.elementSizeOf),
+            Desc<usize>::Max() - extraSizeInBytes
         );
 
-        const usize maxElementsSizeInBytesPerBlock = Num::Min(
-            Num::MulWrap(Num::Max(maxNumElementsPerBlock, 1), m_Desc.elementSizeOf),
-            Num::Desc<usize>::Max() - extraSizeInBytes
+        const usize maxElementsSizeInBytesPerBlock = Min(
+            MulWrap(Max(maxNumElementsPerBlock, 1), m_Desc.elementSizeOf),
+            Desc<usize>::Max() - extraSizeInBytes
         );
 
-        m_Desc.minElementsSizeInBytesPerBlock = Num::RoundDown(minElementsSizeInBytesPerBlock, m_Desc.elementSizeOf);
-        m_Desc.maxElementsSizeInBytesPerBlock = Num::RoundDown(maxElementsSizeInBytesPerBlock, m_Desc.elementSizeOf);
+        m_Desc.minElementsSizeInBytesPerBlock = RoundDown(minElementsSizeInBytesPerBlock, m_Desc.elementSizeOf);
+        m_Desc.maxElementsSizeInBytesPerBlock = RoundDown(maxElementsSizeInBytesPerBlock, m_Desc.elementSizeOf);
     }
 
     PoolAllocatorDynamic(PoolAllocatorDynamic&& rhs) noexcept
@@ -1278,20 +1278,20 @@ public:
     };
 
     ALT_FORCE_INLINE PoolAllocatorDynamic(const MemoryDesc& desc) noexcept {
-        ALT_ASSERT(Num::IsPowerOf2(desc.elementAlignOf));
+        ALT_ASSERT(IsPowerOf2(desc.elementAlignOf));
 
-        m_Desc.elementAlignOf = Num::Max(desc.elementAlignOf, alignof(uptr));
-        m_Desc.elementSizeOf = Num::Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
+        m_Desc.elementAlignOf = Max(desc.elementAlignOf, alignof(uptr));
+        m_Desc.elementSizeOf = Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
 
         usize extraSizeInBytes = Super::GetControlBlockSizeInBytesForOveralBlockSizeEstimation();
         extraSizeInBytes += GetElementAlignOf() <= Memory::MallocDefaultAlignment() ? 0 : GetElementAlignOf() - 1;
 
-        const usize numElementsSizeInBytesPerBlock = Num::Min(
-            Num::MulWrap(Num::Max(desc.numElementsPerBlock, 1), m_Desc.elementSizeOf),
-            Num::Desc<usize>::Max() - extraSizeInBytes
+        const usize numElementsSizeInBytesPerBlock = Min(
+            MulWrap(Max(desc.numElementsPerBlock, 1), m_Desc.elementSizeOf),
+            Desc<usize>::Max() - extraSizeInBytes
         );
 
-        m_Desc.elementsSizeInBytesPerBlock = Num::RoundDown(numElementsSizeInBytesPerBlock, m_Desc.elementSizeOf);
+        m_Desc.elementsSizeInBytesPerBlock = RoundDown(numElementsSizeInBytesPerBlock, m_Desc.elementSizeOf);
     }
 
     PoolAllocatorDynamic(PoolAllocatorDynamic&& rhs) noexcept
@@ -1375,10 +1375,10 @@ public:
     };
 
     ALT_FORCE_INLINE PoolAllocatorDynamic(const MemoryDesc& desc) noexcept {
-        ALT_ASSERT(Num::IsPowerOf2(desc.elementAlignOf));
+        ALT_ASSERT(IsPowerOf2(desc.elementAlignOf));
 
-        m_Desc.elementAlignOf = Num::Max(desc.elementAlignOf, alignof(uptr));
-        m_Desc.elementSizeOf = Num::Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
+        m_Desc.elementAlignOf = Max(desc.elementAlignOf, alignof(uptr));
+        m_Desc.elementSizeOf = Max(desc.elementSizeOf, desc.elementAlignOf, sizeof(uptr));
     }
 
     PoolAllocatorDynamic(PoolAllocatorDynamic&& rhs) noexcept

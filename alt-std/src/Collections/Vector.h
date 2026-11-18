@@ -67,7 +67,7 @@ private:
     struct Rule5Move_t {};
     constexpr static Rule5Move_t Rule5Move = Rule5Move_t{};
 
-    static_assert(MIN_ELEMENT_CAPACITY_ON_ALLOCATE == 0 || Num::IsPowerOf2(MIN_ELEMENT_CAPACITY_ON_ALLOCATE), "");
+    static_assert(MIN_ELEMENT_CAPACITY_ON_ALLOCATE == 0 || IsPowerOf2(MIN_ELEMENT_CAPACITY_ON_ALLOCATE), "");
 
 public:
 
@@ -164,7 +164,7 @@ public:
         iferr_scope;
 
         Vector result{};
-        result.Reserve(Num::Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.Reserve(Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -184,7 +184,7 @@ public:
         iferr_scope;
 
         Vector result{};
-        result.ReserveExact(Num::Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.ReserveExact(Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -209,7 +209,7 @@ public:
         constexpr usize size = sizeof...(ArgsT);
 
         Vector result{};
-        result.Reserve(Num::Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.Reserve(Max(size, MIN_ELEMENT_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         PushVariadicImpl(result, std::forward<ArgsT>(args)...) iferr_return Nullopt;
 
@@ -454,7 +454,7 @@ public:
 
         Reserve(sliceSize) iferr_return false;
 
-        const usize sizeToClone = Num::Min(sliceSize, size);
+        const usize sizeToClone = Min(sliceSize, size);
 
         Memory::CloneFromFirstElementResult<T> result = Memory::CloneObjectsFromFirstElementNonOverlap(
             m_pMemoryBegin, slice.Data(), slice.Data() + sizeToClone
@@ -570,7 +570,7 @@ public:
 
         Reserve(sliceSize) iferr_return false;
 
-        const usize sizeToMove = Num::Min(sliceSize, size);
+        const usize sizeToMove = Min(sliceSize, size);
 
         Memory::MoveFromFirstElementResult<T> result = Memory::MoveObjectsFromFirstElementNonOverlap(
             m_pMemoryBegin, slice.Data(), slice.Data() + sizeToMove
@@ -887,7 +887,7 @@ public:
     bool ResizeAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return Resize(size);
     }
@@ -993,7 +993,7 @@ public:
     bool ReserveAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return Reserve(size);
     }
@@ -1039,7 +1039,7 @@ public:
     bool ReserveExactAddition(ArgsT&&... sizeAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeAdditions...) iferr_return false;
 
         return ReserveExact(size);
     }
@@ -1069,7 +1069,7 @@ public:
         }
 
         const usize size = GetSize();
-        const usize capacity = Num::Max(size, capacityNew);
+        const usize capacity = Max(size, capacityNew);
 
         T* pMemory = nullptr;
         if (capacity == 0) {
@@ -1291,7 +1291,7 @@ private:
 
     ALT_FORCE_INLINE static usize GetNextSize(const usize size) noexcept {
 
-        return Num::Max(Num::RoundUpToPowerOf2(size), MIN_ELEMENT_CAPACITY_ON_ALLOCATE);
+        return Max(RoundUpToPowerOf2(size), MIN_ELEMENT_CAPACITY_ON_ALLOCATE);
     }
 
     template <typename HeadT, typename ...TailT>
@@ -1324,7 +1324,7 @@ private:
 
             if (i >= GetCapacity()) {
 
-                const usize sizeGrow = Num::AddOverflowCheck(i, 1) iferr_return false;
+                const usize sizeGrow = AddOverflowCheck(i, 1) iferr_return false;
                 ReallocateToNextGrow(sizeGrow) iferr_return false;
             }
 
@@ -1337,14 +1337,14 @@ private:
         }
         else {
 
-            const usize sizeNew = Num::AddOverflowCheck(size, 1) iferr_return false;
+            const usize sizeNew = AddOverflowCheck(size, 1) iferr_return false;
 
             if (sizeNew > GetCapacity()) {
 
                 const usize nextSize = GetNextSize(sizeNew);
                 ALT_ASSERT(nextSize > GetCapacity());
 
-                constexpr usize wrapSizeMaxPossible = Num::Desc<usize>::Max() / sizeof(T);
+                constexpr usize wrapSizeMaxPossible = Desc<usize>::Max() / sizeof(T);
 
                 const Memory::ReallocBits bits = size == GetCapacity()
                     ? Memory::ReallocBits::AllowWholeMemcpyOnReallocateAndMightIgnoreInPlace
@@ -1354,7 +1354,7 @@ private:
                     m_pMemoryBegin,
                     size,
                     nextSize,
-                    Num::Max(sizeNew, wrapSizeMaxPossible),
+                    Max(sizeNew, wrapSizeMaxPossible),
                     Memory::ReallocBits::InPlace | bits
                 ) ifok {
 
@@ -1366,7 +1366,7 @@ private:
                 }
                 else {
 
-                    result = Memory::ChooseAlignedMallocWrap<T>(nextSize, Num::Max(sizeNew, wrapSizeMaxPossible)) iferr_return false;
+                    result = Memory::ChooseAlignedMallocWrap<T>(nextSize, Max(sizeNew, wrapSizeMaxPossible)) iferr_return false;
 
                     Memory::MoveFromFirstElementResult<T> moveResult = Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(
                         result.pMemory, m_pMemoryBegin, m_pMemoryBegin + i
@@ -1418,7 +1418,7 @@ insert_object_label:
         }
 
         const usize size = GetSize();
-        const usize iEnd = Num::AddOverflowCheck(i, sizeToInsert) iferr_return false;
+        const usize iEnd = AddOverflowCheck(i, sizeToInsert) iferr_return false;
 
         if (i >= size) {
 
@@ -1440,14 +1440,14 @@ insert_object_label:
         }
         else {
 
-            const usize sizeNew = Num::AddOverflowCheck(size, sizeToInsert) iferr_return false;
+            const usize sizeNew = AddOverflowCheck(size, sizeToInsert) iferr_return false;
 
             if (sizeNew > GetCapacity()) {
 
                 const usize nextSize = GetNextSize(sizeNew);
                 ALT_ASSERT(nextSize > GetCapacity());
 
-                constexpr usize wrapSizeMaxPossible = Num::Desc<usize>::Max() / sizeof(T);
+                constexpr usize wrapSizeMaxPossible = Desc<usize>::Max() / sizeof(T);
 
                 const Memory::ReallocBits bits = size == GetCapacity()
                     ? Memory::ReallocBits::AllowWholeMemcpyOnReallocateAndMightIgnoreInPlace
@@ -1457,7 +1457,7 @@ insert_object_label:
                     m_pMemoryBegin,
                     size,
                     nextSize,
-                    Num::Max(sizeNew, wrapSizeMaxPossible),
+                    Max(sizeNew, wrapSizeMaxPossible),
                     Memory::ReallocBits::InPlace | bits
                 ) ifok {
 
@@ -1469,7 +1469,7 @@ insert_object_label:
                 }
                 else {
 
-                    const Memory::MallocWrapResult<T> result = Memory::ChooseAlignedMallocWrap<T>(nextSize, Num::Max(sizeNew, wrapSizeMaxPossible))
+                    const Memory::MallocWrapResult<T> result = Memory::ChooseAlignedMallocWrap<T>(nextSize, Max(sizeNew, wrapSizeMaxPossible))
                         iferr_return false;
 
                     Memory::MoveFromFirstElementResult<T> moveResult = Memory::MemcpyOrMoveDestructibleConstructObjectsNonOverlap(
@@ -1553,10 +1553,10 @@ insert_objects_label:
     ALT_FORCE_INLINE bool ReallocateToNextGrow(const usize size) noexcept {
 
         const usize sizeNext = GetNextSize(size);
-        return Reallocate(sizeNext, Num::Max(size, Num::Desc<usize>::Max() / sizeof(T)));
+        return Reallocate(sizeNext, Max(size, Desc<usize>::Max() / sizeof(T)));
     }
 
-    ALT_FORCE_INLINE bool Reallocate(const usize size, const usize wrapSize = Num::Desc<usize>::Max() / sizeof(T)) noexcept {
+    ALT_FORCE_INLINE bool Reallocate(const usize size, const usize wrapSize = Desc<usize>::Max() / sizeof(T)) noexcept {
         iferr_scope;
 
         ALT_ASSERT(size > GetCapacity());

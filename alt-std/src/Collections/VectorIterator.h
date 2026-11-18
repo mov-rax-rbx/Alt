@@ -22,7 +22,9 @@ class StaticVector;
  * @tparam T The numeric type of the Vector elements.
  */
 template <typename T>
-class VectorIterator final : public Iterator<VectorIterator<T>, T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait> {
+class VectorIterator final
+    : public Iterator<VectorIterator<T>, T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
+{
 public:
 
     /**
@@ -30,7 +32,7 @@ public:
      * @param self The Vector object to copy boundaries from.
      */
     template <usize MIN_ELEMENT_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE VectorIterator(Vector<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr VectorIterator(Vector<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -40,7 +42,7 @@ public:
      * @param self The Vector object to copy boundaries from.
      */
     template <usize SIZE, typename Usize>
-    ALT_FORCE_INLINE VectorIterator(StaticVector<T, SIZE, Usize>& self) noexcept
+    ALT_FORCE_INLINE constexpr VectorIterator(StaticVector<T, SIZE, Usize>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -49,7 +51,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
 
@@ -68,7 +70,7 @@ public:
      * assert(*it.Next() == 0);
      * assert(*it.Next() == 1);
      */
-    ALT_FORCE_INLINE Optional<T&> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T&> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
@@ -98,9 +100,9 @@ public:
      * assert(skipped == 3);
      * assert(it.GetSize() == 2);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pBegin += advance;
 
         return advance;
@@ -121,7 +123,7 @@ public:
      * assert(*it.NextBack() == 4);
      * assert(*it.NextBack() == 3);
      */
-    ALT_FORCE_INLINE Optional<T&> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<T&> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
@@ -151,9 +153,9 @@ public:
      * assert(skipped == 1);
      * assert(it.GetSize() == 4);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pEnd -= advance;
 
         return advance;
@@ -163,7 +165,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's Vector.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -171,7 +173,7 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 
@@ -188,7 +190,9 @@ private:
  * @tparam T The numeric type of the Vector elements.
  */
 template <typename T>
-class VectorIteratorConst final : public Iterator<VectorIteratorConst<T>, const T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait> {
+class VectorIteratorConst final
+    : public Iterator<VectorIteratorConst<T>, const T&, IIteratorForwardTrait, IIteratorBackwardTrait, IIteratorExactSizeTrait>
+{
 public:
 
     /**
@@ -196,7 +200,7 @@ public:
      * @param self The Vector object to copy boundaries from.
      */
     template <usize MIN_ELEMENT_CAPACITY_ON_ALLOCATE>
-    ALT_FORCE_INLINE VectorIteratorConst(const Vector<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
+    ALT_FORCE_INLINE constexpr VectorIteratorConst(const Vector<T, MIN_ELEMENT_CAPACITY_ON_ALLOCATE>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -206,7 +210,7 @@ public:
      * @param self The Vector object to copy boundaries from.
      */
     template <usize SIZE, typename Usize>
-    ALT_FORCE_INLINE VectorIteratorConst(const StaticVector<T, SIZE, Usize>& self) noexcept
+    ALT_FORCE_INLINE constexpr VectorIteratorConst(const StaticVector<T, SIZE, Usize>& self) noexcept
         : m_pBegin(self.Data())
         , m_pEnd(self.DataEnd())
     {}
@@ -215,7 +219,7 @@ public:
      * @brief Retrieves a hint regarding the number of elements remaining.
      * @return The remaining size of the iterator's current view.
      */
-    ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return GetSize();
     }
 
@@ -234,7 +238,7 @@ public:
      * assert(*it.Next() == 0);
      * assert(*it.Next() == 1);
      */
-    ALT_FORCE_INLINE Optional<const T&> Next() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<const T&> Next() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
@@ -264,9 +268,9 @@ public:
      * assert(skipped == 3);
      * assert(it.GetSize() == 2);
      */
-    ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pBegin += advance;
 
         return advance;
@@ -287,7 +291,7 @@ public:
      * assert(*it.NextBack() == 4);
      * assert(*it.NextBack() == 3);
      */
-    ALT_FORCE_INLINE Optional<const T&> NextBack() noexcept {
+    ALT_FORCE_INLINE constexpr Optional<const T&> NextBack() noexcept {
 
         if (m_pBegin == m_pEnd) {
             return Nullopt;
@@ -317,9 +321,9 @@ public:
      * assert(skipped == 1);
      * assert(it.GetSize() == 4);
      */
-    ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
+        const usize advance = Min(advance_, static_cast<usize>(m_pEnd - m_pBegin));
         m_pEnd -= advance;
 
         return advance;
@@ -329,7 +333,7 @@ public:
      * @brief Returns the remaining size.
      * @return The number of elements left in the iterator's Vector.
      */
-    ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return m_pEnd - m_pBegin;
     }
 
@@ -337,7 +341,7 @@ public:
      * @brief Checks if the iterator's is empty.
      * @return True if the iterator has no elements left, false otherwise.
      */
-    ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return m_pEnd == m_pBegin;
     }
 

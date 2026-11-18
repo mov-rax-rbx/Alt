@@ -34,6 +34,99 @@ using f64 = double;
 using chara = char32_t;
 
 } // namespace Types
+
+namespace TypeTraits {
+
+template <typename T>
+struct __is_number__
+    : std::false_type
+{};
+
+template <>
+struct __is_number__<Types::u64>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::u32>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::u16>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::u8>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::s64>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::s32>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::s16>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::s8>
+    : std::true_type
+{};
+
+/**
+ * Redifinitions
+ */
+//template <>
+//struct __is_number__<Types::usize>
+//    : std::true_type
+//{};
+//
+//template <>
+//struct __is_number__<Types::ssize>
+//    : std::true_type
+//{};
+//
+//template <>
+//struct __is_number__<Types::umax>
+//    : std::true_type
+//{};
+//
+//template <>
+//struct __is_number__<Types::smax>
+//    : std::true_type
+//{};
+//
+//template <>
+//struct __is_number__<Types::uptr>
+//    : std::true_type
+//{};
+//
+//template <>
+//struct __is_number__<Types::sptr>
+//    : std::true_type
+//{};
+
+template <>
+struct __is_number__<Types::f32>
+    : std::true_type
+{};
+
+template <>
+struct __is_number__<Types::f64>
+    : std::true_type
+{};
+
+} // namespace TypeTraits
+
 } // namespace Alt
 
 #endif // __ALT_STD_TYPES__

@@ -118,7 +118,7 @@ ALT_NODISCARD ALT_FORCE_INLINE uptr GetReturnAddress() noexcept;
 ALT_NODISCARD ALT_FORCE_INLINE usize GetPageSizeInBytes() noexcept;
 
 /**
- * @brief Same as 'Alt::Num::RoundUpWrap(size, Alt::Platform::GetPageSizeInBytes())', but optimized.
+ * @brief Same as 'Alt::RoundUpWrap(size, Alt::Platform::GetPageSizeInBytes())', but optimized.
  */
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrap(u32 sizeInBytes) noexcept;
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrap(u32 sizeInBytes, const u32 wrap) noexcept;
@@ -127,7 +127,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrap(u64 sizeInBytes) 
 ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrap(u64 sizeInBytes, const u64 wrap) noexcept;
 
 /**
- * @brief Same as 'Alt::Num::RoundUpWrapPreserveZero(size, Alt::Platform::GetPageSizeInBytes())', but optimized.
+ * @brief Same as 'Alt::RoundUpWrapPreserveZero(size, Alt::Platform::GetPageSizeInBytes())', but optimized.
  */
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrapPreserveZero(const u32 sizeInBytes) noexcept;
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundUpToPageSizeWrapPreserveZero(const u32 sizeInBytes, const u32 wrap) noexcept;
@@ -136,7 +136,7 @@ ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrapPreserveZero(const
 ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundUpToPageSizeWrapPreserveZero(const u64 sizeInBytes, const u64 wrap) noexcept;
 
 /**
- * @brief Same as 'Alt::Num::RoundDownTo(size, Alt::Platform::GetPageSizeInBytes())', but optimized.
+ * @brief Same as 'Alt::RoundDownTo(size, Alt::Platform::GetPageSizeInBytes())', but optimized.
  */
 ALT_NODISCARD ALT_FORCE_INLINE u32 MemoryRoundDownToPageSize(const u32 sizeInBytes) noexcept;
 ALT_NODISCARD ALT_FORCE_INLINE u64 MemoryRoundDownToPageSize(const u64 sizeInBytes) noexcept;

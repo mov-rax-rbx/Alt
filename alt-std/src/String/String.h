@@ -180,19 +180,19 @@ public:
     class Checkpoint {
     public:
 
-        ALT_FORCE_INLINE Checkpoint(const Checkpoint&) noexcept = default;
-        ALT_FORCE_INLINE Checkpoint& operator=(const Checkpoint&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint(const Checkpoint&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint& operator=(const Checkpoint&) noexcept = default;
 
-        ALT_FORCE_INLINE Checkpoint(Checkpoint&&) noexcept = default;
-        ALT_FORCE_INLINE Checkpoint& operator=(Checkpoint&&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint(Checkpoint&&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint& operator=(Checkpoint&&) noexcept = default;
 
-        ALT_NODISCARD ALT_FORCE_INLINE usize GetOffsetInBytes() const noexcept {
+        ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetOffsetInBytes() const noexcept {
             return m_Offset;
         }
 
     private:
 
-        ALT_FORCE_INLINE Checkpoint() noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint() noexcept = default;
 
     private:
 
@@ -217,82 +217,82 @@ public:
      * ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~
      * 
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAscii(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAscii(const chara utf32) noexcept {
 
         return _StringDetails::IsAscii(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiWhitespace(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiWhitespace(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiWhitespace(utf32); // \t, \n, \v, \f, \r
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiPrintable(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiPrintable(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiPrintable(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiAlphabetLower(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiAlphabetLower(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiAlphabetLower(utf32); // [a..z]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiAlphabetUpper(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiAlphabetUpper(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiAlphabetUpper(utf32); // [A..Z]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiAlphabet(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiAlphabet(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiAlphabet(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiDigit(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiDigit(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiDigit(utf32); // [0..9]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiHex(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiHex(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiHex(utf32); // [0..9] [ABCDEF] [abcdef]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static chara AsciiToLower(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static chara AsciiToLower(const chara utf32) noexcept {
 
         return _StringDetails::AsciiToLower(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static chara AsciiToUpper(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static chara AsciiToUpper(const chara utf32) noexcept {
 
         return _StringDetails::AsciiToUpper(utf32);
     }
 
-    ALT_NODISCARD static usize Hash(const Slice<const u8> bytes, const usize seed = 0) noexcept {
+    ALT_NODISCARD constexpr static usize Hash(const Slice<const u8> bytes, const usize seed = 0) noexcept {
 
         return Algorithms::Hash(bytes.Data(), bytes.DataEnd(), seed);
     }
 
-    ALT_NODISCARD static usize Hash(const u8* pBytesBegin, const usize size, const usize seed = 0) noexcept {
+    ALT_NODISCARD constexpr static usize Hash(const u8* pBytesBegin, const usize size, const usize seed = 0) noexcept {
 
         return Algorithms::Hash(pBytesBegin, pBytesBegin + size, seed);
     }
 
-    ALT_NODISCARD static u64 Hash64(const Slice<const u8> bytes, const u64 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u64 Hash64(const Slice<const u8> bytes, const u64 seed = 0) noexcept {
 
         return Algorithms::Hash64(bytes.Data(), bytes.DataEnd(), seed);
     }
 
-    ALT_NODISCARD static u64 Hash64(const u8* pBytesBegin, const usize size, const u64 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u64 Hash64(const u8* pBytesBegin, const usize size, const u64 seed = 0) noexcept {
 
         return Algorithms::Hash64(pBytesBegin, pBytesBegin + size, seed);
     }
 
-    ALT_NODISCARD static u32 Hash32(const Slice<const u8> bytes, const u32 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u32 Hash32(const Slice<const u8> bytes, const u32 seed = 0) noexcept {
 
         return Algorithms::Hash32(bytes.Data(), bytes.DataEnd(), seed);
     }
 
-    ALT_NODISCARD static u32 Hash32(const u8* pBytesBegin, const usize size, const u32 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u32 Hash32(const u8* pBytesBegin, const usize size, const u32 seed = 0) noexcept {
 
         return Algorithms::Hash64(pBytesBegin, pBytesBegin + size, seed);
     }
@@ -307,7 +307,7 @@ public:
      */
     template <typename T,
         std::enable_if<TypeTraits::is_character_v<T>>* = nullptr>
-    ALT_NODISCARD static usize CalculateCStrLen(const T* str) noexcept {
+    ALT_NODISCARD constexpr static usize CalculateCStrLen(const T* str) noexcept {
 
         return _StringDetails::CalculateCStrLen(str);
     }
@@ -322,7 +322,7 @@ public:
      */
     template <typename T,
         std::enable_if<TypeTraits::is_character_v<T>>* = nullptr>
-    ALT_NODISCARD static usize CalculateSizeInBytes(const T* str) noexcept {
+    ALT_NODISCARD constexpr static usize CalculateSizeInBytes(const T* str) noexcept {
 
         return _StringDetails::CalculateSizeInBytes(str);
     }
@@ -447,7 +447,7 @@ public:
         iferr_scope;
 
         StringUTF8 result{};
-        result.ReserveBytes(Num::Max(sizeInBytes, MIN_BYTES_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.ReserveBytes(Max(sizeInBytes, MIN_BYTES_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -467,7 +467,7 @@ public:
         iferr_scope;
 
         StringUTF8 result{};
-        result.ReserveBytesExact(Num::Max(sizeInBytes, MIN_BYTES_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.ReserveBytesExact(Max(sizeInBytes, MIN_BYTES_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -701,7 +701,7 @@ public:
             return true;
         }
 
-        ALT_ASSERT(!Num::IsOverflowCheckAdd(stringSize, 1));
+        ALT_ASSERT(!IsOverflowCheckAdd(stringSize, 1));
         ReserveBytes(stringSize + 1) iferr_return false;
 
         std::memcpy(m_pMemoryBegin, string.Data(), stringSize * sizeof(u8));
@@ -2088,8 +2088,8 @@ public:
     ALT_NODISCARD bool Push(ArgsT&&... charas) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSizeBytes(), Utf::_32::LengthUtf32ToUtf8(charas)...) iferr_return false;
-        ReserveBytes(Num::AddWrap(size, 1)) iferr_return false;
+        const usize size = AddOverflowCheck(GetSizeBytes(), Utf::_32::LengthUtf32ToUtf8(charas)...) iferr_return false;
+        ReserveBytes(AddWrap(size, 1)) iferr_return false;
 
         PushVariadicImpl(*this, charas...);
 
@@ -2170,7 +2170,7 @@ public:
     bool ReserveBytesAddition(ArgsT&&... sizeInBytesAdditions) noexcept {
         iferr_scope;
 
-        const usize sizeInBytes = Num::AddOverflowCheck(GetSizeBytes(), sizeInBytesAdditions...) iferr_return false;
+        const usize sizeInBytes = AddOverflowCheck(GetSizeBytes(), sizeInBytesAdditions...) iferr_return false;
 
         return ReserveBytes(sizeInBytes);
     }
@@ -2216,7 +2216,7 @@ public:
     bool ReserveBytesExactAddition(ArgsT&&... sizeInBytesAdditions) noexcept {
         iferr_scope;
 
-        const usize sizeInBytes = Num::AddOverflowCheck(GetSizeBytes(), sizeInBytesAdditions...) iferr_return false;
+        const usize sizeInBytes = AddOverflowCheck(GetSizeBytes(), sizeInBytesAdditions...) iferr_return false;
 
         return ReserveBytesExact(sizeInBytes);
     }
@@ -2251,8 +2251,8 @@ public:
 
         const usize size = GetSizeBytes();
 
-        ALT_ASSERT(!Num::IsOverflowCheckAdd(size, 1));
-        const usize capacity = Num::Max(size + 1, capacityNew);
+        ALT_ASSERT(!IsOverflowCheckAdd(size, 1));
+        const usize capacity = Max(size + 1, capacityNew);
 
         u8* pMemory = nullptr;
         if (capacityNew == 0 && capacity == 1) {
@@ -2878,7 +2878,7 @@ private:
 
     ALT_FORCE_INLINE static usize GetNextSize(const usize size) noexcept {
 
-        return Num::RoundUpToPowerOf2(size);
+        return RoundUpToPowerOf2(size);
     }
 
     template <typename HeadT, typename ...TailT>
@@ -2907,7 +2907,7 @@ private:
 
         const usize sizeOld = GetSizeBytes();
 
-        ALT_ASSERT(!Num::IsOverflowCheckAdd(sizeOld, 1));
+        ALT_ASSERT(!IsOverflowCheckAdd(sizeOld, 1));
         const Memory::ReallocBits reallocBits = sizeOld + 1 == GetCapacity()
             ? Memory::ReallocBits::AllowWholeMemcpyOnReallocateAndMightIgnoreInPlace
             : Memory::ReallocBits::None;
@@ -2944,7 +2944,7 @@ private:
 
     ALT_FORCE_INLINE bool TrimLeftNoNullTermWrite() noexcept {
 
-        const u8* pBegin = _StringDetails::TrimLeftImpl(m_pMemoryBegin, m_pMemoryNullTerm);
+        const u8* pBegin = _StringDetails::TrimLeft(m_pMemoryBegin, m_pMemoryNullTerm);
 
         if (pBegin == m_pMemoryBegin) {
             return false;
@@ -2964,7 +2964,7 @@ private:
             return false;
         }
 
-        const u8* pEnd = _StringDetails::TrimRightImpl(m_pMemoryBegin, m_pMemoryNullTerm);
+        const u8* pEnd = _StringDetails::TrimRight(m_pMemoryBegin, m_pMemoryNullTerm);
 
         const bool isShouldWriteNullTerm = pEnd != m_pMemoryNullTerm;
         m_pMemoryNullTerm = const_cast<u8*>(pEnd);

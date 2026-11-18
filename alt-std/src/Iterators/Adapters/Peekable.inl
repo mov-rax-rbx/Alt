@@ -1,6 +1,6 @@
 ﻿#include "../IteratorTrait.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter{
  *     []() {
  *         static usize cnt = 0;
@@ -39,7 +39,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Peekable_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_Peeked) {
 
@@ -49,7 +49,7 @@ public:
         return Self().m_Iter.Next();
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         if (Self().m_Peeked) {
 
@@ -69,7 +69,7 @@ public:
         return Self().m_Iter.Advance(advance);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE const Optional<T>& Peek() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr const Optional<T>& Peek() noexcept {
 
         if (!Self().m_Peeked) {
 
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -97,7 +97,7 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Peekable_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         if (Optional<T> result = Self().m_Iter.NextBack()) {
             return result;
@@ -111,7 +111,7 @@ public:
         return Nullopt;
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = Self().m_Iter.AdvanceBack(advance);
         if (size != advance) {
@@ -128,7 +128,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -144,17 +144,17 @@ public:
     using T = typename PrevIterT::Type;
     using SelfT = Peekable_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return Self().m_Iter.GetSize() + (Self().IsPeeked() ? 1 : 0);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return Self().m_Iter.IsEmpty() && !Self().IsPeeked();
     }
 
 private:
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };
@@ -197,17 +197,17 @@ public:
         , _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorExactSizeTrait<Type>, PrevIterT, IIteratorExactSizeTrait>
     >;
 
-    ALT_FORCE_INLINE Peekable_(const PrevIterT& iter) noexcept
+    ALT_FORCE_INLINE constexpr Peekable_(const PrevIterT& iter) noexcept
         : m_Iter(iter)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return m_Iter.GetSizeHint() + (IsPeeked() ? 1 : 0);
     }
 
 private:
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsPeeked() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsPeeked() const noexcept {
         return m_Peeked && m_Peeked.GetValue();
     }
 

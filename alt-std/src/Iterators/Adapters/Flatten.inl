@@ -1,6 +1,6 @@
 ﻿#include "../IteratorTrait.h"
 
-/*
+/**
  * Alt::IteratorForwardFromFunc iter{
  *     []() {
  *
@@ -40,7 +40,7 @@ public:
     using T = typename PrevIterT::Type::Type;
     using SelfT = Flatten_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         for (;;) {
 
@@ -66,7 +66,7 @@ public:
         }
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         if (Self().m_InnerForwardIter) {
@@ -108,7 +108,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -124,7 +124,7 @@ public:
     using T = typename PrevIterT::Type::Type;
     using SelfT = Flatten_<PrevIterT>;
 
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         for (;;) {
 
@@ -150,7 +150,7 @@ public:
         }
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = 0;
 
@@ -189,7 +189,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -227,11 +227,11 @@ public:
         , _IterDetails::return_if_exist_trait_in_alt_iterator_t<IIteratorBackwardTrait<Type>, PrevIterT, IIteratorBackwardTrait>
     >;
 
-    ALT_FORCE_INLINE Flatten_(const PrevIterT& iter) noexcept
+    ALT_FORCE_INLINE constexpr Flatten_(const PrevIterT& iter) noexcept
         : m_Iter(iter)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
         return 0;
     }
 

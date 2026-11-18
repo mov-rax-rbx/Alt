@@ -38,7 +38,7 @@ private:
     template <typename ...ArgsT>
     constexpr static bool is_populated_v = sizeof...(ArgsT) != 0;
 
-    static_assert(std::is_scalar_v<Usize> && std::is_unsigned_v<Usize>, "");
+    static_assert(Desc<Usize>::IsUnsigned(), "");
 
     template <typename, usize>
     class Entry;
@@ -111,7 +111,7 @@ public:
         iferr_scope;
 
         BitSetT result{};
-        result.Reserve(Num::Max(sizeBits, MIN_BITS_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.Reserve(Max(sizeBits, MIN_BITS_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -128,7 +128,7 @@ public:
         iferr_scope;
 
         BitSetT result{};
-        result.ReserveExact(Num::Max(sizeBits, MIN_BITS_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
+        result.ReserveExact(Max(sizeBits, MIN_BITS_CAPACITY_ON_ALLOCATE)) iferr_return Nullopt;
 
         return result;
     }
@@ -219,7 +219,7 @@ public:
         const usize sizeNextWordOld = (m_SizeBits >> BITS_TO_WORDID_RIGHT_SHIFT) + ((m_SizeBits & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1);
         if (sizeNextWordOld < sizeNextWord) {
 
-            std::memset(m_Words.Data() + sizeNextWordOld, val ? Num::Desc<s32>::Max() : 0, (sizeNextWord - sizeNextWordOld) * sizeof(Usize));
+            std::memset(m_Words.Data() + sizeNextWordOld, val ? Desc<s32>::Max() : 0, (sizeNextWord - sizeNextWordOld) * sizeof(Usize));
         }
 
         m_SizeBits = sizeBits;
@@ -264,7 +264,7 @@ public:
     bool ReserveAdditional(ArgsT&&... sizeBitsAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeBitsAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeBitsAdditions...) iferr_return false;
 
         return Reserve(size);
     }
@@ -304,7 +304,7 @@ public:
     bool ReserveExactAddition(ArgsT&&... sizeBitsAdditions) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSize(), sizeBitsAdditions...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSize(), sizeBitsAdditions...) iferr_return false;
 
         return ReserveExact(size);
     }
@@ -352,7 +352,7 @@ public:
      */
     ALT_FORCE_INLINE void SetAll(const bool val = true) noexcept {
 
-        std::memset(m_Words.Data(), val ? Num::Desc<s32>::Max() : 0, m_Words.GetSize() * sizeof(Usize));
+        std::memset(m_Words.Data(), val ? Desc<s32>::Max() : 0, m_Words.GetSize() * sizeof(Usize));
     }
 
     /**
@@ -449,7 +449,7 @@ public:
         }
 
         const usize correction = pBegin == pBeginOld ? offset : 0;
-        const usize bitIdx = correction + (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(*pBegin >> correction);
+        const usize bitIdx = correction + (pBegin - m_Words.Data()) * BITS + Count0BitsRight(*pBegin >> correction);
 
         return bitIdx < m_SizeBits
             ? MakeOptional(bitIdx)
@@ -470,7 +470,7 @@ public:
             return Nullopt;
         }
 
-        const usize bitIdx = (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(*pBegin);
+        const usize bitIdx = (pBegin - m_Words.Data()) * BITS + Count0BitsRight(*pBegin);
 
         return bitIdx < m_SizeBits
             ? MakeOptional(bitIdx)
@@ -491,7 +491,7 @@ public:
     ALT_NODISCARD ALT_FORCE_INLINE Optional<usize> FindFirstNonSet(const usize bitsOffset) const noexcept {
         ALT_ASSERT(bitsOffset <= GetSize());
 
-        constexpr static Usize WORD_MAX = Num::Desc<Usize>::Max();
+        constexpr static Usize WORD_MAX = Desc<Usize>::Max();
 
         const usize wordOffset = bitsOffset >> BITS_TO_WORDID_RIGHT_SHIFT;
         const usize offset = bitsOffset & BITS_TO_BITIDX_IN_WORD_MASK;
@@ -515,7 +515,7 @@ public:
         }
 
         const usize correction = pBegin == pBeginOld ? offset : 0;
-        const usize bitIdx = correction + (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(~*pBegin >> correction);
+        const usize bitIdx = correction + (pBegin - m_Words.Data()) * BITS + Count0BitsRight(~*pBegin >> correction);
 
         return bitIdx < m_SizeBits
             ? MakeOptional(bitIdx)
@@ -524,7 +524,7 @@ public:
 
     ALT_NODISCARD ALT_FORCE_INLINE Optional<usize> FindFirstNonSet() const noexcept {
 
-        constexpr static Usize WORD_MAX = Num::Desc<Usize>::Max();
+        constexpr static Usize WORD_MAX = Desc<Usize>::Max();
 
         const Usize* pBegin = m_Words.Data();
         const Usize* pEnd = m_Words.DataEnd();
@@ -538,7 +538,7 @@ public:
             return Nullopt;
         }
 
-        const usize bitIdx = (pBegin - m_Words.Data()) * BITS + Num::Count0BitsRight(~*pBegin);
+        const usize bitIdx = (pBegin - m_Words.Data()) * BITS + Count0BitsRight(~*pBegin);
 
         return bitIdx < m_SizeBits
             ? MakeOptional(bitIdx)
@@ -560,7 +560,7 @@ public:
      */
     ALT_NODISCARD ALT_FORCE_INLINE usize GetCapacity() const noexcept {
 
-        return Num::MulWrap(m_Words.GetCapacity(), BITS);
+        return MulWrap(m_Words.GetCapacity(), BITS);
     }
 
     /**
@@ -678,7 +678,7 @@ private:
     public:
 
         ALT_FORCE_INLINE Entry(BitSetT<Usize_, MIN_BITS_CAPACITY_ON_ALLOCATE_>& bs, const usize idx) noexcept
-            : m_pBitSet(&bs)
+            : m_pBitSet(Addressof(bs))
             , m_Idx(idx)
         {}
 
@@ -703,7 +703,7 @@ private:
     public:
 
         ALT_FORCE_INLINE EntryConst(const BitSetT<Usize_, MIN_BITS_CAPACITY_ON_ALLOCATE_>& bs, const usize idx) noexcept
-            : m_pBitSet(&bs)
+            : m_pBitSet(Addressof(bs))
             , m_Idx(idx)
         {}
 
@@ -729,15 +729,15 @@ private:
     template <typename>
     friend class BitSetIteratorInactiveRange;
 
-    constexpr static usize BITS = Num::Desc<Usize>::Bits();
-    static_assert(Num::IsPowerOf2(BITS), "");
+    constexpr static usize BITS = Desc<Usize>::Bits();
+    static_assert(IsPowerOf2(BITS), "");
 
-    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Num::Count0BitsRightConstexpr(BITS);
+    constexpr static usize BITS_TO_WORDID_RIGHT_SHIFT = Count0BitsRight(BITS);
     constexpr static usize BITS_TO_BITIDX_IN_WORD_MASK = BITS - 1;
 
     constexpr static usize MIN_WORDS_CAPACITY_ON_ALLOCATE =
         MIN_BITS_CAPACITY_ON_ALLOCATE != 0
-        ? Num::RoundUpToPowerOf2Constexpr(
+        ? RoundUpToPowerOf2(
             (MIN_BITS_CAPACITY_ON_ALLOCATE >> BITS_TO_WORDID_RIGHT_SHIFT) + ((MIN_BITS_CAPACITY_ON_ALLOCATE & BITS_TO_BITIDX_IN_WORD_MASK) == 0 ? 0 : 1)
         )
         : 0;
@@ -805,14 +805,14 @@ public:
                 result.size += size;
 
                 // ', '
-                result.size += Num::SubWrap(size, 1) * 2;
+                result.size += SubWrap(size, 1) * 2;
             }
             else {
 
                 // Don't calculate precise size of numbers
 
                 // ', '
-                result.size += Num::SubWrap(size, 1) * 2;
+                result.size += SubWrap(size, 1) * 2;
             }
 
             result.size += 1;
@@ -839,7 +839,7 @@ public:
                 result.size += size;
 
                 // ','
-                result.size += Num::SubWrap(size, 1);
+                result.size += SubWrap(size, 1);
             }
             else {
 
@@ -849,7 +849,7 @@ public:
                 // Don't calculate precise size of numbers
 
                 // ','
-                result.size += Num::SubWrap(size, 1);
+                result.size += SubWrap(size, 1);
             }
 
             estimator.PopIndent();

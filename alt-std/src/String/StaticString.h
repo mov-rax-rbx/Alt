@@ -58,36 +58,36 @@ public:
 
     using String = StaticStringUTF8<SIZE_IN_BYTES_MINUS_ONE, Usize>;
 
-    ALT_FORCE_INLINE StaticStringFormatWriter(String& str) noexcept
+    ALT_FORCE_INLINE constexpr StaticStringFormatWriter(String& str) noexcept
         : m_pStr(&str)
     {}
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool ReserveBytesAddition(const usize) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool ReserveBytesAddition(const usize) noexcept {
         return true;
     }
 
     template <typename T,
         std::enable_if_t<TypeTraits::is_character_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool Append(const T val) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool Append(const T val) noexcept {
 
         return m_pStr->Append(val);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE bool Append(const String& self) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool Append(const String& self) noexcept {
 
         return m_pStr->Append(self);
     }
 
     template <typename T,
         std::enable_if_t<TypeTraits::is_character_v<T>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool Append(const T* str) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool Append(const T* str) noexcept {
 
         return m_pStr->Append(str);
     }
 
     template <typename T, typename InnerT = TypeTraits::unwrap_inner_type_from_like_array_t<T>,
         std::enable_if_t<std::is_constructible_v<Slice<const InnerT>, T&&> && TypeTraits::is_character_v<InnerT>>* = nullptr>
-    ALT_NODISCARD ALT_FORCE_INLINE bool Append(T&& str) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool Append(T&& str) noexcept {
 
         return m_pStr->Append(std::forward<T>(str));
     }
@@ -175,13 +175,13 @@ public:
     class Checkpoint {
     public:
 
-        ALT_FORCE_INLINE Checkpoint(const Checkpoint&) noexcept = default;
-        ALT_FORCE_INLINE Checkpoint& operator=(const Checkpoint&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint(const Checkpoint&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint& operator=(const Checkpoint&) noexcept = default;
 
-        ALT_FORCE_INLINE Checkpoint(Checkpoint&&) noexcept = default;
-        ALT_FORCE_INLINE Checkpoint& operator=(Checkpoint&&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint(Checkpoint&&) noexcept = default;
+        ALT_FORCE_INLINE constexpr Checkpoint& operator=(Checkpoint&&) noexcept = default;
 
-        ALT_NODISCARD ALT_FORCE_INLINE usize GetOffsetInBytes() const noexcept {
+        ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetOffsetInBytes() const noexcept {
             return static_cast<usize>(m_Offset);
         }
 
@@ -207,82 +207,82 @@ public:
      * ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~
      * 
      */
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAscii(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAscii(const chara utf32) noexcept {
 
         return _StringDetails::IsAscii(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiWhitespace(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiWhitespace(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiWhitespace(utf32); // \t, \n, \v, \f, \r
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiPrintable(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiPrintable(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiPrintable(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiAlphabetLower(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiAlphabetLower(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiAlphabetLower(utf32); // [a..z]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiAlphabetUpper(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiAlphabetUpper(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiAlphabetUpper(utf32); // [A..Z]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiAlphabet(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiAlphabet(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiAlphabet(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiDigit(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiDigit(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiDigit(utf32); // [0..9]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static bool IsAsciiHex(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static bool IsAsciiHex(const chara utf32) noexcept {
 
         return _StringDetails::IsAsciiHex(utf32); // [0..9] [ABCDEF] [abcdef]
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static chara AsciiToLower(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static chara AsciiToLower(const chara utf32) noexcept {
 
         return _StringDetails::AsciiToLower(utf32);
     }
 
-    ALT_NODISCARD ALT_FORCE_INLINE static chara AsciiToUpper(const chara utf32) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr static chara AsciiToUpper(const chara utf32) noexcept {
 
         return _StringDetails::AsciiToUpper(utf32);
     }
 
-    ALT_NODISCARD static usize Hash(const Slice<const u8> bytes, const usize seed = 0) noexcept {
+    ALT_NODISCARD constexpr static usize Hash(const Slice<const u8> bytes, const usize seed = 0) noexcept {
 
         return Algorithms::Hash(bytes.Data(), bytes.DataEnd(), seed);
     }
 
-    ALT_NODISCARD static usize Hash(const u8* pBytesBegin, const usize size, const usize seed = 0) noexcept {
+    ALT_NODISCARD constexpr static usize Hash(const u8* pBytesBegin, const usize size, const usize seed = 0) noexcept {
 
         return Algorithms::Hash(pBytesBegin, pBytesBegin + size, seed);
     }
 
-    ALT_NODISCARD static u64 Hash64(const Slice<const u8> bytes, const u64 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u64 Hash64(const Slice<const u8> bytes, const u64 seed = 0) noexcept {
 
         return Algorithms::Hash64(bytes.Data(), bytes.DataEnd(), seed);
     }
 
-    ALT_NODISCARD static u64 Hash64(const u8* pBytesBegin, const usize size, const u64 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u64 Hash64(const u8* pBytesBegin, const usize size, const u64 seed = 0) noexcept {
 
         return Algorithms::Hash64(pBytesBegin, pBytesBegin + size, seed);
     }
 
-    ALT_NODISCARD static u32 Hash32(const Slice<const u8> bytes, const u32 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u32 Hash32(const Slice<const u8> bytes, const u32 seed = 0) noexcept {
 
         return Algorithms::Hash32(bytes.Data(), bytes.DataEnd(), seed);
     }
 
-    ALT_NODISCARD static u32 Hash32(const u8* pBytesBegin, const usize size, const u32 seed = 0) noexcept {
+    ALT_NODISCARD constexpr static u32 Hash32(const u8* pBytesBegin, const usize size, const u32 seed = 0) noexcept {
 
         return Algorithms::Hash64(pBytesBegin, pBytesBegin + size, seed);
     }
@@ -297,7 +297,7 @@ public:
      */
     template <typename T,
         std::enable_if<TypeTraits::is_character_v<T>>* = nullptr>
-    ALT_NODISCARD static usize CalculateCStrLen(const T* str) noexcept {
+    ALT_NODISCARD constexpr static usize CalculateCStrLen(const T* str) noexcept {
 
         return _StringDetails::CalculateCStrLen(str);
     }
@@ -312,7 +312,7 @@ public:
      */
     template <typename T,
         std::enable_if<TypeTraits::is_character_v<T>>* = nullptr>
-    ALT_NODISCARD static usize CalculateSizeInBytes(const T* str) noexcept {
+    ALT_NODISCARD constexpr static usize CalculateSizeInBytes(const T* str) noexcept {
 
         return _StringDetails::CalculateSizeInBytes(str);
     }
@@ -697,7 +697,7 @@ public:
             return false;
         }
 
-        std::memcpy(GetMemoryBegin(), string.Data(), stringSize);
+        Memory::CopyObjectsNonOverlap(GetMemoryBegin(), string.Data(), string.DataEnd());
 
         m_Size = static_cast<Usize>(stringSize);
         *GetMemoryNullTerm() = '\0';
@@ -2104,7 +2104,7 @@ public:
     ALT_NODISCARD bool Push(ArgsT&&... charas) noexcept {
         iferr_scope;
 
-        const usize size = Num::AddOverflowCheck(GetSizeBytes(), Utf::_32::LengthUtf32ToUtf8(charas)...) iferr_return false;
+        const usize size = AddOverflowCheck(GetSizeBytes(), Utf::_32::LengthUtf32ToUtf8(charas)...) iferr_return false;
 
         if (size > GetCapacity() - GetSizeBytes()) {
             return false;
@@ -2627,12 +2627,7 @@ public:
 
         const Slice<const InnerT> rhs = rhs_;
 
-        return Algorithms::Compare(
-            GetMemoryBegin(),
-            GetMemoryNullTerm(),
-            reinterpret_cast<const u8*>(rhs.Data()),
-            reinterpret_cast<const u8*>(rhs.DataEnd())
-        );
+        return _StringDetails::Compare(GetMemoryBegin(), GetMemoryNullTerm(), rhs.Data(), rhs.DataEnd());
     }
 
     template <typename T,
@@ -2776,16 +2771,15 @@ private:
 
         u8* pMemoryNullTerm = GetMemoryNullTerm();
 
-        const u8* pBegin = _StringDetails::TrimLeftImpl(GetMemoryBegin(), pMemoryNullTerm);
+        const u8* pBegin = _StringDetails::TrimLeft(GetMemoryBegin(), pMemoryNullTerm);
 
         if (pBegin == GetMemoryBegin()) {
             return false;
         }
 
-        const usize sizeNew = static_cast<usize>(pMemoryNullTerm - pBegin);
-        std::memmove(GetMemoryBegin(), pBegin, sizeNew * sizeof(u8));
+        Memory::CopyObjectsFromFirstElement(GetMemoryBegin(), pBegin, pMemoryNullTerm);
 
-        m_Size = static_cast<Usize>(sizeNew);
+        m_Size = static_cast<Usize>(pMemoryNullTerm - pBegin);
 
         return true;
     }
@@ -2798,7 +2792,7 @@ private:
 
         u8* pMemoryNullTerm = GetMemoryNullTerm();
 
-        const u8* pEnd = _StringDetails::TrimRightImpl(GetMemoryBegin(), pMemoryNullTerm);
+        const u8* pEnd = _StringDetails::TrimRight(GetMemoryBegin(), pMemoryNullTerm);
 
         const bool isShouldWriteNullTerm = pEnd != pMemoryNullTerm;
         m_Size = static_cast<Usize>(pEnd - GetMemoryBegin());
@@ -2829,7 +2823,7 @@ private:
 
         u8* pMemoryNullTerm = GetMemoryNullTerm();
 
-        std::memcpy(pMemoryNullTerm, utf8.Data(), sizeToAppend);
+        Memory::CopyObjectsNonOverlap(pMemoryNullTerm, utf8.Data(), utf8.DataEnd());
 
         m_Size += static_cast<Usize>(sizeToAppend);
 
@@ -2947,7 +2941,7 @@ private:
     ALT_FORCE_INLINE StaticStringUTF8(Rule5Move_t, StaticStringUTF8<SIZE_IN_BYTES_MINUS_ONE_, Usize_>& rhs) noexcept
         : m_Size(Exchange(rhs.m_Size, 0))
     {
-        std::memcpy(m_Memory, rhs.m_Memory, static_cast<usize>(m_Size + 1) * sizeof(u8));
+        Memory::CopyObjectsNonOverlap(m_Memory, rhs.m_Memory, rhs.m_Memory + static_cast<usize>(m_Size + 1));
     }
 
     template <usize SIZE_IN_BYTES_MINUS_ONE_ = SIZE_IN_BYTES_MINUS_ONE, typename Usize_,
@@ -2959,7 +2953,7 @@ private:
         }
 
         m_Size = Exchange(rhs.m_Size, 0);
-        std::memcpy(m_Memory, rhs.m_Memory, static_cast<usize>(m_Size + 1) * sizeof(u8));
+        Memory::CopyObjectsNonOverlap(m_Memory, rhs.m_Memory, rhs.m_Memory + static_cast<usize>(m_Size + 1));
     }
 
     template <usize SIZE_IN_BYTES_MINUS_ONE_ = SIZE_IN_BYTES_MINUS_ONE, typename Usize_,
@@ -2967,7 +2961,7 @@ private:
     ALT_FORCE_INLINE StaticStringUTF8(Rule5Copy_t, StaticStringUTF8<SIZE_IN_BYTES_MINUS_ONE_, Usize_>& rhs) noexcept
         : m_Size(rhs.m_Size)
     {
-        std::memcpy(m_Memory, rhs.m_Memory, static_cast<usize>(m_Size + 1) * sizeof(u8));
+        Memory::CopyObjectsNonOverlap(m_Memory, rhs.m_Memory, rhs.m_Memory + static_cast<usize>(m_Size + 1));
     }
 
     template <usize SIZE_IN_BYTES_MINUS_ONE_ = SIZE_IN_BYTES_MINUS_ONE, typename Usize_,
@@ -2979,7 +2973,7 @@ private:
         }
 
         m_Size = rhs.m_Size;
-        std::memcpy(m_Memory, rhs.m_Memory, static_cast<usize>(m_Size + 1) * sizeof(u8));
+        Memory::CopyObjectsNonOverlap(m_Memory, rhs.m_Memory, rhs.m_Memory + static_cast<usize>(m_Size + 1));
     }
 
     ALT_FORCE_INLINE u8* GetMemoryBegin() noexcept {

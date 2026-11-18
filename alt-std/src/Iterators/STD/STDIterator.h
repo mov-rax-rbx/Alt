@@ -7,19 +7,19 @@
 
 #include "../Adapters/Adapters.h"
 
-/*
-* const std::vector<usize> vec{ 0, 1, 2, 3, 4 };
-* Alt::IteratorFromSTD stdIter{ vec.begin(), vec.end() };
-*
-* const std::vector<usize> vecFromIter = stdIter
-*     .CloneIter()
-*     .Map([](const usize* pVal) {
-*         return *pVal;
-*     })
-*     .CollectOrDefault<std::vector<usize>>();
-*
-* assert(vec == vecFromIter);
-*/
+/**
+ * const std::vector<usize> vec{ 0, 1, 2, 3, 4 };
+ * Alt::IteratorFromSTD stdIter{ vec.begin(), vec.end() };
+ *
+ * const std::vector<usize> vecFromIter = stdIter
+ *     .CloneIter()
+ *     .Map([](const usize* pVal) {
+ *         return *pVal;
+ *     })
+ *     .CollectOrDefault<std::vector<usize>>();
+ *
+ * assert(vec == vecFromIter);
+ */
 namespace Alt {
 namespace _IterDetails {
 
@@ -55,7 +55,7 @@ public:
     using Type = typename Super::Type;
     using Traits = typename Super::Traits;
 
-    ALT_FORCE_INLINE IteratorFromSTD(STDIterT begin, STDIterT end) noexcept
+    ALT_FORCE_INLINE constexpr IteratorFromSTD(STDIterT begin, STDIterT end) noexcept
         : m_Begin(begin)
         , m_End(end)
     {}
@@ -63,7 +63,7 @@ public:
     /*
      * IteratorBase
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSizeHint() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSizeHint() const noexcept {
 
         return GetSizeHintImpl<
             std::is_same_v<
@@ -75,12 +75,12 @@ public:
 private:
 
     template <bool IS_NEED_IMPL>
-    ALT_FORCE_INLINE usize GetSizeHintImpl() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHintImpl() const noexcept {
         return 0;
     }
 
     template <>
-    ALT_FORCE_INLINE usize GetSizeHintImpl<true>() const noexcept {
+    ALT_FORCE_INLINE constexpr usize GetSizeHintImpl<true>() const noexcept {
         return m_End - m_Begin;
     }
 
@@ -109,7 +109,7 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_Begin == Self().m_End) {
 
@@ -125,7 +125,7 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -143,7 +143,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -160,14 +160,14 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_Begin == Self().m_End) {
 
             return Nullopt;
         }
 
-        T result = &*Self().m_Begin;
+        T result = Addressof(*Self().m_Begin);
         Self().m_Begin += 1;
 
         return result;
@@ -176,7 +176,7 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -194,7 +194,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -212,14 +212,14 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_Begin == Self().m_End) {
 
             return Nullopt;
         }
 
-        T result = &*Self().m_Begin;
+        T result = Addressof(*Self().m_Begin);
         Self().m_Begin += 1;
 
         return result;
@@ -228,7 +228,7 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -247,7 +247,7 @@ public:
     /*
      * IIteratorBackwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         if (Self().m_Begin == Self().m_End) {
 
@@ -255,7 +255,7 @@ public:
         }
 
         Self().m_End -= 1;
-        T result = &*Self().m_End;
+        T result = Addressof(*Self().m_End);
 
         return result;
     }
@@ -263,7 +263,7 @@ public:
     /*
      * IIteratorBackwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance) noexcept {
 
         usize size = 0;
         for (usize i = 0; i < advance; ++i) {
@@ -281,7 +281,7 @@ public:
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 };
@@ -299,14 +299,14 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> Next() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> Next() noexcept {
 
         if (Self().m_Begin == Self().m_End) {
 
             return Nullopt;
         }
 
-        T result = &*Self().m_Begin;
+        T result = Addressof(*Self().m_Begin);
         Self().m_Begin += 1;
 
         return result;
@@ -315,9 +315,9 @@ public:
     /*
      * IIteratorForwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize Advance(const usize advance_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize Advance(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(Self().GetSize(), advance_);
+        const usize advance = Min(Self().GetSize(), advance_);
         Self().m_Begin += advance;
 
         return advance;
@@ -326,7 +326,7 @@ public:
     /*
      * IIteratorBackwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE Optional<T> NextBack() noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr Optional<T> NextBack() noexcept {
 
         if (Self().m_Begin == Self().m_End) {
 
@@ -334,7 +334,7 @@ public:
         }
 
         Self().m_End -= 1;
-        T result = &*Self().m_End;
+        T result = Addressof(*Self().m_End);
 
         return result;
     }
@@ -342,9 +342,9 @@ public:
     /*
      * IIteratorBackwardTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize AdvanceBack(const usize advance_) noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize AdvanceBack(const usize advance_) noexcept {
 
-        const usize advance = Num::Min(Self().GetSize(), advance_);
+        const usize advance = Min(Self().GetSize(), advance_);
         Self().m_End -= advance;
 
         return advance;
@@ -353,24 +353,24 @@ public:
     /*
      * IIteratorExactSizeTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE usize GetSize() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr usize GetSize() const noexcept {
         return Self().m_End - Self().m_Begin;
     }
 
     /*
      * IIteratorExactSizeTrait
      */
-    ALT_NODISCARD ALT_FORCE_INLINE bool IsEmpty() const noexcept {
+    ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEmpty() const noexcept {
         return Self().m_Begin == Self().m_End;
     }
 
 private:
 
-    ALT_FORCE_INLINE SelfT& Self() noexcept {
+    ALT_FORCE_INLINE constexpr SelfT& Self() noexcept {
         return static_cast<SelfT&>(*this);
     }
 
-    ALT_FORCE_INLINE const SelfT& Self() const noexcept {
+    ALT_FORCE_INLINE constexpr const SelfT& Self() const noexcept {
         return static_cast<const SelfT&>(*this);
     }
 };

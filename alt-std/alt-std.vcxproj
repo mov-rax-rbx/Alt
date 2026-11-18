@@ -240,6 +240,7 @@
     <ClInclude Include="src\String\Format.h" />
     <ClInclude Include="src\String\Impl\FormatPreInclude.h" />
     <ClInclude Include="src\String\Impl\StringDetails.h" />
+    <ClInclude Include="src\String\Impl\StringDetailsPreInclude.h" />
     <ClInclude Include="src\String\Impl\Utf\Utf16.h" />
     <ClInclude Include="src\String\Impl\Utf\Utf32.h" />
     <ClInclude Include="src\String\Impl\Utf\Utf8.h" />
@@ -254,6 +255,8 @@
     <ClInclude Include="src\Utils\EnumClassBitFlagsImpl.h" />
     <ClInclude Include="src\Utils\Func.h" />
     <ClInclude Include="src\Utils\Impl\NumPreInclude.h" />
+    <ClInclude Include="src\Utils\Impl\s128.h" />
+    <ClInclude Include="src\Utils\Impl\u128.h" />
     <ClInclude Include="src\Utils\NonCopyableMovable.h" />
     <ClInclude Include="src\Utils\Num.h" />
     <ClInclude Include="src\Utils\Optional.h" />
@@ -290,6 +293,7 @@
     <None Include="src\Math\Impl\Quat.inl" />
     <None Include="src\Math\Impl\Vec3.inl" />
     <None Include="src\Math\Impl\Vec4.inl" />
+    <None Include="src\Utils\Impl\u128.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

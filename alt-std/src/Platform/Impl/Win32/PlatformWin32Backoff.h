@@ -49,7 +49,7 @@ public:
         const u32 step = m_Step;
         m_Step += m_Step < MAX_STEPS_SPIN ? 1 : 0;
 
-        const usize iters = static_cast<usize>(1) << Num::Min(step, MAX_STEPS_SPIN);
+        const usize iters = static_cast<usize>(1) << Min(step, MAX_STEPS_SPIN);
         for (usize i = 0; i < iters; ++i) {
 
             Platform::SpinHint();
