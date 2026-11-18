@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef __ALT_STD_MATH_PRE_INCLUDE__
 #define __ALT_STD_MATH_PRE_INCLUDE__
@@ -11,6 +11,22 @@
 #include "../../Utils/Num.h"
 
 namespace Alt {
+namespace Math {
+
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f32 x, const f32 y, const f32 eps = Desc<f32>::Eps()) noexcept {
+
+    const f32 norm = Min(Abs(x) + Abs(y), Desc<f32>::Max());
+    return Abs(x - y) <= Max(Desc<f32>::Min(), eps * norm);
+}
+
+ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f64 x, const f64 y, const f64 eps = Desc<f64>::Eps()) noexcept {
+
+    const f64 norm = Min(Abs(x) + Abs(y), Desc<f64>::Max());
+    return Abs(x - y) <= Max(Desc<f64>::Min(), eps * norm);
+}
+
+} // namespace Math
+
 namespace _MathDetails {
 
 ALT_NODISCARD ALT_FORCE_INLINE f32 fmod(const f32 x, const f32 y) noexcept {
@@ -50,7 +66,7 @@ ALT_NODISCARD ALT_FORCE_INLINE constexpr static T SqrtConstexpr(const T a) noexc
 
         const T err = Abs(x - prevX);
 
-        if (IsEqFuzzy(err, prevErr)) {
+        if (Math::IsEqFuzzy(err, prevErr)) {
             return x;
         }
 
@@ -74,18 +90,6 @@ ALT_NODISCARD ALT_FORCE_INLINE constexpr T Mod(const T x, const U y_) noexcept {
 
     // const f32 c = Frac(Abs(x / y)) * Abs(y);
     // return IsSignPositive(x) ? c : -c;
-}
-
-ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f32 x, const f32 y, const f32 eps = Desc<f32>::Eps()) noexcept {
-
-    const f32 norm = Min(Abs(x) + Abs(y), Desc<f32>::Max());
-    return Abs(x - y) <= Max(Desc<f32>::Min(), eps * norm);
-}
-
-ALT_NODISCARD ALT_FORCE_INLINE constexpr bool IsEqFuzzy(const f64 x, const f64 y, const f64 eps = Desc<f64>::Eps()) noexcept {
-
-    const f64 norm = Min(Abs(x) + Abs(y), Desc<f64>::Max());
-    return Abs(x - y) <= Max(Desc<f64>::Min(), eps * norm);
 }
 
 ALT_NODISCARD ALT_FORCE_INLINE constexpr ssize CompareFuzzy(const f32 x, const f32 y, const f32 eps = Desc<f32>::Eps()) noexcept {
