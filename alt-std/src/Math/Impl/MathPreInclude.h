@@ -23,7 +23,7 @@ ALT_NODISCARD ALT_FORCE_INLINE f64 fmod(const f64 x, const f64 y) noexcept {
 
 template <typename T,
     std::enable_if_t<Desc<T>::IsFloat()>* = nullptr>
-ALT_NODISCARD ALT_FORCE_INLINE static T SqrtConstexpr(const T a) noexcept {
+ALT_NODISCARD ALT_FORCE_INLINE constexpr static T SqrtConstexpr(const T a) noexcept {
 
     const bool isNan = a != a;
     const bool isInf = a == Desc<T>::Inf();
