@@ -4,7 +4,7 @@ int main(int argc, char** argv) {
 
     ::testing::InitGoogleTest(&argc, argv);
 
-    ::testing::GTEST_FLAG(filter) = "Math.Sqrtf64Constexpr";
+    ::testing::GTEST_FLAG(filter) = "*.*";
 
     return RUN_ALL_TESTS();
 }

@@ -312,9 +312,9 @@ TEST(Math, Sqrtf32Constexpr) {
     Alt::StaticVector<Alt::Thread, 32> threads;
     Alt::StaticVector<ThreadData, 32> threadsData;
 
-    for (usize i = 0; i < numThreads; ++i) {
+    for (u32 i = 0; i < numThreads; ++i) {
 
-        const u32 size = Alt::Desc<u32>::Max() / numThreads;
+        const u32 size = Alt::Desc<u32>::Max() / (u32)numThreads;
 
         Alt::RangeU32 range;
         range.begin = i * size;

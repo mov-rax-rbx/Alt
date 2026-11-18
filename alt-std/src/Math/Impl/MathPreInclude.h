@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef __ALT_STD_MATH_PRE_INCLUDE__
 #define __ALT_STD_MATH_PRE_INCLUDE__
@@ -57,20 +57,16 @@ ALT_NODISCARD ALT_FORCE_INLINE constexpr static T SqrtConstexpr(const T a) noexc
     }
 
     T x = Max(a, static_cast<T>(1.0)) * static_cast<T>(0.5);
-    T prevErr = static_cast<T>(0.0);
 
     for (;;) {
 
         const T prevX = x;
         x = static_cast<T>(0.5) * (x + (a / x));
 
-        const T err = Abs(x - prevX);
-
-        if (Math::IsEqFuzzy(err, prevErr)) {
+        const T err = x - prevX;
+        if (Math::IsEqFuzzy(err, static_cast<T>(0.0))) {
             return x;
         }
-
-        prevErr = err;
     }
 }
 

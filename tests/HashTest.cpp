@@ -13,9 +13,9 @@ TEST(Hash, Similarity) {
         FAIL();
     };
 
-    using HashCosntexpr = Alt::Algorithms::_AlgorithmsDetails::HashConstexprImpl<u8>;
-    using Hash32Cosntexpr = Alt::Algorithms::_AlgorithmsDetails::HashConstexprImpl<u8, Alt::Algorithms::_AlgorithmsDetails::PlatformTrait::x32>;
-    using Hash64Cosntexpr = Alt::Algorithms::_AlgorithmsDetails::HashConstexprImpl<u8, Alt::Algorithms::_AlgorithmsDetails::PlatformTrait::x64>;
+    using HashCosntexpr = Alt::_AlgorithmsDetails::HashConstexprImpl<u8>;
+    using Hash32Cosntexpr = Alt::_AlgorithmsDetails::HashConstexprImpl<u8, Alt::_AlgorithmsDetails::PlatformTrait::x32>;
+    using Hash64Cosntexpr = Alt::_AlgorithmsDetails::HashConstexprImpl<u8, Alt::_AlgorithmsDetails::PlatformTrait::x64>;
 
     constexpr usize TEST_CNT = 10'000;
     constexpr usize TEST_STR_MAX_SIZE = 1'000;
